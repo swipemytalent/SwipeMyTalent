@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/useAuth';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import formDataJson from '../data/loginForm.json';
 import '../styles/Login.scss';
 
@@ -15,6 +15,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const savedEmail = localStorage.getItem('rememberedEmail');
@@ -58,19 +59,18 @@ const Login = () => {
     if (!validateForm()) return;
     setIsLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 700));
-      const ok = login(formData.email, formData.password);
-      if (!ok) {
-        setErrors({ submit: "Email ou mot de passe incorrect." });
-        setIsLoading(false);
-        return;
-      }
-      if (formData.rememberMe) {
-        localStorage.setItem('rememberedEmail', formData.email);
+      const success = await login(formData.email, formData.password);
+      if (success) {
+        if (formData.rememberMe) {
+          localStorage.setItem('rememberedEmail', formData.email);
+        } else {
+          localStorage.removeItem('rememberedEmail');
+        }
+        const from = location.state?.from?.pathname || '/dashboard';
+        navigate(from, { replace: true });
       } else {
-        localStorage.removeItem('rememberedEmail');
+        setErrors({ submit: "Email ou mot de passe incorrect." });
       }
-      navigate('/dashboard');
     } catch {
       setErrors({ submit: formDataJson.submitError });
     } finally {

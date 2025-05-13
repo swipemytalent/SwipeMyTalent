@@ -1,0 +1,46 @@
+{
+  "welcome": {
+    "title": "Bienvenue",
+    "subtitle": "Votre espace personnel"
+  },
+  "profile": {
+    "title": "Mon Profil",
+    "completeButton": "Compléter mon profil",
+    "defaultTitle": "Freelance"
+  },
+  "stats": {
+    "title": "Mes Statistiques",
+    "views": {
+      "label": "Vues du profil",
+      "value": "0"
+    },
+    "matches": {
+      "label": "Matchs",
+      "value": "0"
+    },
+    "messages": {
+      "label": "Messages",
+      "value": "0"
+    }
+  },
+  "opportunities": {
+    "title": "Opportunités",
+    "empty": {
+      "message": "Commencez à swiper pour découvrir des opportunités !",
+      "button": "Découvrir"
+    }
+  },
+  "network": {
+    "title": "Mon Réseau",
+    "empty": {
+      "message": "Connectez-vous avec d'autres freelances",
+      "button": "Explorer"
+    }
+  },
+  "recentActivity": {
+    "title": "Activité récente",
+    "empty": {
+      "message": "Aucune activité récente pour le moment."
+    }
+  }
+} 

@@ -30,13 +30,15 @@
     list-style: none;
 
     a {
-      color: #666;
+      color: $primary-blue;
       text-decoration: none;
       font-weight: 500;
       transition: color 0.3s;
-
+      &.navlink-active {
+        color: $primary-orange;
+      }
       &:hover {
-        color: #007bff;
+        color: darken($primary-blue, 10%);
       }
     }
   }

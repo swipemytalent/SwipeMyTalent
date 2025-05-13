@@ -1,6 +1,6 @@
 import { useAuth } from '../context/useAuth';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import '../styles/Navbar.scss';
 
 const SunIcon = () => (
@@ -50,10 +50,11 @@ const Navbar = () => {
 
       {isLoggedIn && (
         <ul className="nav-links">
-          <li><a href="/">Accueil</a></li>
-          <li><a href="/talent">Talents</a></li>
-          <li><a href="/about">À propos</a></li>
-          <li><a href="/contact">Contact</a></li>
+          <li><NavLink to="/" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Accueil</NavLink></li>
+          <li><NavLink to="/dashboard" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Mon espace</NavLink></li>
+          <li><NavLink to="/talent" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Talents</NavLink></li>
+          <li><NavLink to="/about" className={({ isActive }) => isActive ? 'navlink-active' : ''}>À propos</NavLink></li>
+          <li><NavLink to="/contact" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Contact</NavLink></li>
         </ul>
       )}
 
