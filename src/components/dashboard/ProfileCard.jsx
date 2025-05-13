@@ -1,10 +1,7 @@
 import React from 'react';
-import { useAuth } from '../../context/useAuth';
 import dashboardData from '../../data/dashboardData.json';
 
-const ProfileCard = () => {
-  const { user } = useAuth();
-
+const ProfileCard = ({ onEditProfile, user }) => {
   return (
     <section className="dashboard__card profile-card">
       <h2>{dashboardData.profile.title}</h2>
@@ -21,7 +18,7 @@ const ProfileCard = () => {
         <div className="profile-card__info">
           <h3>{user?.firstName} {user?.lastName}</h3>
           <p>{user?.title || dashboardData.profile.defaultTitle}</p>
-          <button className="btn btn--primary">{dashboardData.profile.completeButton}</button>
+          <button className="btn btn--primary" onClick={onEditProfile}>{dashboardData.profile.completeButton}</button>
         </div>
       </div>
     </section>

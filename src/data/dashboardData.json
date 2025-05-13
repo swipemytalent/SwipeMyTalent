@@ -14,26 +14,30 @@
       "label": "Vues du profil",
       "value": "0"
     },
-    "matches": {
-      "label": "Matchs",
-      "value": "0"
-    },
     "messages": {
       "label": "Messages",
       "value": "0"
+    },
+    "matches": {
+      "label": "Crédits dispo",
+      "value": "0"
     }
+  },
+  "matches": {
+    "label": "Crédits dispo",
+    "value": "0"
   },
   "opportunities": {
     "title": "Opportunités",
     "empty": {
-      "message": "Commencez à swiper pour découvrir des opportunités !",
+      "message": "Découvrez les talents inscrits et trouvez votre prochain collaborateur !",
       "button": "Découvrir"
     }
   },
   "network": {
     "title": "Mon Réseau",
     "empty": {
-      "message": "Connectez-vous avec d'autres freelances",
+      "message": "Entrez en contact avec d'autres freelance ouauto-entrepreneurs pour vous entraider.",
       "button": "Explorer"
     }
   },
