@@ -1,6 +1,29 @@
 # SwipeMyTalent 🚀
 
-SwipeMyTalent est une plateforme moderne de mise en relation entre freelances et entreprises, inspirée par l'expérience utilisateur intuitive de Tinder.
+SwipeMyTalent est une plateforme communautaire créée par un freelance pour les freelances. Née d'une expérience personnelle, elle vise à briser l'isolement en offrant un espace d'entraide où chaque talent peut s'épanouir, échanger et grandir ensemble.
+
+## 💡 L'histoire derrière SwipeMyTalent
+
+Comme beaucoup de jeunes freelances, j'ai galéré :
+- Des appels découverte qui finissent en formations hors de prix
+- Des candidatures sans réponse
+- De la prospection dans le vide
+- Des projets persos qui attirent... personne
+
+À force, on perd confiance, on doute, parfois on doit reprendre un job alimentaire "en attendant".
+
+Et un jour je me suis dit : pourquoi on reste tous seuls à galérer ?
+
+Pourquoi ne pas créer un espace où on pourrait :
+- Échanger nos services
+- Élargir nos réseaux
+- Avoir des avis et des recommandations
+- Gagner en visibilité, sans se ruiner
+
+Bref, c'est comme ça qu'est née SwipeMyTalent.
+
+La plateforme est encore en cours de développement, mais j'ai super hâte de vous en dire plus et de voir où tout ça peut nous mener ensemble.
+
 
 ## 🌟 Fonctionnalités
 
