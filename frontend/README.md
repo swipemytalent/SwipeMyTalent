@@ -1,12 +1,85 @@
-# React + Vite
+SwipeMyTalent 🚀
+SwipeMyTalent est une plateforme communautaire créée par un freelance pour les freelances. Née d'une expérience personnelle, elle vise à briser l'isolement en offrant un espace d'entraide où chaque talent peut s'épanouir, échanger et grandir ensemble.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+💡 L'histoire derrière SwipeMyTalent
+Comme beaucoup de jeunes freelances, j'ai galéré :
 
-Currently, two official plugins are available:
+Des appels découverte qui finissent en formations hors de prix
+Des candidatures sans réponse
+De la prospection dans le vide
+Des projets persos qui attirent... personne
+À force, on perd confiance, on doute, parfois on doit reprendre un job alimentaire "en attendant".
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Et un jour je me suis dit : pourquoi on reste tous seuls à galérer ?
 
-## Expanding the ESLint configuration
+Pourquoi ne pas créer un espace où on pourrait :
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Échanger nos services
+Élargir nos réseaux
+Avoir des avis et des recommandations
+Gagner en visibilité, sans se ruiner
+Bref, c'est comme ça qu'est née SwipeMyTalent.
+
+La plateforme est encore en cours de développement, mais j'ai super hâte de vous en dire plus et de voir où tout ça peut nous mener ensemble.
+
+🌟 Fonctionnalités
+Authentification sécurisée
+
+Connexion/Inscription
+"Se souvenir de moi"
+Protection des routes
+Gestion des sessions
+Interface moderne
+
+Design responsive
+Mode sombre/clair
+Animations fluides
+UX optimisée
+Technologies utilisées
+
+React + Vite
+SCSS pour le styling
+React Router pour la navigation
+Context API pour la gestion d'état
+🛠️ Installation
+Clone le repository :
+git clone https://github.com/YoDaMned59/SwipeMyTalent.git
+cd SwipeMyTalent
+Installe les dépendances :
+npm install
+Lance le serveur de développement :
+npm run dev
+📁 Structure du projet
+src/
+├── api/          # Logique d'API et mock data
+├── components/   # Composants réutilisables
+├── context/      # Context API (Auth, etc.)
+├── pages/        # Pages de l'application
+├── styles/       # Fichiers SCSS
+└── utils/        # Fonctions utilitaires
+🔒 Sécurité
+Validation des formulaires
+Protection des routes sensibles
+Gestion sécurisée des tokens
+Pas de stockage de mots de passe
+🚀 Roadmap
+ Système de matching
+ Profils détaillés
+ Messagerie en temps réel
+ Système de notation
+ Filtres de recherche avancés
+🤝 Contribution
+Les contributions sont les bienvenues ! N'hésite pas à :
+
+Fork le projet
+Créer une branche (git checkout -b feature/AmazingFeature)
+Commit tes changements (git commit -m 'Add some AmazingFeature')
+Push sur la branche (git push origin feature/AmazingFeature)
+Ouvrir une Pull Request
+📝 License
+Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
+
+👨‍💻 Auteur
+YoDaMned59 - GitHub
+
+N'hésite pas à me contacter si tu as des questions ou des suggestions !
