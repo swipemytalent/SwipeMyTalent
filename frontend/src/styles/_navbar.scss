@@ -1,0 +1,62 @@
+.navbar {
+  width: 100%;
+  height: 64px;
+  background: #fff;
+  border-bottom: 1.5px solid #e3e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.04);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+
+  &__logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1976D2;
+    text-decoration: none;
+    letter-spacing: 1px;
+    transition: color 0.2s;
+    &:hover {
+      color: #FFA000;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 1rem;
+  }
+
+  &__button {
+    background: #1976D2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+    cursor: pointer;
+    &:hover {
+      background: #FFA000;
+      color: #333;
+    }
+    &--secondary {
+      background: #FFA000;
+      color: #333;
+      &:hover {
+        background: #1976D2;
+        color: #fff;
+      }
+    }
+  }
+}
+
+// Pour éviter que le contenu passe sous la navbar
+.auth-page {
+  margin-top: 80px;
+} 
