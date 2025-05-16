@@ -1,112 +1,59 @@
 # SwipeMyTalent 🚀
+SwipeMyTalent is a community platform created by a freelancer, for freelancers.   
+Born out of personal experience, it aims to break the isolation many freelancers face by offering a space for mutual support, collaboration, and growth.
 
-SwipeMyTalent est une plateforme communautaire créée par un freelance pour les freelances. Née d'une expérience personnelle, elle vise à briser l'isolement en offrant un espace d'entraide où chaque talent peut s'épanouir, échanger et grandir ensemble.
+## 💡 The Story Behind SwipeMyTalent
+Like many new freelancers, I struggled:
+- Discovery calls that turn into overpriced coaching
+- Job applications that go unanswered
+- Endless outreach with no results
+- Personal projects that attract no one
 
-## 💡 L'histoire derrière SwipeMyTalent
+Eventually, you start doubting yourself.  
+Losing confidence and sometimes you’re forced to take a day job "just for now."  
+Why are we all struggling alone?
 
-Comme beaucoup de jeunes freelances, j'ai galéré :
-- Des appels découverte qui finissent en formations hors de prix
-- Des candidatures sans réponse
-- De la prospection dans le vide
-- Des projets persos qui attirent... personne
+Why not build a space where we can:
+- Exchange services
+- Expand our networks
+- Get feedback and recommendations
+- Gain visibility without breaking the bank
 
-À force, on perd confiance, on doute, parfois on doit reprendre un job alimentaire "en attendant".
+And that's how SwipeMyTalent was born.
 
-Et un jour je me suis dit : pourquoi on reste tous seuls à galérer ?
-
-Pourquoi ne pas créer un espace où on pourrait :
-- Échanger nos services
-- Élargir nos réseaux
-- Avoir des avis et des recommandations
-- Gagner en visibilité, sans se ruiner
-
-Bref, c'est comme ça qu'est née SwipeMyTalent.
-
-La plateforme est encore en cours de développement, mais j'ai super hâte de vous en dire plus et de voir où tout ça peut nous mener ensemble.
-
-
-## 🌟 Fonctionnalités
-
-- **Authentification sécurisée**
-  - Connexion/Inscription
-  - "Se souvenir de moi"
-  - Protection des routes
-  - Gestion des sessions
-
-- **Interface moderne**
-  - Design responsive
-  - Mode sombre/clair
-  - Animations fluides
-  - UX optimisée
-
-- **Technologies utilisées**
-  - React + Vite
-  - SCSS pour le styling
-  - React Router pour la navigation
-  - Context API pour la gestion d'état
+## 🌟 Features
+**Tech Stack**
+- React + Vite
+- SCSS for styling
+- React Router for navigation
+- Backend server with Express in TypeScript
 
 ## 🛠️ Installation
-
-1. Clone le repository :
+1. Clone the repository
 ```bash
 git clone https://github.com/YoDaMned59/SwipeMyTalent.git
 cd SwipeMyTalent
 ```
 
-2. Installe les dépendances :
+2. Install dependencies
 ```bash
 npm install
 ```
 
-3. Lance le serveur de développement :
+3. Start the development server
 ```bash
 npm run dev
 ```
 
-## 📁 Structure du projet
-
-```
-src/
-├── api/          # Logique d'API et mock data
-├── components/   # Composants réutilisables
-├── context/      # Context API (Auth, etc.)
-├── pages/        # Pages de l'application
-├── styles/       # Fichiers SCSS
-└── utils/        # Fonctions utilitaires
-```
-
-## 🔒 Sécurité
-
-- Validation des formulaires
-- Protection des routes sensibles
-- Gestion sécurisée des tokens
-- Pas de stockage de mots de passe
-
 ## 🚀 Roadmap
+See the [roadmap guide](https://github.com/YoDaMned59/SwipeMyTalent/blob/master/docs/ROADMAP.md) for more details.
 
-- [ ] Système de matching
-- [ ] Profils détaillés
-- [ ] Messagerie en temps réel
-- [ ] Système de notation
-- [ ] Filtres de recherche avancés
-
-## 🤝 Contribution
-
-Les contributions sont les bienvenues ! N'hésite pas à :
-1. Fork le projet
-2. Créer une branche (`git checkout -b feature/AmazingFeature`)
-3. Commit tes changements (`git commit -m 'Add some AmazingFeature'`)
-4. Push sur la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrir une Pull Request
+## 🤝 Contributing
+Please make sur to read the [contributing guide](https://github.com/YoDaMned59/SwipeMyTalent/blob/master/CONTRIBUTING.md) for guidelines before submitting a pull request.
 
 ## 📝 License
+This project is licensed under the MIT License.  
 
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
-
-## 👨‍💻 Auteur
-
-**YoDaMned59** - [GitHub](https://github.com/YoDaMned59)
-
----
-
-N'hésite pas à me contacter si tu as des questions ou des suggestions !
+## 👨‍💻 Authors
+**YoDaMned59** - [GitHub](https://github.com/YoDaMned59)  
+**nadmax** - [GitHub](https://github.com/nadmax)
