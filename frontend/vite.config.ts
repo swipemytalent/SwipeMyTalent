@@ -11,5 +11,14 @@ export default defineConfig({
     build: {
         outDir: './build',
         emptyOutDir: true
+    },
+    server: {
+        proxy: {
+            '/api': {
+                target: 'http://backend:5000',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/api/, '')
+            }
+        }
     }
 }) 

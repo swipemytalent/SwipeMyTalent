@@ -1,7 +1,5 @@
 import { useState, FormEvent, ChangeEvent } from 'react';
 
-const API_URL = 'http://localhost:5000';
-
 interface AuthFormProps {
   mode: 'login' | 'register';
 }
@@ -11,39 +9,60 @@ interface AuthResponse {
   message?: string;
 }
 
+interface AuthData {
+  email: string;
+  password: string;
+}
+
+const API_ENDPOINTS = {
+  login: '/api/login',
+  register: '/api/register'
+} as const;
+
 const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [formData, setFormData] = useState<AuthData>({ email: '', password: '' });
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleAuthSuccess = (data: AuthResponse) => {
+    if (mode === 'login') {
+      localStorage.setItem('token', data.token || '');
+      setSuccess('Connexion réussie !');
+
+    } else {
+      setSuccess('Inscription réussie.');
+    }
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     setSuccess('');
     setLoading(true);
+
     try {
-      const endpoint = mode === 'login' ? '/login' : '/register';
-      const res = await fetch(`${API_URL}${endpoint}`, {
+      const endpoint = API_ENDPOINTS[mode];
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify(formData)
       });
-      const data: AuthResponse = await res.json();
-      if (!res.ok) {
-        setError(data.message || 'Erreur inconnue');
-      } else {
-        if (mode === 'login') {
-          localStorage.setItem('token', data.token || '');
-          setSuccess('Connexion réussie !');
-          // Redirection à faire ici (ex: vers /dashboard)
-        } else {
-          setSuccess('Inscription réussie, vous pouvez vous connecter.');
-        }
+
+      const data: AuthResponse = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Erreur inconnue');
       }
+
+      handleAuthSuccess(data);
     } catch (err) {
-      setError('Erreur serveur');
+      setError(err instanceof Error ? err.message : 'Erreur serveur');
     } finally {
       setLoading(false);
     }
@@ -55,8 +74,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
         Email
         <input
           type="email"
-          value={email}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+          name="email"
+          value={formData.email}
+          onChange={handleInputChange}
           required
         />
       </label>
@@ -64,8 +84,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
         Mot de passe
         <input
           type="password"
-          value={password}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+          name="password"
+          value={formData.password}
+          onChange={handleInputChange}
           required
         />
       </label>
