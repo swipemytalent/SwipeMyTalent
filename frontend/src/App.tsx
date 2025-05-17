@@ -4,7 +4,7 @@ import Register from './pages/Register';
 import Navbar from './components/Navbar';
 import './styles/main.scss';
 
-function App() {
+const App: React.FC = () => {
   return (
     <Router>
       <Navbar />
@@ -17,4 +17,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 

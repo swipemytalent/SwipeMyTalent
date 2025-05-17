@@ -1,15 +1,24 @@
-import { useState } from 'react';
+import { useState, FormEvent, ChangeEvent } from 'react';
 
 const API_URL = 'http://localhost:5000';
 
-const AuthForm = ({ mode }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(false);
+interface AuthFormProps {
+  mode: 'login' | 'register';
+}
 
-  const handleSubmit = async (e) => {
+interface AuthResponse {
+  token?: string;
+  message?: string;
+}
+
+const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  const [success, setSuccess] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -21,12 +30,12 @@ const AuthForm = ({ mode }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
-      const data = await res.json();
+      const data: AuthResponse = await res.json();
       if (!res.ok) {
         setError(data.message || 'Erreur inconnue');
       } else {
         if (mode === 'login') {
-          localStorage.setItem('token', data.token);
+          localStorage.setItem('token', data.token || '');
           setSuccess('Connexion réussie !');
           // Redirection à faire ici (ex: vers /dashboard)
         } else {
@@ -47,7 +56,7 @@ const AuthForm = ({ mode }) => {
         <input
           type="email"
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
           required
         />
       </label>
@@ -56,7 +65,7 @@ const AuthForm = ({ mode }) => {
         <input
           type="password"
           value={password}
-          onChange={e => setPassword(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
           required
         />
       </label>

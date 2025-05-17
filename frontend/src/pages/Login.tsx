@@ -1,6 +1,6 @@
 import AuthForm from '../components/AuthForm';
 
-const Login = () => {
+const Login: React.FC = () => {
   return (
     <div className="auth-page">
       <h1>Connexion</h1>
