@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import '../styles/_navbar.scss';
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
   const location = useLocation();
   const isLogin = location.pathname === '/login';
   const isRegister = location.pathname === '/register';

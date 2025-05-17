@@ -1,6 +1,6 @@
 import AuthForm from '../components/AuthForm';
 
-const Register = () => {
+const Register: React.FC = () => {
   return (
     <div className="auth-page">
       <h1>Inscription</h1>
