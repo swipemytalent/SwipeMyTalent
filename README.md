@@ -28,24 +28,30 @@ And that's how SwipeMyTalent was born.
 - React Router for navigation
 - Backend server with Express in TypeScript
 
-## 🛠️ Installation
-1. Clone the repository
-```bash
-git clone https://github.com/YoDaMned59/SwipeMyTalent.git
-cd SwipeMyTalent
-```
-
-2. Install dependencies
+## 🚀 Run the app
+**💻 Option 1: With NPM**
+1. Install dependencies
 ```bash
 npm install
 ```
 
-3. Start the development server
+2. Start the development server
 ```bash
 npm run dev
 ```
 
-## 🚀 Roadmap
+**🐳 Option 2: With Docker**  
+To start the app
+```bash
+docker compose up -d
+```
+
+To stop it
+```bash
+docker compose down
+```
+
+## 📝 Roadmap
 See the [roadmap guide](https://github.com/YoDaMned59/SwipeMyTalent/blob/master/docs/ROADMAP.md) for more details.
 
 ## 🤝 Contributing
