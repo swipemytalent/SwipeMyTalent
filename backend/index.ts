@@ -1,6 +1,10 @@
-import express, {type Express} from 'express';
-import { registerHandler } from './handlers/register.js';
 import { loginHandler } from './handlers/login.js';
+import { registerHandler } from './handlers/register.js';
+
+import dotenv from 'dotenv';
+import express, {type Express} from 'express';
+
+dotenv.config();
 
 const app: Express = express();
 const port: number = 5000;
