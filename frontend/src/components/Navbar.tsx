@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import '../styles/_navbar.scss';
+import '../styles/navbar.scss';
 
 const Navbar: React.FC = () => {
   const location = useLocation();

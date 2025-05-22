@@ -1,4 +1,5 @@
 import { useState, FormEvent, ChangeEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const API_URL = 'http://localhost:5000';
 
@@ -17,6 +18,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -37,9 +39,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
         if (mode === 'login') {
           localStorage.setItem('token', data.token || '');
           setSuccess('Connexion réussie !');
-          // Redirection à faire ici (ex: vers /dashboard)
+          navigate('/dashboard');
         } else {
           setSuccess('Inscription réussie, vous pouvez vous connecter.');
+          navigate('/login');
         }
       }
     } catch (err) {

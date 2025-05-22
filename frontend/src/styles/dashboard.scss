@@ -1,0 +1,84 @@
+@use './_variables' as *;
+
+body {
+  background: $bg-main;
+  font-family: $font-main;
+}
+
+.dashboard {
+  padding: 3rem 1rem 4rem 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+
+  &__header {
+    margin-bottom: 2.5rem;
+    text-align: center;
+
+    h1 {
+      font-size: 2.7rem;
+      color: $primary-blue;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 0.2rem;
+      .logo-blue {
+        color: $primary-blue;
+        font-size: inherit;
+        font-weight: inherit;
+        font-family: inherit;
+      }
+      .logo-orange {
+        color: $primary-orange;
+        font-size: inherit;
+        font-weight: inherit;
+        font-family: inherit;
+      }
+    }
+  }
+
+  &__content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__card {
+    background: $bg-card;
+    border-radius: $border-radius;
+    box-shadow: $shadow-card;
+    padding: 2.2rem 2rem 2rem 2rem;
+    transition: box-shadow 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+    &:hover {
+      box-shadow: $shadow-card-hover;
+      transform: translateY(-4px) scale(1.01);
+      background: $bg-card-hover;
+    }
+    h2 {
+      color: $primary-blue;
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      svg {
+        font-size: 1.3em;
+        color: $primary-orange;
+      }
+    }
+    &.opportunities-card {
+      h2 {
+        color: $primary-orange;
+      }
+    }
+    &.recent-activity-card {
+      h2 {
+        color: $primary-orange;
+      }
+    }
+  }
+}
