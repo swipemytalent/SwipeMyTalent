@@ -2,3 +2,46 @@
 @use './navbar' as *;
 @use './auth' as *;
 @use './dashboard' as *;
+@use './footer' as *;
+
+body.dark-mode {
+    background: #181818;
+    color: #f1f1f1;
+  }
+  
+  body.dark-mode .navbar,
+  body.dark-mode .footer {
+    background: #222;
+    color: #f1f1f1;
+  }
+  
+  body.dark-mode .auth-page,
+  body.dark-mode .container,
+  body.dark-mode .dashboard,
+  body.dark-mode .form,
+  body.dark-mode .card,
+  body.dark-mode input,
+  body.dark-mode textarea,
+  body.dark-mode select {
+    background: #232323;
+    color: #f1f1f1;
+    border-color: #444;
+  }
+  
+  body.dark-mode a,
+  body.dark-mode .nav-links a,
+  body.dark-mode .nav-links .navlink-active {
+    color: #90caf9 !important; 
+    transition: color 0.2s;
+  }
+  
+  body.dark-mode .nav-links a:hover,
+  body.dark-mode .nav-links .navlink-active:hover {
+    color: #fff !important;
+  }
+
+body.dark-mode button {
+  background: #333;
+  color: #f1f1f1;
+  border-color: #555;
+}
