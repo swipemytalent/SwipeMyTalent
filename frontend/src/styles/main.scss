@@ -1,6 +1,4 @@
-@import './_variables';
-@import './_navbar';
-@import './_auth';
-
-// Styles auth
-@import './_auth';
+@use './_variables' as *;
+@use './navbar' as *;
+@use './auth' as *;
+@use './dashboard' as *;

@@ -1,3 +1,4 @@
+import React from 'react';
 import AuthForm from '../components/AuthForm';
 
 const Register: React.FC = () => {

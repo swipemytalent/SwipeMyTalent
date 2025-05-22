@@ -1,4 +1,7 @@
 import { useState, FormEvent, ChangeEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+const API_URL = 'http://localhost:5000';
 
 interface AuthFormProps {
   mode: 'login' | 'register';
@@ -9,60 +12,41 @@ interface AuthResponse {
   message?: string;
 }
 
-interface AuthData {
-  email: string;
-  password: string;
-}
-
-const API_ENDPOINTS = {
-  login: '/api/login',
-  register: '/api/register'
-} as const;
-
 const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
-  const [formData, setFormData] = useState<AuthData>({ email: '', password: '' });
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleAuthSuccess = (data: AuthResponse) => {
-    if (mode === 'login') {
-      localStorage.setItem('token', data.token || '');
-      setSuccess('Connexion réussie !');
-
-    } else {
-      setSuccess('Inscription réussie.');
-    }
-  };
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     setSuccess('');
     setLoading(true);
-
     try {
-      const endpoint = API_ENDPOINTS[mode];
-      const response = await fetch(endpoint, {
+      const endpoint = mode === 'login' ? '/login' : '/register';
+      const res = await fetch(`${API_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({ email, password })
       });
-
-      const data: AuthResponse = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.message || 'Erreur inconnue');
+      const data: AuthResponse = await res.json();
+      if (!res.ok) {
+        setError(data.message || 'Erreur inconnue');
+      } else {
+        if (mode === 'login') {
+          localStorage.setItem('token', data.token || '');
+          setSuccess('Connexion réussie !');
+          navigate('/dashboard');
+        } else {
+          setSuccess('Inscription réussie, vous pouvez vous connecter.');
+          navigate('/login');
+        }
       }
-
-      handleAuthSuccess(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur serveur');
+      setError('Erreur serveur');
     } finally {
       setLoading(false);
     }
@@ -74,9 +58,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
         Email
         <input
           type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleInputChange}
+          value={email}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
           required
         />
       </label>
@@ -84,9 +67,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
         Mot de passe
         <input
           type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleInputChange}
+          value={password}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
           required
         />
       </label>
