@@ -1,3 +1,7 @@
+import ProfileCard from '../components/ProfileCard';
+import StatsCard from '../components/StatsCard';
+import OpportunitiesCard from '../components/OpportunitiesCard';
+import RecentActivityCard from '../components/RecentActivityCard';
 import '../styles/dashboard.scss';
 
 const Dashboard: React.FC = () => {
@@ -9,7 +13,10 @@ const Dashboard: React.FC = () => {
                 </h1>
             </div>
             <div className="dashboard__content">
-                <h1>Bienvenue sur le tableau de bord</h1>
+                <ProfileCard />
+                <StatsCard stats={{ views: 0, messages: 0, credits: 0 }} />
+                <OpportunitiesCard />
+                <RecentActivityCard />
             </div>
         </div>
     );
