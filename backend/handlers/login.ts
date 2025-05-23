@@ -11,11 +11,17 @@ if (!process.env.JWT_SECRET) {
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export const loginHandler = async (req: Request, res: Response, _next: NextFunction) => {
-    const { email, password } = req.body;
-    if (!email || !password) {
-        res.status(400).json({ message: "Email et mot de passe requis." });
+    const requiredFields: { key: string; label: string }[] = [
+        { key: "email", label: "Email" },
+        { key: "password", label: "Mot de passe" },
+    ];
+    for (const field of requiredFields) {
+        if (!req.body[field.key]) {
+            res.status(400).json({ message: `${field.label} requis.` });
+        }
     }
 
+    const { email, password } = req.body;
     try {
         const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
         if (result.rows.length === 0) {
