@@ -1,5 +1,9 @@
 import { useState, FormEvent, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../redux/userSlice';
+import { login, register } from '../api/authApi';
+import { fetchUserProfile } from '../api/userApi';
 
 interface AuthFormProps {
   mode: 'login' | 'register';
@@ -13,31 +17,47 @@ interface AuthResponse {
 interface AuthData {
   email: string;
   password: string;
+  firstName?: string;
+  lastName?: string;
+  title?: string;
 }
 
-const API_ENDPOINTS = {
-  login: '/api/login',
-  register: '/api/register'
-} as const;
-
 const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
-  const [formData, setFormData] = useState<AuthData>({ email: '', password: '' });
+  const [formData, setFormData] = useState<AuthData>({ 
+    email: '', 
+    password: '',
+    firstName: '',
+    lastName: '',
+    title: ''
+  });
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleAuthSuccess = (data: AuthResponse) => {
+  const handleAuthSuccess = async (data: AuthResponse) => {
     if (mode === 'login') {
       localStorage.setItem('token', data.token || '');
+      try {
+        const userData = await fetchUserProfile(data.token!);
+        dispatch(setUser(userData));
+      } catch (e) {}
       setSuccess('Connexion réussie !');
       navigate('/dashboard');
     } else {
+      dispatch(setUser({
+        email: formData.email,
+        firstName: formData.firstName || '',
+        lastName: formData.lastName || '',
+        title: formData.title || '',
+        avatar: ''
+      }));
       setSuccess('Inscription réussie.');
       navigate('/login');
     }
@@ -50,20 +70,18 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
     setLoading(true);
 
     try {
-      const endpoint = API_ENDPOINTS[mode];
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-
-      const data: AuthResponse = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.message || 'Erreur inconnue');
+      let data: AuthResponse;
+      if (mode === 'login') {
+        data = await login(formData);
+      } else {
+        data = await register(formData);
       }
 
-      handleAuthSuccess(data);
+      if (!data || (mode === 'login' && !data.token)) {
+        throw new Error(data?.message || 'Erreur inconnue');
+      }
+
+      await handleAuthSuccess(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur serveur');
     } finally {
@@ -73,6 +91,40 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
 
   return (
     <form className="auth-form" onSubmit={handleSubmit}>
+      {mode === 'register' && (
+        <>
+          <label>
+            Prénom
+            <input
+              type="text"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleInputChange}
+              required
+            />
+          </label>
+          <label>
+            Nom
+            <input
+              type="text"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleInputChange}
+              required
+            />
+          </label>
+          <label>
+            Métier
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleInputChange}
+              required
+            />
+          </label>
+        </>
+      )}
       <label>
         Email
         <input
