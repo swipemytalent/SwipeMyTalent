@@ -14,7 +14,7 @@ export const profileHandler = async (req: Request, res: Response, _next: NextFun
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, JWT_SECRET) as { id: number, email: string };
     const result = await pool.query(
-      'SELECT email, first_name AS "firstName", last_name AS "lastName", title, avatar FROM users WHERE id = $1',
+      'SELECT email, first_name AS "firstName", last_name AS "lastName", title, avatar, bio FROM users WHERE id = $1',
       [decoded.id]
     );
     if (result.rows.length === 0) {
@@ -37,13 +37,13 @@ export const updateProfileHandler = async (req: Request, res: Response, _next: N
     }
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, JWT_SECRET) as { id: number, email: string };
-    const { firstName, lastName, title, avatar } = req.body;
+    const { firstName, lastName, title, avatar, bio } = req.body;
     await pool.query(
-      'UPDATE users SET first_name = $1, last_name = $2, title = $3, avatar = $4 WHERE id = $5',
-      [firstName, lastName, title, avatar, decoded.id]
+      'UPDATE users SET first_name = $1, last_name = $2, title = $3, avatar = $4, bio = $5 WHERE id = $6',
+      [firstName, lastName, title, avatar, bio, decoded.id]
     );
     const result = await pool.query(
-      'SELECT email, first_name AS "firstName", last_name AS "lastName", title, avatar FROM users WHERE id = $1',
+      'SELECT email, first_name AS "firstName", last_name AS "lastName", title, avatar, bio FROM users WHERE id = $1',
       [decoded.id]
     );
     res.json(result.rows[0]);
