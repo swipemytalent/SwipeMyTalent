@@ -9,9 +9,10 @@ interface ProfileModalProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onPhotoChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: () => void;
+  error?: string | null;
 }
 
-const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, user, onChange, onPhotoChange, onSubmit }) => {
+const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, user, onChange, onPhotoChange, onSubmit, error }) => {
   if (!isOpen) return null;
   return (
     <div className="profile-modal__overlay" onClick={onClose}>
@@ -20,6 +21,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, user, onCh
         <h2 className="profile-modal__title">Compléter mon profil</h2>
         <div className="profile-modal__content">
           <ProfileForm user={user} onChange={onChange} onPhotoChange={onPhotoChange} onSubmit={onSubmit} />
+          {error && <div className="profile-form__error" style={{color: 'red', marginTop: '1rem', textAlign: 'center'}}>{error}</div>}
         </div>
       </div>
     </div>

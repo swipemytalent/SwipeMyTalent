@@ -1,6 +1,41 @@
+import OpportunitiesCard from '../components/OpportunitiesCard';
+import ProfileCard from '../components/ProfileCard';
+import StatsCard from '../components/StatsCard';
+import RecentActivityCard from '../components/RecentActivityCard';
+import ProfileModal from '../components/ProfileModal';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../redux/store';
+import { useState, useEffect } from 'react';
+import { useEditProfile } from '../hooks/useEditProfile';
+import { setUser } from '../redux/userSlice';
+import { fetchUserProfile } from '../api/userApi';
 import '../styles/dashboard.scss';
 
 const Dashboard: React.FC = () => {
+    const user = useSelector((state: RootState) => state.user);
+    const dispatch = useDispatch();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { editUser, setEditUser, handleChange, handlePhotoChange, handleSubmit, error } = useEditProfile(user);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            fetchUserProfile(token)
+                .then(user => dispatch(setUser(user)))
+                .catch(() => {});
+        }
+    }, [dispatch]);
+
+    const handleOpenModal = () => {
+        setEditUser(user);
+        setIsModalOpen(true);
+    };
+
+    const handleModalSubmit = async () => {
+        await handleSubmit();
+        setIsModalOpen(false);
+    };
+
     return (
         <div className="dashboard">
             <div className="dashboard__header">
@@ -9,8 +44,20 @@ const Dashboard: React.FC = () => {
                 </h1>
             </div>
             <div className="dashboard__content">
-                <h1>Bienvenue sur le tableau de bord</h1>
+                <ProfileCard onEditProfile={handleOpenModal} />
+                <StatsCard stats={{ views: 0, messages: 0, credits: 0 }} />
+                <OpportunitiesCard />
+                <RecentActivityCard />
             </div>
+            <ProfileModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                user={editUser}
+                onChange={handleChange}
+                onPhotoChange={handlePhotoChange}
+                onSubmit={handleModalSubmit}
+                error={error}
+            />
         </div>
     );
 };
