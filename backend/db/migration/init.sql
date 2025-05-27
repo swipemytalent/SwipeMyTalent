@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
     last_name VARCHAR(100) NOT NULL,
     title VARCHAR(100) NOT NULL,
     avatar TEXT,
+    bio TEXT,
     credits INTEGER DEFAULT 0,
     profile_views INTEGER DEFAULT 0,
     messages INTEGER DEFAULT 0
