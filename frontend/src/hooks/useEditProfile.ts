@@ -9,7 +9,7 @@ export function useEditProfile(initialUser: UserState) {
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setEditUser((prev: UserState) => ({ ...prev, [name]: value }));
   };

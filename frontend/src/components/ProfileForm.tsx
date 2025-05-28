@@ -1,16 +1,12 @@
 import { useRef } from 'react';
+import type { UserState } from '../redux/userSlice';
 
-export interface User {
-  avatar?: string;
-  firstName?: string;
-  lastName?: string;
-  title?: string;
-}
+export type User = UserState & { bio?: string };
 
 interface ProfileFormProps {
   user?: User;
   onSubmit?: () => void;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onPhotoChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -54,6 +50,17 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user, onSubmit, onChange, onP
       <div className="profile-form__group">
         <label htmlFor="title">Métier</label>
         <input type="text" id="title" name="title" value={user?.title || ''} onChange={onChange} />
+      </div>
+      <div className="profile-form__group">
+        <label htmlFor="bio">Bio</label>
+        <textarea
+          id="bio"
+          name="bio"
+          value={user?.bio || ''}
+          onChange={onChange}
+          rows={3}
+          style={{ resize: 'vertical' }}
+        />
       </div>
       <button type="submit" className="btn btn--primary">Enregistrer</button>
     </form>
