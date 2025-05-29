@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '../redux/userSlice';
 import { login, register } from '../api/authApi';
 import { fetchUserProfile } from '../api/userApi';
+import type { UserState } from '../redux/userSlice';
 
 interface AuthFormProps {
   mode: 'login' | 'register';
@@ -12,6 +13,7 @@ interface AuthFormProps {
 interface AuthResponse {
   token?: string;
   message?: string;
+  user?: UserState;
 }
 
 interface AuthData {
@@ -51,13 +53,18 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
       setSuccess('Connexion réussie !');
       navigate('/dashboard');
     } else {
-      dispatch(setUser({
-        email: formData.email,
-        firstName: formData.firstName || '',
-        lastName: formData.lastName || '',
-        title: formData.title || '',
-        avatar: ''
-      }));
+      if (data.user) {
+        dispatch(setUser(data.user));
+      } else {
+        dispatch(setUser({
+          id: '',
+          email: formData.email,
+          firstName: formData.firstName || '',
+          lastName: formData.lastName || '',
+          title: formData.title || '',
+          avatar: ''
+        }));
+      }
       setSuccess('Inscription réussie.');
       navigate('/login');
     }
@@ -90,66 +97,71 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
   };
 
   return (
-    <form className="auth-form" onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="auth-form">
       {mode === 'register' && (
         <>
-          <label>
-            Prénom
+          <div className="form-group">
+            <label htmlFor="firstName">Prénom</label>
             <input
               type="text"
+              id="firstName"
               name="firstName"
               value={formData.firstName}
               onChange={handleInputChange}
               required
             />
-          </label>
-          <label>
-            Nom
+          </div>
+          <div className="form-group">
+            <label htmlFor="lastName">Nom</label>
             <input
               type="text"
+              id="lastName"
               name="lastName"
               value={formData.lastName}
               onChange={handleInputChange}
               required
             />
-          </label>
-          <label>
-            Métier
+          </div>
+          <div className="form-group">
+            <label htmlFor="title">Métier</label>
             <input
               type="text"
+              id="title"
               name="title"
               value={formData.title}
               onChange={handleInputChange}
               required
             />
-          </label>
+          </div>
         </>
       )}
-      <label>
-        Email
+      <div className="form-group">
+        <label htmlFor="email">Email</label>
         <input
           type="email"
+          id="email"
           name="email"
           value={formData.email}
           onChange={handleInputChange}
           required
         />
-      </label>
-      <label>
-        Mot de passe
+      </div>
+      <div className="form-group">
+        <label htmlFor="password">Mot de passe</label>
         <input
           type="password"
+          id="password"
           name="password"
           value={formData.password}
           onChange={handleInputChange}
           required
         />
-      </label>
-      <button type="submit" disabled={loading}>
-        {loading ? 'Chargement...' : mode === 'login' ? 'Se connecter' : 'S\'inscrire'}
+      </div>
+      {error && <div className="error-message">{error}</div>}
+      {success && <div className="success-message">{success}</div>}
+      <button type="submit" className="btn btn--primary" disabled={loading}>
+        {loading ? 'Chargement...' : mode === 'login' ? 'Se connecter' : "S'inscrire"}
       </button>
-      {error && <div className="auth-error">{error}</div>}
-      {success && <div className="auth-success">{success}</div>}
     </form>
   );
 };

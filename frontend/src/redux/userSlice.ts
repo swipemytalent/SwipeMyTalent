@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface UserState {
+  id: string;
   firstName: string;
   lastName: string;
   title: string;
@@ -9,6 +10,7 @@ export interface UserState {
 }
 
 const initialState: UserState = {
+  id: '',
   firstName: '',
   lastName: '',
   title: '',

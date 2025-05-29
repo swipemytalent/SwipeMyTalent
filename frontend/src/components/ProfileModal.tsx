@@ -6,7 +6,7 @@ interface ProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
   user: User;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onPhotoChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: () => void;
   error?: string | null;

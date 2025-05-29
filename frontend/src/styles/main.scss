@@ -45,3 +45,14 @@ body.dark-mode button {
   color: #f1f1f1;
   border-color: #555;
 }
+
+// Champs de formulaire en pleine largeur
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea,
+select {
+  width: 100%;
+  box-sizing: border-box;
+}

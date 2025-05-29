@@ -3,6 +3,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
+import Talents from './pages/Talents';
+import ProfileView from './pages/ProfileView';
 import ProtectedRoute from './components/ProtectedRoute';
 import './styles/main.scss';
 import Footer from './components/Footer';
@@ -17,10 +19,10 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="*" element={<Navigate to="/login" />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/talents" element={<ProtectedRoute><Talents /></ProtectedRoute>} />
+          <Route path="/profil/:id" element={<ProtectedRoute><ProfileView /></ProtectedRoute>} />
+          <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
         <Footer />
       </Router>
