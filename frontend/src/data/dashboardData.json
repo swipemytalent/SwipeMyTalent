@@ -28,9 +28,9 @@
     "value": "0"
   },
   "opportunities": {
-    "title": "Opportunités",
+    "title": "Talents",
     "empty": {
-      "message": "Découvrez les talents inscrits et trouvez votre prochain collaborateur !",
+      "message": "SwipeMyTalent est la plateforme où les freelances s’échangent des services et s’entraident.Découvrez les talents de la communauté !",
       "button": "Découvrir"
     }
   },

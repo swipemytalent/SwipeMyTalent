@@ -14,7 +14,7 @@ export const profileHandler = async (req: Request, res: Response, _next: NextFun
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, JWT_SECRET) as { id: number, email: string };
     const result = await pool.query(
-      'SELECT email, first_name AS "firstName", last_name AS "lastName", title, avatar, bio FROM users WHERE id = $1',
+      'SELECT id, email, first_name AS "firstName", last_name AS "lastName", title, avatar, bio FROM users WHERE id = $1',
       [decoded.id]
     );
     if (result.rows.length === 0) {

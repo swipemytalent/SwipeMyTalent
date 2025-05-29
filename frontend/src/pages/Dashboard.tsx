@@ -3,6 +3,7 @@ import ProfileCard from '../components/ProfileCard';
 import StatsCard from '../components/StatsCard';
 import RecentActivityCard from '../components/RecentActivityCard';
 import ProfileModal from '../components/ProfileModal';
+import MessagesModal from '../components/MessagesModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
 import { useState, useEffect } from 'react';
@@ -16,6 +17,8 @@ const Dashboard: React.FC = () => {
     const dispatch = useDispatch();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { editUser, setEditUser, handleChange, handlePhotoChange, handleSubmit, error } = useEditProfile(user);
+    const [messages, setMessages] = useState<any[]>([]);
+    const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -25,6 +28,20 @@ const Dashboard: React.FC = () => {
                 .catch(() => {});
         }
     }, [dispatch]);
+
+    useEffect(() => {
+        const fetchMessages = async () => {
+            if (!user.id) return;
+            const token = localStorage.getItem('token');
+            const res = await fetch(`/api/messages/${user.id}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                setMessages(await res.json());
+            }
+        };
+        fetchMessages();
+    }, [user.id]);
 
     const handleOpenModal = () => {
         setEditUser(user);
@@ -45,7 +62,14 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="dashboard__content">
                 <ProfileCard onEditProfile={handleOpenModal} />
-                <StatsCard stats={{ views: 0, messages: 0, credits: 0 }} />
+                <StatsCard 
+                  stats={{ 
+                    views: 0, 
+                    messages: messages.length, 
+                    credits: 0 
+                  }}
+                  onMessagesClick={() => setIsMessagesModalOpen(true)}
+                />
                 <OpportunitiesCard />
                 <RecentActivityCard />
             </div>
@@ -57,6 +81,11 @@ const Dashboard: React.FC = () => {
                 onPhotoChange={handlePhotoChange}
                 onSubmit={handleModalSubmit}
                 error={error}
+            />
+            <MessagesModal
+                isOpen={isMessagesModalOpen}
+                onClose={() => setIsMessagesModalOpen(false)}
+                messages={messages}
             />
         </div>
     );
