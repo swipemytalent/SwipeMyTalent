@@ -8,9 +8,10 @@ interface Stats {
 
 interface StatCardProps {
   stats: Stats;
+  onMessagesClick?: () => void;
 }
 
-const StatsCard: React.FC<StatCardProps> = ({ stats }) => {
+const StatsCard: React.FC<StatCardProps> = ({ stats, onMessagesClick }) => {
   return (
     <section className="dashboard__card stats-card">
       <h2>{dashboardData.stats.title}</h2>
@@ -19,7 +20,7 @@ const StatsCard: React.FC<StatCardProps> = ({ stats }) => {
           <span className="stats-card__number">{stats.views}</span>
           <span className="stats-card__label">{dashboardData.stats.views.label}</span>
         </div>
-        <div className="stats-card__item">
+        <div className="stats-card__item stats-card__item--clickable" onClick={onMessagesClick} style={{cursor: onMessagesClick ? 'pointer' : 'default'}}>
           <span className="stats-card__number">{stats.messages}</span>
           <span className="stats-card__label">{dashboardData.stats.messages.label}</span>
         </div>

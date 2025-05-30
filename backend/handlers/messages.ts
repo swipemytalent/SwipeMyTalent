@@ -5,8 +5,12 @@ import { formatDate } from '../utils/date.js';
 
 export async function getMessages(req: Request, res: Response) {
     const userId = Number(req.params.userId);
-    const result = await pool.query<Message>(
-        `SELECT * FROM messages WHERE receiver_id = $1 ORDER BY sent_at DESC`,
+    const result = await pool.query(
+        `SELECT m.*, u.first_name AS sender_first_name, u.last_name AS sender_last_name
+         FROM messages m
+         JOIN users u ON m.sender_id = u.id
+         WHERE m.receiver_id = $1
+         ORDER BY m.sent_at DESC`,
         [userId]
     );
     const formattedMessages = result.rows.map((msg) => ({

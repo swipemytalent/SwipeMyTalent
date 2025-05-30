@@ -35,6 +35,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ onEditProfile, user: propUser
 
   const handleViewProfile = () => {
     dispatch(setViewedProfile(user));
+    localStorage.setItem('viewedProfile', JSON.stringify(user));
     navigate(`/profil/${user.id}`);
   };
 

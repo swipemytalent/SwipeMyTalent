@@ -1,11 +1,60 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import MessageModal from '../components/MessageModal';
+import { setViewedProfile } from '../redux/viewedProfileSlice';
+import { setUser } from '../redux/userSlice';
+import { fetchUserProfile } from '../api/userApi';
 import '../styles/profileview.scss';
 
 const ProfileView: React.FC = () => {
+  const dispatch = useDispatch();
   const profile = useSelector((state: RootState) => state.viewedProfile.value);
+  const user = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
+  const { id } = useParams();
+  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token && !user.id) {
+      fetchUserProfile(token)
+        .then(userData => dispatch(setUser(userData)))
+        .catch(() => {});
+    }
+  }, [dispatch, user.id]);
+
+  useEffect(() => {
+    if (!profile && id) {
+
+      const stored = localStorage.getItem('viewedProfile');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (parsed && String(parsed.id) === String(id)) {
+            dispatch(setViewedProfile(parsed));
+            return; 
+          }
+        } catch {}
+      }
+
+      const fetchProfile = async () => {
+        try {
+          const token = localStorage.getItem('token');
+          const res = await fetch(`/api/users/${id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            dispatch(setViewedProfile(data));
+          }
+        } catch {}
+      };
+      fetchProfile();
+    }
+  }, [profile, id, dispatch]);
 
   if (!profile) {
     return <div className="profile-view__empty">Aucun profil sélectionné.</div>;
@@ -28,9 +77,28 @@ const ProfileView: React.FC = () => {
           <div className="profile-view-contact">
             <span><i className="fa fa-envelope"></i> {profile.email}</span>
           </div>
-          <button className="btn btn--primary" onClick={() => navigate('/talents')}>Retour aux talents</button>
+          <div className="profile-view-actions">
+            <button 
+              className="btn btn--primary profile-view__message-btn"
+              onClick={() => setIsMessageModalOpen(true)}
+            >
+              <i className="fa fa-envelope"></i> Envoyer un message
+            </button>
+            <button 
+              className="btn btn--secondary"
+              onClick={() => navigate('/talents')}
+            >
+              Retour aux talents
+            </button>
+          </div>
         </div>
       </div>
+      <MessageModal
+        isOpen={isMessageModalOpen}
+        onClose={() => setIsMessageModalOpen(false)}
+        recipientId={profile.id}
+        recipientName={`${profile.firstName} ${profile.lastName}`}
+      />
     </div>
   );
 };
