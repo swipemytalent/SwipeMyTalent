@@ -18,5 +18,10 @@ $danger: #e53935;
 $info: #00bcd4;
 $warning: #ffb300;
 
+// Breakpoints pour le responsive design
+$breakpoint-mobile: 480px;
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+
 // Typographie
 $font-main: 'Inter', 'Poppins', 'Segoe UI', Arial, sans-serif; 

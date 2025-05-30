@@ -12,9 +12,6 @@ const Footer: React.FC = () => {
         </span>
         <nav className="footer-links">
           {isLoggedIn && <NavLink to="/">Accueil</NavLink>}
-          {isLoggedIn && <NavLink to="/about">À propos</NavLink>}
-          {isLoggedIn && <NavLink to="/contact">Contact</NavLink>}
-          <NavLink to="/legal">Mentions légales</NavLink>
         </nav>
         <span className="footer-copy">&copy; {new Date().getFullYear()} SwipeMyTalent. Tous droits réservés.</span>
       </div>

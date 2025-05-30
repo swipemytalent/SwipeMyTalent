@@ -4,6 +4,7 @@ import '../styles/navbar.scss';
 
 const Navbar: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -33,6 +34,10 @@ const Navbar: React.FC = () => {
     });
   };
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <nav className={`navbar${isDarkMode ? ' dark-navbar' : ''}`}>
       <NavLink to="/" className="logo">
@@ -41,13 +46,20 @@ const Navbar: React.FC = () => {
 
       {/* Masquer la navbar sur /login et /register */}
       {!(isLogin || isRegister) && isLoggedIn && (
-        <ul className="nav-links">
-          <li><NavLink to="/" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Accueil</NavLink></li>
-          <li><NavLink to="/dashboard" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Mon espace</NavLink></li>
-          <li><NavLink to="/talents" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Talents</NavLink></li>
-          <li><NavLink to="/about" className={({ isActive }) => isActive ? 'navlink-active' : ''}>À propos</NavLink></li>
-          <li><NavLink to="/contact" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Contact</NavLink></li>
-        </ul>
+        <>
+          <button className="menu-toggle" onClick={toggleMenu}>
+            <span className={`hamburger ${isMenuOpen ? 'active' : ''}`}>
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </button>
+          <ul className={`nav-links ${isMenuOpen ? 'active' : ''}`}>
+            <li><NavLink to="/" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Accueil</NavLink></li>
+            <li><NavLink to="/dashboard" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Mon espace</NavLink></li>
+            <li><NavLink to="/talents" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Talents</NavLink></li>
+          </ul>
+        </>
       )}
 
       <div className="auth-buttons">
@@ -62,7 +74,14 @@ const Navbar: React.FC = () => {
           </>
         ) : (
           <button className="logout" onClick={logout}>
-            Déconnexion
+            <span className="logout-text">Déconnexion</span>
+            <span className="logout-icon">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="16" cy="16" r="15" fill="#F8485E" stroke="none"/>
+                <rect x="15" y="8" width="2" height="10" rx="1" fill="#fff"/>
+                <path d="M10.9289 21.0711C13.781 23.9232 18.219 23.9232 21.0711 21.0711C23.9232 18.219 23.9232 13.781 21.0711 10.9289" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+              </svg>
+            </span>
           </button>
         )}
         <button className="theme-toggle-navbar" onClick={toggleTheme} title="Changer le mode sombre/clair">
