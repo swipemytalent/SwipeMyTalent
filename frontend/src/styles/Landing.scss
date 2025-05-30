@@ -1,0 +1,177 @@
+@use './_variables' as *;
+
+.landing-container {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 0;
+  background: $bg-main;
+
+  .hero-section {
+    text-align: center;
+    padding: 2rem 2rem 1rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+
+    h1 {
+      font-size: 3rem;
+      font-family: $font-main;
+      margin-bottom: 1rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      
+      // Titre bicolore
+      span {
+        color: $primary-orange;
+      }
+      color: $primary-blue;
+    }
+
+    .landing-subtitle {
+      margin-bottom: 2rem;
+      color: $text-secondary;
+      font-size: 1.15rem;
+      line-height: 1.6;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+
+      button {
+        padding: 0.8rem 2rem;
+        border-radius: $border-radius;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+
+        &.btn-primary {
+          background-color: $primary-blue;
+          color: white;
+          border: none;
+
+          &:hover {
+            background-color: $primary-blue-light;
+            color: $primary-blue;
+          }
+        }
+
+        &.btn-secondary {
+          background-color: $primary-orange;
+          color: white;
+          border: none;
+
+          &:hover {
+            background-color: $primary-orange-light;
+            color: $primary-orange;
+          }
+        }
+      }
+    }
+  }
+
+  .features-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 0 2rem 1rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto 1rem auto;
+
+    .feature-card {
+      background: $bg-card;
+      padding: 2rem;
+      border-radius: $border-radius;
+      box-shadow: $shadow-card;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s;
+
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: $shadow-card-hover;
+        background: $bg-card-hover;
+      }
+
+      h3 {
+        color: $primary-orange;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+
+      p {
+        color: $text-secondary;
+      }
+    }
+  }
+}
+
+@media (max-width: $breakpoint-tablet) {
+  .landing-container {
+    .hero-section {
+      padding: 1.5rem 1rem 1rem 1rem;
+      h1 { font-size: 2.1rem; }
+    }
+    .features-section {
+      grid-template-columns: 1fr;
+      gap: 1.2rem;
+      padding: 0 1rem 1rem 1rem;
+    }
+  }
+}
+@media (max-width: $breakpoint-mobile) {
+  .landing-container {
+    .hero-section {
+      padding: 1rem 0.5rem;
+      
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .landing-subtitle {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        padding: 0 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+        gap: 0.8rem;
+        padding: 0 1rem;
+
+        button {
+          width: 100%;
+          padding: 0.7rem 1.5rem;
+          font-size: 0.95rem;
+        }
+      }
+    }
+
+    .features-section {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding: 0 1rem 1rem 1rem;
+
+      .feature-card {
+        padding: 1.2rem;
+        margin: 0 0.5rem;
+
+        h3 {
+          font-size: 1.1rem;
+          margin-bottom: 0.8rem;
+        }
+
+        p {
+          font-size: 0.9rem;
+          line-height: 1.4;
+        }
+      }
+    }
+  }
+} 

@@ -51,7 +51,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
         dispatch(setUser(userData));
       } catch (e) {}
       setSuccess('Connexion réussie !');
-      navigate('/dashboard');
+      navigate('/');
     } else {
       if (data.user) {
         dispatch(setUser(data.user));
