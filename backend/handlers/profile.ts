@@ -1,8 +1,24 @@
 import { pool } from '../db/pool.js';
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { readSecret } from '../utils/readSecret.js';
 
-const JWT_SECRET = process.env.JWT_SECRET!;
+let jwt_key: string;
+
+if (process.env.NODE_ENV === 'prod') {
+    const JWT_KEY = readSecret('JWT_KEY', 'JWT_KEY_FILE');
+    if (!JWT_KEY) {
+        throw new Error("JWT secret key is missing. Please define your secret key in your environment configuration to enable JWT signing.");
+    }
+
+    jwt_key = JWT_KEY;
+} else {
+    if (!process.env.JWT_KEY) {
+        throw new Error("JWT secret key is missing. Please define your secret key in your environment configuration to enable JWT signing.");
+    }
+
+    jwt_key = process.env.JWT_KEY;
+}
 
 export const profileHandler = async (req: Request, res: Response, _next: NextFunction) => {
   try {
@@ -12,7 +28,7 @@ export const profileHandler = async (req: Request, res: Response, _next: NextFun
       return;
     }
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, JWT_SECRET) as { id: number, email: string };
+    const decoded = jwt.verify(token, jwt_key) as { id: number, email: string };
     const result = await pool.query(
       'SELECT id, email, first_name AS "firstName", last_name AS "lastName", title, avatar, bio FROM users WHERE id = $1',
       [decoded.id]
@@ -36,7 +52,7 @@ export const updateProfileHandler = async (req: Request, res: Response, _next: N
       return;
     }
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, JWT_SECRET) as { id: number, email: string };
+    const decoded = jwt.verify(token, jwt_key) as { id: number, email: string };
     const { firstName, lastName, title, avatar, bio } = req.body;
     await pool.query(
       'UPDATE users SET first_name = $1, last_name = $2, title = $3, avatar = $4, bio = $5 WHERE id = $6',

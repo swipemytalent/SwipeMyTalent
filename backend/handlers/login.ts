@@ -3,12 +3,24 @@ import { pool } from '../db/pool.js';
 import bcrypt from 'bcrypt';
 import {type Request, type Response, type NextFunction} from 'express';
 import jwt from "jsonwebtoken";
+import { readSecret } from '../utils/readSecret.js';
 
-if (!process.env.JWT_SECRET) {
-    throw new Error("JWT secret key is missing. Please define your secret key in your environment configuration to enable JWT signing.");
+let jwt_key: string;
+
+if (process.env.NODE_ENV === 'prod') {
+    const JWT_KEY = readSecret('JWT_KEY', 'JWT_KEY_FILE');
+    if (!JWT_KEY) {
+        throw new Error("JWT secret key is missing. Please define your secret key in your environment configuration to enable JWT signing.");
+    }
+
+    jwt_key = JWT_KEY;
+} else {
+    if (!process.env.JWT_KEY) {
+        throw new Error("JWT secret key is missing. Please define your secret key in your environment configuration to enable JWT signing.");
+    }
+
+    jwt_key = process.env.JWT_KEY;
 }
-
-const JWT_SECRET = process.env.JWT_SECRET;
 
 export const loginHandler = async (req: Request, res: Response, _next: NextFunction) => {
     const requiredFields: { key: string; label: string }[] = [
@@ -36,7 +48,7 @@ export const loginHandler = async (req: Request, res: Response, _next: NextFunct
 
         const token = jwt.sign(
             { id: user.id, email: user.email },
-            JWT_SECRET,
+            jwt_key,
             { expiresIn: "1h"},
         )
 

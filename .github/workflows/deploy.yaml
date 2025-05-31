@@ -1,0 +1,96 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  packages: write
+
+jobs:
+  commit-hash:
+    runs-on: ubuntu-24.04
+    outputs:
+      commit_hash: ${{ steps.get_commit.outputs.commit_hash }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get commit hash
+        id: get_commit
+        run: echo "commit_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+  
+  build:
+    name: Build app
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - name: Build backend
+        working-directory: ./backend
+        run: npm ci && npm run build
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npm ci && npm run build
+  
+  push-images:
+    needs:
+      - commit-hash
+      - build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set short git commit SHA
+        id: vars
+        run: |
+          calculatedSha=$(git rev-parse --short ${{ github.sha }})
+          echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
+      - name: Build backend image
+        working-directory: ./backend
+        run: docker build -t ghcr.io/swipemytalent/backend:${{ needs.commit-hash.outputs.commit_hash }} .
+      - name: Build frontend image
+        working-directory: ./frontend
+        run: docker build -t ghcr.io/swipemytalent/frontend:${{ needs.commit-hash.outputs.commit_hash }} .
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: https://ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: true
+          tags: ghcr.io/swipemytalent/backend:${{ needs.commit-hash.outputs.commit_hash }}
+      - name: Push frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: true
+          tags: ghcr.io/swipemytalent/frontend:${{ needs.commit-hash.outputs.commit_hash }}
+  
+  deploy:
+    runs-on: ubuntu-24.04
+    needs:
+      - commit-hash
+      - push-images
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Create env file
+        run: echo 'GIT_COMMIT_HASH="${{ github.sha }}"' >> .env
+      - name: Deploy app
+        uses: cssnr/stack-deploy-action@v1
+        with:
+          name: 'swipemytalent'
+          file: 'compose.deploy.yaml'
+          host: ${{ secrets.REMOTE_HOST }}
+          port: ${{ secrets.REMOTE_PORT }}
+          user: ${{ secrets.DEPLOY_USER }}
+          ssh_key: ${{ secrets.REMOTE_SSH_PRIVATE_KEY }}
+          env_file: './.env'
+          registry_auth: true
+          registry_host: "ghcr.io"
+          registry_user: ${{ github.actor }}
+          registry_pass: ${{ secrets.GITHUB_TOKEN }}
