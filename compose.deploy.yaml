@@ -21,6 +21,12 @@ services:
     build:
       context: .
       dockerfile: ./backend/Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.backend.loadbalancer.server.port=5000"
+      - "traefik.http.routers.backend.rule=Host(`api.swipemytalent.com`)"
+      - "traefik.http.routers.backend.entrypoints=websecure"
+      - "traefik.http.routers.backend.tls.certresolver=myresolver"
     secrets:
       - jwt
       - db-password
