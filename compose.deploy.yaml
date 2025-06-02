@@ -6,17 +6,15 @@ services:
       dockerfile: ./frontend/Dockerfile
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.frontend.loadbalancer.server.port=8080"
-      - "traefik.http.routers.frontend.rule=Host(`swipemytalent.com`)"
-      - "traefik.http.routers.frontend.entrypoints=websecure"
-      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
-      - "traefik.http.routers.frontend.middlewares=rate-limit"
+      - "traefik.http.services.web.loadbalancer.server.port=8080"
+      - "traefik.http.routers.web.rule=Host(`swipemytalent.com`)"
+      - "traefik.http.routers.web.entrypoints=websecure"
+      - "traefik.http.routers.web.tls.certresolver=myresolver"
+      - "traefik.http.routers.web.middlewares=rate-limit"
       - "traefik.http.middlewares.rate-limit.rateLimit.average=50"
       - "traefik.http.middlewares.rate-limit.rateLimit.burst=100"
     depends_on:
       - backend
-    ports:
-      - "8080:8080"
 
   backend:
     image: ghcr.io/swipemytalent/backend:${GIT_COMMIT_HASH:-latest}
@@ -38,13 +36,9 @@ services:
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
     depends_on:
       - postgres
-    ports:
-      - "5000:5000"
   
   postgres:
     image: postgres:17-alpine
-    ports:
-      - "5432:5432"
     secrets:
       - db-password
       - db-name
@@ -71,9 +65,9 @@ services:
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
       - "--certificatesresolvers.myresolver.acme.email=sduviviertech@outlook.fr"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-      - "--entrypoints.frontend.address=:80"
-      - "--entrypoints.frontend.http.redirections.entrypoint.to=websecure"
-      - "--entrypoints.frontend.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
     ports:
       - "80:80"
       - "443:443"
