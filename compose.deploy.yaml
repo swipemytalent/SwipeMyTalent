@@ -36,6 +36,11 @@ services:
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
     depends_on:
       - postgres
+    ports:
+    - mode: host
+      protocol: tcp
+      published: 5000
+      target: 5000
   
   postgres:
     image: postgres:17-alpine
@@ -52,6 +57,11 @@ services:
     configs:
       - source: init-sql
         target: /docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - pg-data:/var/lib/postgresql/data/
 
@@ -69,8 +79,14 @@ services:
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
       - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
     ports:
-      - "80:80"
-      - "443:443"
+      - mode: host
+        protocol: tcp
+        published: 80
+        target: 80
+      - mode: host
+        protocol: tcp
+        published: 443
+        target: 443
     volumes:
       - letsencrypt:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock

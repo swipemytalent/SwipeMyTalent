@@ -2,9 +2,11 @@ import { pool } from '../db/pool.js';
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { readSecret } from '../utils/readSecret.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 let jwt_key: string;
-
 if (process.env.NODE_ENV === 'prod') {
     const JWT_KEY = readSecret('JWT_KEY', 'JWT_KEY_FILE');
     if (!JWT_KEY) {
