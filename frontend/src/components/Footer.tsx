@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
     <footer className="footer">
       <div className="footer-content">
         <span className="footer-logo">
-          <span className="logo-blue">SwipM</span><span className="logo-orange">yTalent</span>
+          <span className="logo-blue">SwipeM</span><span className="logo-orange">yTalent</span>
         </span>
         <nav className="footer-links">
           {isLoggedIn && <NavLink to="/">Accueil</NavLink>}
