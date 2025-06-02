@@ -10,4 +10,5 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --production
 COPY --from=builder /app/build/ ./build/
+EXPOSE 5000
 ENTRYPOINT ["node", "build/index.js"]
