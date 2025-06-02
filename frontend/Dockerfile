@@ -1,13 +1,13 @@
 FROM node:22-alpine AS builder
 WORKDIR /app
-COPY ./frontend/package*.json ./frontend/tsconfig*.json ./
+COPY package*.json tsconfig.json ./
 RUN npm ci
-COPY ./frontend/ ./
+COPY ./ ./
 RUN npm run build
 
 FROM node:22-alpine
 WORKDIR /app
-COPY ./frontend/package*.json ./frontend/vite.config.ts ./
-RUN npm ci --omit=dev
-COPY --from=builder /app/build/ ./build/
-CMD ["npm", "run", "preview"]
+RUN npm install -g serve
+COPY --from=builder /app/build ./build
+EXPOSE 8080
+CMD ["serve", "-s", "build", "-l", "8080"]
