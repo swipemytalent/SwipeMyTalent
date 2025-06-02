@@ -24,6 +24,10 @@ app.get('/messages/:userId', getMessages);
 app.post('/messages', sendMessage);
 app.get('/users', getAllUsersHandler);
 
-app.listen(port, () => {
+try {
+  app.listen(port, () => {
     console.log(`🚀 Server listening on http://localhost:${port}`);
-});
+  });
+} catch (err) {
+  console.error("Failed to start server:", err);
+}
