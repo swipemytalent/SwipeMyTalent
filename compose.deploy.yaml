@@ -15,9 +15,19 @@ services:
       - "traefik.http.middlewares.rate-limit.rateLimit.burst=100"
     depends_on:
       - backend
+    networks:
+      - traefik
 
   backend:
     image: ghcr.io/swipemytalent/backend:${GIT_COMMIT_HASH:-latest}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`swipemytalent.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.backend.entrypoints=websecure"
+      - "traefik.http.routers.backend.tls.certresolver=myresolver"
+      - "traefik.http.services.backend.loadbalancer.server.port=5000"
+      - "traefik.http.routers.backend.middlewares=api-stripprefix"
+      - "traefik.http.middlewares.api-stripprefix.stripprefix.prefixes=/api"
     build:
       context: .
       dockerfile: ./backend/Dockerfile
@@ -36,11 +46,8 @@ services:
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
     depends_on:
       - postgres
-    ports:
-    - mode: host
-      protocol: tcp
-      published: 5000
-      target: 5000
+    networks:
+      - traefik
   
   postgres:
     image: postgres:17-alpine
@@ -64,6 +71,8 @@ services:
       retries: 5
     volumes:
       - pg-data:/var/lib/postgresql/data/
+    networks:
+      - traefik
 
   
   reverse-proxy:
@@ -90,6 +99,8 @@ services:
     volumes:
       - letsencrypt:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - traefik
 
 configs:
   init-sql:
@@ -107,4 +118,8 @@ secrets:
   db-user:
     external: true
   jwt:
+    external: true
+
+networks:
+  traefik:
     external: true
