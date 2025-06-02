@@ -1,8 +1,10 @@
 import { readSecret } from '../utils/readSecret.js';
 import { Pool } from 'pg';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export let pool: Pool;
-
 if (process.env.NODE_ENV === 'prod') {
     const POSTGRES_USER = readSecret('POSTGRES_USER', 'POSTGRES_USER_FILE');
     const POSTGRES_PASSWORD = readSecret('POSTGRES_PASSWORD', 'POSTGRES_PASSWORD_FILE');
