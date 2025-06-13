@@ -2,12 +2,12 @@
 
 .footer {
   width: 100%;
-  background: #f8fafc;
-  border-top: 1px solid #e2e8f0;
+  background: var(--bg-main);
+  border-top: 1px solid var(--bg-card-hover);
   padding: 1.5rem 0 1rem 0;
   margin-top: 2rem;
   font-size: 1rem;
-  color: #4a5568;
+  color: var(--text-secondary);
   box-shadow: 0 -2px 8px rgba(0,0,0,0.03);
 
   .footer-content {
@@ -23,27 +23,27 @@
     font-size: 1.3rem;
     font-weight: bold;
     letter-spacing: -1px;
-    .logo-blue { color: $primary-blue; }
-    .logo-orange { color: $primary-orange; }
+    .logo-blue { color: var(--primary-blue); }
+    .logo-orange { color: var(--primary-orange); }
   }
 
   .footer-links {
     display: flex;
     gap: 1.5rem;
     a {
-      color: #4a5568;
+      color: var(--text-secondary);
       text-decoration: none;
       font-weight: 500;
       transition: color 0.2s;
       &:hover {
-        color: $primary-blue;
+        color: var(--primary-blue);
       }
     }
   }
 
   .footer-copy {
     font-size: 0.95rem;
-    color: #a0aec0;
+    color: var(--bg-card-hover);
     margin-top: 0.2rem;
   }
 }

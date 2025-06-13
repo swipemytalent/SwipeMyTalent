@@ -6,7 +6,7 @@
   flex-direction: column;
   justify-content: flex-start;
   padding: 0;
-  background: $bg-main;
+  background: var(--bg-main);
 
   .hero-section {
     text-align: center;
@@ -23,14 +23,14 @@
       
       // Titre bicolore
       span {
-        color: $primary-orange;
+        color: var(--primary-orange);
       }
-      color: $primary-blue;
+      color: var(--primary-blue);
     }
 
     .landing-subtitle {
       margin-bottom: 2rem;
-      color: $text-secondary;
+      color: var(--text-secondary);
       font-size: 1.15rem;
       line-height: 1.6;
     }
@@ -51,25 +51,15 @@
         border: none;
 
         &.btn-primary {
-          background-color: $primary-blue;
-          color: white;
+          background-color: var(--primary-blue);
+          color: #fff;
           border: none;
-
-          &:hover {
-            background-color: $primary-blue-light;
-            color: $primary-blue;
-          }
         }
 
         &.btn-secondary {
-          background-color: $primary-orange;
-          color: white;
+          background-color: var(--primary-orange);
+          color: #fff;
           border: none;
-
-          &:hover {
-            background-color: $primary-orange-light;
-            color: $primary-orange;
-          }
         }
       }
     }
@@ -84,27 +74,27 @@
     margin: 0 auto 1rem auto;
 
     .feature-card {
-      background: $bg-card;
+      background: var(--bg-card);
       padding: 2rem;
       border-radius: $border-radius;
-      box-shadow: $shadow-card;
+      box-shadow: var(--shadow-card);
       text-align: center;
       transition: transform 0.3s ease, box-shadow 0.3s;
 
       &:hover {
         transform: translateY(-5px);
-        box-shadow: $shadow-card-hover;
-        background: $bg-card-hover;
+        box-shadow: var(--shadow-card-hover);
+        background: var(--bg-card-hover);
       }
 
       h3 {
-        color: $primary-orange;
+        color: var(--primary-orange);
         font-weight: 700;
         margin-bottom: 1rem;
       }
 
       p {
-        color: $text-secondary;
+        color: var(--text-secondary);
       }
     }
   }
@@ -174,4 +164,17 @@
       }
     }
   }
+}
+
+.cta-buttons .btn-primary:hover {
+  background-color: var(--primary-blue-light);
+  color: var(--primary-blue);
+}
+.cta-buttons .btn-secondary:hover {
+  background-color: var(--primary-orange-light);
+  color: var(--primary-orange);
+}
+.features-section .feature-card:hover {
+  background: var(--bg-card-hover);
+  box-shadow: var(--shadow-card-hover);
 } 

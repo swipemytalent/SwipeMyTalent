@@ -24,4 +24,43 @@ $breakpoint-tablet: 768px;
 $breakpoint-desktop: 1024px;
 
 // Typographie
-$font-main: 'Inter', 'Poppins', 'Segoe UI', Arial, sans-serif; 
+$font-main: 'Inter', 'Poppins', 'Segoe UI', Arial, sans-serif;
+
+:root {
+  --primary-blue: #1976D2;
+  --primary-orange: #FFA000;
+  --primary-blue-light: #90CAF9;
+  --primary-orange-light: #FFD600;
+  --bg-main: #f6f8fb;
+  --bg-card: #fff;
+  --bg-card-hover: #f0f4fa;
+  --text-primary: #1a2233;
+  --text-secondary: #6b7a90;
+  --border-radius: 1.5rem;
+  --shadow-card: 0 8px 32px 0 rgba(60, 72, 100, 0.10);
+  --shadow-card-hover: 0 12px 32px 0 rgba(60, 72, 100, 0.16);
+  --success: #43a047;
+  --danger: #e53935;
+  --info: #00bcd4;
+  --warning: #ffb300;
+  --font-main: 'Inter', 'Poppins', 'Segoe UI', Arial, sans-serif;
+}
+body.dark-mode {
+  --primary-blue: #90CAF9;
+  --primary-orange: #FFD600;
+  --primary-blue-light: #1976D2;
+  --primary-orange-light: #FFA000;
+  --bg-main: #181818;
+  --bg-card: #222;
+  --bg-card-hover: #232323;
+  --text-primary: #f1f1f1;
+  --text-secondary: #90caf9;
+  --border-radius: 1.5rem;
+  --shadow-card: 0 8px 32px 0 rgba(60, 72, 100, 0.20);
+  --shadow-card-hover: 0 12px 32px 0 rgba(60, 72, 100, 0.26);
+  --success: #43a047;
+  --danger: #e53935;
+  --info: #00bcd4;
+  --warning: #ffb300;
+  --font-main: 'Inter', 'Poppins', 'Segoe UI', Arial, sans-serif;
+} 
