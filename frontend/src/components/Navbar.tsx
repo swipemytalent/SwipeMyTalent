@@ -39,7 +39,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className={`navbar${isDarkMode ? ' dark-navbar' : ''}`}>
+    <nav className="navbar">
       <NavLink to="/" className="logo">
         <span className="logo-blue">SwipeM</span><span className="logo-orange">yTalent</span>
       </NavLink>
