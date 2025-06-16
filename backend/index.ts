@@ -7,13 +7,35 @@ import { getAllUsersHandler } from './handlers/users.js';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { Express } from 'express';
+import { CorsOptions } from 'cors';
 
 dotenv.config();
 
 const app: Express = express();
 const port: number = 5000;
+const corsOptions: CorsOptions = {
+    origin: function (origin, callback) {
+        const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:8080'];
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not authorized by CORS"), false);
+        }
+    },
+    credentials: true,
+    optionsSuccessStatus: 200,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+        'Origin',
+        'X-Requested-With',
+        'Content-Type',
+        'Accept',
+        'Authorization'
+    ],
+    maxAge: 86400
+}
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '1mb' }));
 
 app.post("/register", registerHandler);
