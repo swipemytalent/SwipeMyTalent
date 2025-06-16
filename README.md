@@ -58,7 +58,7 @@ See the [roadmap guide](https://github.com/YoDaMned59/SwipeMyTalent/blob/master/
 Please make sur to read the [contributing guide](https://github.com/YoDaMned59/SwipeMyTalent/blob/master/CONTRIBUTING.md) for guidelines before submitting a pull request.
 
 ## 📝 License
-This project is licensed under the MIT License.  
+This project is licensed under the Apache License 2.0.  
 
 ## 👨‍💻 Authors
 **YoDaMned59** - [GitHub](https://github.com/YoDaMned59)  
