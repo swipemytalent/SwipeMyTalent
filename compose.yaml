@@ -2,12 +2,16 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev  # Utiliser le nouveau Dockerfile.dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     depends_on:
       - backend
     ports:
       - 8080:8080
 
+  # Le reste reste identique
   backend:
     build:
       context: ./backend

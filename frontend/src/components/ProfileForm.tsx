@@ -51,17 +51,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user, onSubmit, onChange, onP
         <label htmlFor="title">Métier</label>
         <input type="text" id="title" name="title" value={user?.title || ''} onChange={onChange} />
       </div>
-      <div className="profile-form__group">
-        <label htmlFor="bio">Bio</label>
-        <textarea
-          id="bio"
-          name="bio"
-          value={user?.bio || ''}
-          onChange={onChange}
-          rows={3}
-          style={{ resize: 'vertical' }}
-        />
-      </div>
       <button type="submit" className="btn btn--primary">Enregistrer</button>
     </form>
   );

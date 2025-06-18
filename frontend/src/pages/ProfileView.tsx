@@ -8,6 +8,31 @@ import { setUser } from '../redux/userSlice';
 import { fetchUserProfile } from '../api/userApi';
 import '../styles/profileview.scss';
 
+function formatBioToHtml(bio: string) {
+  const lines = bio.split('\n');
+  let html = '';
+  let inList = false;
+  lines.forEach(line => {
+    if (line.trim().startsWith('-')) {
+      if (!inList) {
+        html += '<ul>';
+        inList = true;
+      }
+      html += `<li>${line.replace(/^\s*-\s*/, '')}</li>`;
+    } else {
+      if (inList) {
+        html += '</ul>';
+        inList = false;
+      }
+      if (line.trim() !== '') {
+        html += `<p>${line}</p>`;
+      }
+    }
+  });
+  if (inList) html += '</ul>';
+  return html;
+}
+
 const ProfileView: React.FC = () => {
   const dispatch = useDispatch();
   const profile = useSelector((state: RootState) => state.viewedProfile.value);
@@ -70,9 +95,7 @@ const ProfileView: React.FC = () => {
           <h1>{profile.firstName} {profile.lastName}</h1>
           <h2>{profile.title}</h2>
           {profile.bio && (
-            <div className="profile-view-bio">
-              <span>« {profile.bio} »</span>
-            </div>
+            <div className="profile-view-bio" dangerouslySetInnerHTML={{ __html: formatBioToHtml(profile.bio) }} />
           )}
           <div className="profile-view-contact">
             <span><i className="fa fa-envelope"></i> {profile.email}</span>
