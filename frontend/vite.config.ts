@@ -13,6 +13,8 @@ export default defineConfig({
         emptyOutDir: true
     },
     server: {
+        port: 8080,
+        host: true,
         proxy: {
             '/api': {
                 target: 'http://backend:5000',
