@@ -3,7 +3,7 @@ services:
     image: ghcr.io/swipemytalent/frontend:${GIT_COMMIT_HASH:-latest}
     build:
       context: .
-      dockerfile: ./frontend/Dockerfile
+      dockerfile: ./frontend/Dockerfile.prod
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.web.loadbalancer.server.port=8080"

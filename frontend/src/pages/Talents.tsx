@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import ProfileCard from '../components/ProfileCard';
+import ProfileCard from '../components/cards/ProfileCard';
 import '../styles/talents.scss';
 import type { UserState } from '../redux/userSlice';
 

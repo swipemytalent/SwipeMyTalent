@@ -1,7 +1,8 @@
-import OpportunitiesCard from '../components/OpportunitiesCard';
-import ProfileCard from '../components/ProfileCard';
-import StatsCard from '../components/StatsCard';
-import RecentActivityCard from '../components/RecentActivityCard';
+import OpportunitiesCard from '../components/cards/OpportunitiesCard';
+import ProfileCard from '../components/cards/ProfileCard';
+import StatsCard from '../components/cards/StatsCard';
+import RecentActivityCard from '../components/cards/RecentActivityCard';
+import AboutCard from '../components/cards/AboutCard';
 import ProfileModal from '../components/ProfileModal';
 import MessagesModal from '../components/MessagesModal';
 import { useSelector, useDispatch } from 'react-redux';
@@ -61,17 +62,22 @@ const Dashboard: React.FC = () => {
                 </h1>
             </div>
             <div className="dashboard__content">
-                <ProfileCard onEditProfile={handleOpenModal} />
-                <StatsCard 
-                  stats={{ 
-                    views: 0, 
-                    messages: messages.length, 
-                    credits: 0 
-                  }}
-                  onMessagesClick={() => setIsMessagesModalOpen(true)}
-                />
-                <OpportunitiesCard />
-                <RecentActivityCard />
+                <div className="top-cards">
+                    <ProfileCard onEditProfile={handleOpenModal} />
+                    <AboutCard />
+                </div>
+                <div className="cards-grid">
+                    <StatsCard 
+                        stats={{ 
+                            views: 0, 
+                            messages: messages.length, 
+                            credits: 0 
+                        }}
+                        onMessagesClick={() => setIsMessagesModalOpen(true)}
+                    />
+                    <OpportunitiesCard />
+                    <RecentActivityCard />
+                </div>
             </div>
             <ProfileModal
                 isOpen={isModalOpen}
