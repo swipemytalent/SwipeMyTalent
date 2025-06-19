@@ -59,14 +59,14 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./backend
-          file: Dockerfile.prod
+          file: ./backend/Dockerfile.prod
           push: true
           tags: ghcr.io/swipemytalent/backend:${{ needs.commit-hash.outputs.commit_hash }}
       - name: Push frontend image
         uses: docker/build-push-action@v6
         with:
           context: ./frontend
-          file: Dockerfile.prod
+          file: ./frontend/Dockerfile.prod
           push: true
           tags: ghcr.io/swipemytalent/frontend:${{ needs.commit-hash.outputs.commit_hash }}
   
