@@ -36,7 +36,9 @@ services:
       - db-password
       - db-name
       - db-user
+      - allowed-origins
     environment:
+      - ALLOWED_ORIGINS_FILE=/run/secrets/allowed-origins
       - NODE_ENV=prod
       - JWT_KEY_FILE=/run/secrets/jwt
       - POSTGRES_DB_FILE=/run/secrets/db-name
@@ -118,6 +120,8 @@ secrets:
   db-user:
     external: true
   jwt:
+    external: true
+  allowed-origins:
     external: true
 
 networks:
