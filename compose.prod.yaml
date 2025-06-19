@@ -30,7 +30,7 @@ services:
       - "traefik.http.middlewares.api-stripprefix.stripprefix.prefixes=/api"
     build:
       context: .
-      dockerfile: ./backend/Dockerfile
+      dockerfile: ./backend/Dockerfile.prod
     secrets:
       - jwt
       - db-password
