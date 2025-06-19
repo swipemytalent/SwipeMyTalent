@@ -2,7 +2,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node build/index.js",
-    "dev": "ts-node index.ts"
+    "dev": "node --loader ts-node/esm index.ts"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -16,12 +16,13 @@
   },
   "type": "module",
   "devDependencies": {
-    "@types/jsonwebtoken": "^9.0.9",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.18",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.18",
-    "@types/pg": "^8.15.2"
+    "@types/pg": "^8.15.2",
+    "ts-node": "^10.9.2"
   }
 }
