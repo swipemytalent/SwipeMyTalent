@@ -17,23 +17,9 @@ jobs:
         id: get_commit
         run: echo "commit_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
   
-  build:
-    name: Build app
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-      - name: Build backend
-        working-directory: ./backend
-        run: npm ci && npm run build
-      - name: Build frontend
-        working-directory: ./frontend
-        run: npm ci && npm run build
-  
   push-images:
     needs:
       - commit-hash
-      - build
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
@@ -92,5 +78,5 @@ jobs:
           env_file: './.env'
           registry_auth: true
           registry_host: "ghcr.io"
-          registry_user: ${{ github.actor }}
+          registry_user: swipemytalent
           registry_pass: ${{ secrets.GITHUB_TOKEN }}
