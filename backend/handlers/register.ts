@@ -1,6 +1,6 @@
 import { pool } from '../db/pool.js';
 
-import {type Request, type Response, type NextFunction} from 'express';
+import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
 
 export const registerHandler = async (req: Request, res: Response, _next: NextFunction) => {
@@ -41,7 +41,7 @@ export const registerHandler = async (req: Request, res: Response, _next: NextFu
         await pool.query(
             `INSERT INTO users 
             (email, password, first_name, last_name, title, avatar, bio, credits, profile_views, messages) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
             [email, hashedPassword, firstName, lastName, title, avatar, bio, credits, profileViews, messages]
         );
 

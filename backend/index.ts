@@ -3,30 +3,20 @@ import { getMessages, sendMessage } from './handlers/messages.js';
 import { profileHandler, updateProfileHandler } from './handlers/profile.js';
 import { registerHandler } from './handlers/register.js';
 import { getAllUsersHandler } from './handlers/users.js';
+import { getAllowedOrigins } from './utils/origins.js';
 
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { Express } from 'express';
 import { CorsOptions } from 'cors';
-import { readSecret } from './utils/readSecret.js';
 
 dotenv.config();
 
 const app: Express = express();
 const port: number = 5000;
+const allowedOrigins = getAllowedOrigins();
 const corsOptions: CorsOptions = {
     origin: function (origin, callback) {
-        let allowedOrigins;
-        if (process.env.NODE_ENV === 'prod') {
-            const origins = readSecret('ALLOWED_ORIGINS', 'ALLOWED_ORIGINS_FILE')?.split(',') ||['http://localhost:8080'];
-
-            allowedOrigins = origins;
-        } else {
-            const origins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:8080'];    
-
-            allowedOrigins = origins;
-        }
-
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {

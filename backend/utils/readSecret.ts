@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import fs from 'fs';
 
 export function readSecret(envVar: string, fileEnvVar: string): string {
     const filePath = process.env[fileEnvVar];
