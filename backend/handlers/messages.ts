@@ -1,7 +1,8 @@
-import { Request, Response } from 'express';
 import { pool } from '../db/pool.js';
 import { Message } from '../types/Message.js';
 import { formatDate } from '../utils/date.js';
+
+import { Request, Response } from 'express';
 
 export async function getMessages(req: Request, res: Response) {
     const userId = Number(req.params.userId);
