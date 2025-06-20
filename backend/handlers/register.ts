@@ -10,6 +10,8 @@ export const registerHandler = async (req: Request, res: Response, _next: NextFu
         { key: "firstName", label: "Prénom" },
         { key: "lastName", label: "Nom" },
         { key: "title", label: "Titre" },
+        { key: "avatar", label: "Avatar" },
+        { key: "bio", label: "Bio" }
     ];
     for (const field of requiredFields) {
         if (!req.body[field.key]) {
@@ -24,6 +26,7 @@ export const registerHandler = async (req: Request, res: Response, _next: NextFu
         lastName,
         title,
         avatar,
+        bio,
         credits = 0,
         profileViews = 0,
         messages = 0,
@@ -37,9 +40,9 @@ export const registerHandler = async (req: Request, res: Response, _next: NextFu
         const hashedPassword = await bcrypt.hash(password, 10);
         await pool.query(
             `INSERT INTO users 
-            (email, password, first_name, last_name, title, avatar, credits, profile_views, messages) 
+            (email, password, first_name, last_name, title, avatar, bio, credits, profile_views, messages) 
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-            [email, hashedPassword, firstName, lastName, title, avatar, credits, profileViews, messages]
+            [email, hashedPassword, firstName, lastName, title, avatar, bio, credits, profileViews, messages]
         );
 
         res.status(201).json({ message: "Utilisateur enregistré avec succès." });
