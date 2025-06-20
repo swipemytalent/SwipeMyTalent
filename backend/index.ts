@@ -3,6 +3,7 @@ import { getMessages, sendMessage } from './handlers/messages.js';
 import { profileHandler, updateProfileHandler } from './handlers/profile.js';
 import { registerHandler } from './handlers/register.js';
 import { getAllUsersHandler } from './handlers/users.js';
+import { rateProfileHandler } from './handlers/rateProfile.js';
 import { getAllowedOrigins } from './utils/origins.js';
 
 import cors from 'cors';
@@ -46,6 +47,7 @@ app.put("/profile", updateProfileHandler);
 app.get('/messages/:userId', getMessages);
 app.post('/messages', sendMessage);
 app.get('/users', getAllUsersHandler);
+app.post('/rate/:userId', rateProfileHandler);
 
 app.listen(port, () => {
     console.log(`🚀 Server listening on http://localhost:${port}`);
