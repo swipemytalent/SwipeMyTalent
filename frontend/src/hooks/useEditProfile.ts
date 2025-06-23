@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '../redux/userSlice';
 import type { UserState } from '../redux/userSlice';
 import { updateUserProfile } from '../api/userApi';
-import { AuthService } from '../services/authService';
 
 export function useEditProfile(initialUser: UserState) {
   const [editUser, setEditUser] = useState<UserState>(initialUser);
