@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import ProfileCard from '../components/cards/ProfileCard';
+import { fetchUsers } from '../api/userApi';
+import { AuthService } from '../services/authService';
+import { LoggerService } from '../services/loggerService';
 import '../styles/talents.scss';
 import type { UserState } from '../redux/userSlice';
 
@@ -12,28 +15,19 @@ const Talents: React.FC = () => {
   const currentUser = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchUsersData = async () => {
       try {
-        const token = localStorage.getItem('token');
-        if (!token) return;
+        if (!AuthService.isLoggedIn()) return;
 
-        const response = await fetch('/api/users', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        
-        if (!response.ok) throw new Error('Erreur lors de la récupération des utilisateurs');
-        
-        const data = await response.json();
+        const data = await fetchUsers();
         const filteredUsers = data.filter((user: User) => user.id !== currentUser.id);
         setUsers(filteredUsers);
       } catch (error) {
-        console.error('Erreur:', error);
+        LoggerService.error('Erreur lors de la récupération des utilisateurs', error);
       }
     };
 
-    fetchUsers();
+    fetchUsersData();
   }, [currentUser.id]);
 
   return (

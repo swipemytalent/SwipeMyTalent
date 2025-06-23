@@ -47,7 +47,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ onEditProfile, user: propUser
         </div>
         <div className="profile-card__center">
           <div className="profile-card__avatar">
-            {avatar && <img src={avatar} alt="Avatar" />}
+            {avatar && <img src={avatar} alt="" />}
           </div>
           <div className="profile-card__job">{title}</div>
         </div>

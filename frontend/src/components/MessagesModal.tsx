@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
+import { sendMessage } from '../api/messagesApi';
+import { AuthService } from '../services/authService';
 
 interface MessagesModalProps {
   isOpen: boolean;
@@ -14,7 +14,6 @@ const MessagesModal: React.FC<MessagesModalProps> = ({ isOpen, onClose, messages
   const [isSending, setIsSending] = useState(false);
   const [replyError, setReplyError] = useState<string | null>(null);
   const [replySuccess, setReplySuccess] = useState<string | null>(null);
-  const userId = useSelector((state: RootState) => state.user.id);
 
   if (!isOpen) return null;
 
@@ -23,23 +22,16 @@ const MessagesModal: React.FC<MessagesModalProps> = ({ isOpen, onClose, messages
     setReplyError(null);
     setReplySuccess(null);
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          sender_id: Number(userId),
-          receiver_id: Number(selectedMessage.sender_id),
-          content: reply
-        })
+      if (!AuthService.isLoggedIn()) throw new Error('Token manquant');
+      
+      await sendMessage({
+        receiverId: selectedMessage.sender_id,
+        content: reply
       });
-      if (!response.ok) throw new Error();
+      
       setReply('');
       setReplySuccess('Message envoyé !');
-    } catch {
+    } catch (error) {
       setReplyError("Erreur lors de l'envoi de la réponse");
     } finally {
       setIsSending(false);

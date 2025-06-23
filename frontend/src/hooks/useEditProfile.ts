@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '../redux/userSlice';
 import type { UserState } from '../redux/userSlice';
 import { updateUserProfile } from '../api/userApi';
+import { AuthService } from '../services/authService';
 
 export function useEditProfile(initialUser: UserState) {
   const [editUser, setEditUser] = useState<UserState>(initialUser);
@@ -27,9 +28,8 @@ export function useEditProfile(initialUser: UserState) {
 
   const handleSubmit = async () => {
     setError(null);
-    const token = localStorage.getItem('token');
     try {
-      const updatedUser = await updateUserProfile(editUser, token!);
+      const updatedUser = await updateUserProfile(editUser);
       dispatch(setUser(updatedUser));
     } catch (err) {
       setError('Image trop grande (taille max 1mb) ou erreur lors de la mise à jour du profil.');

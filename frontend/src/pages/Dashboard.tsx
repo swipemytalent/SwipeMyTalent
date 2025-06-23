@@ -11,6 +11,9 @@ import { useState, useEffect } from 'react';
 import { useEditProfile } from '../hooks/useEditProfile';
 import { setUser } from '../redux/userSlice';
 import { fetchUserProfile } from '../api/userApi';
+import { fetchUserMessages } from '../api/messagesApi';
+import { AuthService } from '../services/authService';
+import { LoggerService } from '../services/loggerService';
 import '../styles/dashboard.scss';
 
 const Dashboard: React.FC = () => {
@@ -22,9 +25,8 @@ const Dashboard: React.FC = () => {
     const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            fetchUserProfile(token)
+        if (AuthService.isLoggedIn()) {
+            fetchUserProfile()
                 .then(user => dispatch(setUser(user)))
                 .catch(() => {});
         }
@@ -33,12 +35,11 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         const fetchMessages = async () => {
             if (!user.id) return;
-            const token = localStorage.getItem('token');
-            const res = await fetch(`/api/messages/${user.id}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (res.ok) {
-                setMessages(await res.json());
+            try {
+                const messagesData = await fetchUserMessages(user.id);
+                setMessages(messagesData);
+            } catch (error) {
+                LoggerService.error('Erreur lors de la récupération des messages', error);
             }
         };
         fetchMessages();
