@@ -28,3 +28,12 @@ CREATE TABLE IF NOT EXISTS messages (
     FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS profile_ratings (
+    id SERIAL PRIMARY KEY,
+    rater_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    rated_user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    crated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (rater_id, rated_user_id)
+);

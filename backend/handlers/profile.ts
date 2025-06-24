@@ -20,19 +20,26 @@ export const profileHandler = async (req: Request, res: Response, _next: NextFun
 
         const token = authHeader.split(' ')[1];
         const decoded = jwt.verify(token, JWT_KEY) as { id: number, email: string };
-        const result = await pool.query(
+        const userResult = await pool.query(
             'SELECT id, email, first_name AS "firstName", last_name AS "lastName", title, avatar, bio FROM users WHERE id = $1',
             [decoded.id]
         );
-        if (result.rows.length === 0) {
+        if (userResult.rows.length === 0) {
             res.status(404).json({ message: 'Utilisateur non trouvé.' });
 
             return;
         }
 
-        res.json(result.rows[0]);
+        const profile = userResult.rows[1];
+        const ratingResult = await pool.query(
+            'SELECT ROUND(AVG(rating)::numeric, 1) AS "averageRating" FROM profile_ratings WHERE rated_user_id = $1',
+            [decoded.id]
+        );
+
+        profile.averageRating = ratingResult.rows[0].averageRating ?? null;
+        res.json(profile);    
     } catch (err) {
-        console.error('Profile error:', err);
+        console.error('Erreur lors de la récupération du profil:', err);
         res.status(500).json({ message: 'Erreur serveur.' });
     }
 };
