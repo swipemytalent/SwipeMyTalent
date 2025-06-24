@@ -1,4 +1,4 @@
-import { useState, FormEvent, ChangeEvent } from 'react';
+import { useState, FormEvent, ChangeEvent, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../redux/userSlice';
@@ -22,6 +22,8 @@ interface AuthData {
   firstName?: string;
   lastName?: string;
   title?: string;
+  avatar?: string;
+  bio?: string;
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
@@ -30,11 +32,14 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
     password: '',
     firstName: '',
     lastName: '',
-    title: ''
+    title: '',
+    avatar: '',
+    bio: ''
   });
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -43,11 +48,28 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const result = event.target?.result as string;
+        setFormData(prev => ({ ...prev, avatar: result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAvatarClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   const handleAuthSuccess = async (data: AuthResponse) => {
     if (mode === 'login') {
-      localStorage.setItem('token', data.token || '');
       try {
-        const userData = await fetchUserProfile(data.token!);
+        const userData = await fetchUserProfile();
         dispatch(setUser(userData));
       } catch (e) {}
       setSuccess('Connexion réussie !');
@@ -62,7 +84,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
           firstName: formData.firstName || '',
           lastName: formData.lastName || '',
           title: formData.title || '',
-          avatar: ''
+          avatar: formData.avatar || '',
+          bio: formData.bio || ''
         }));
       }
       setSuccess('Inscription réussie.');
@@ -100,6 +123,23 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
     <form onSubmit={handleSubmit} className="auth-form">
       {mode === 'register' && (
         <>
+        <div className="auth-form__avatar-group">
+            <div className="auth-form__avatar-preview" onClick={handleAvatarClick}>
+              {formData.avatar ? (
+                <img src={formData.avatar} alt="Avatar" />
+              ) : (
+                <span className="auth-form__avatar-placeholder">+</span>
+              )}
+            </div>  
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              name="avatar"
+              onChange={handleAvatarChange}
+              style={{ display: 'none' }}
+            />
+          </div>
           <div className="form-group">
             <label htmlFor="firstName">Prénom</label>
             <input

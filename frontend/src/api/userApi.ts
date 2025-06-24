@@ -1,24 +1,18 @@
+import { HttpService } from '../services/httpService';
 import type { UserState } from '../redux/userSlice';
 
-export async function updateUserProfile(user: UserState, token: string) {
-  const response = await fetch('/api/profile', {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify(user)
-  });
-  if (!response.ok) throw new Error('Erreur lors de la mise à jour du profil');
-  return response.json();
+export async function updateUserProfile(user: UserState): Promise<UserState> {
+  return await HttpService.put<UserState>('/profile', user);
 }
 
-export async function fetchUserProfile(token: string) {
-  const response = await fetch('/api/profile', {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
-  if (!response.ok) throw new Error('Erreur lors de la récupération du profil');
-  return response.json();
+export async function fetchUserProfile(): Promise<UserState> {
+  return await HttpService.get<UserState>('/profile');
+}
+
+export async function fetchUsers(): Promise<UserState[]> {
+  return await HttpService.get<UserState[]>('/users');
+}
+
+export async function fetchUserById(id: string): Promise<UserState> {
+  return await HttpService.get<UserState>(`/users/${id}`);
 } 

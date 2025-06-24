@@ -1,9 +1,14 @@
+import { HttpService } from '../services/httpService';
+import { AuthService } from '../services/authService';
+
 interface AuthData {
   email: string;
   password: string;
   firstName?: string;
   lastName?: string;
   title?: string;
+  avatar?: string;
+  bio?: string;
 }
 
 interface AuthResponse {
@@ -12,19 +17,13 @@ interface AuthResponse {
 }
 
 export async function login(data: AuthData): Promise<AuthResponse> {
-  const response = await fetch('/api/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  });
-  return await response.json();
+  const response = await HttpService.post<AuthResponse>('/login', data, false);
+  if (response.token) {
+    AuthService.setToken(response.token);
+  }
+  return response;
 }
 
 export async function register(data: AuthData): Promise<AuthResponse> {
-  const response = await fetch('/api/register', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  });
-  return await response.json();
+  return await HttpService.post<AuthResponse>('/register', data, false);
 } 

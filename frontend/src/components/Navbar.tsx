@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, NavLink } from 'react-router-dom';
+import { AuthService } from '../services/authService';
 import '../styles/navbar.scss';
 
 const Navbar: React.FC = () => {
@@ -8,16 +9,13 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Détection de la page courante
   const isLogin = location.pathname === '/login';
   const isRegister = location.pathname === '/register';
 
-  // Détection de connexion
-  const isLoggedIn = !!localStorage.getItem('token');
+  const isLoggedIn = AuthService.isLoggedIn();
 
-  // Déconnexion
   const logout = () => {
-    localStorage.removeItem('token');
+    AuthService.removeToken();
     navigate('/login');
   };
 
@@ -43,8 +41,7 @@ const Navbar: React.FC = () => {
       <NavLink to="/" className="logo">
         <span className="logo-blue">SwipeM</span><span className="logo-orange">yTalent</span>
       </NavLink>
-
-      {/* Masquer la navbar sur /login et /register */}
+      
       {!(isLogin || isRegister) && isLoggedIn && (
         <>
           <button className="menu-toggle" onClick={toggleMenu}>

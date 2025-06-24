@@ -5,7 +5,9 @@ import { useState, useEffect } from 'react';
 import MessageModal from '../components/MessageModal';
 import { setViewedProfile } from '../redux/viewedProfileSlice';
 import { setUser } from '../redux/userSlice';
-import { fetchUserProfile } from '../api/userApi';
+import { fetchUserProfile, fetchUserById } from '../api/userApi';
+import { AuthService } from '../services/authService';
+import { LoggerService } from '../services/loggerService';
 import '../styles/profileview.scss';
 
 function formatBioToHtml(bio: string) {
@@ -43,9 +45,8 @@ const ProfileView: React.FC = () => {
 
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token && !user.id) {
-      fetchUserProfile(token)
+    if (AuthService.isLoggedIn() && !user.id) {
+      fetchUserProfile()
         .then(userData => dispatch(setUser(userData)))
         .catch(() => {});
     }
@@ -67,15 +68,13 @@ const ProfileView: React.FC = () => {
 
       const fetchProfile = async () => {
         try {
-          const token = localStorage.getItem('token');
-          const res = await fetch(`/api/users/${id}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          if (res.ok) {
-            const data = await res.json();
-            dispatch(setViewedProfile(data));
-          }
-        } catch {}
+          if (!AuthService.isLoggedIn()) return;
+          
+          const data = await fetchUserById(id!);
+          dispatch(setViewedProfile(data));
+        } catch (error) {
+          LoggerService.error('Erreur lors de la récupération du profil', error);
+        }
       };
       fetchProfile();
     }

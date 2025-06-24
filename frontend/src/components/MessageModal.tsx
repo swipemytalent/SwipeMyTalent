@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
+import { sendMessage } from '../api/messagesApi';
+import { AuthService } from '../services/authService';
 import '../styles/MessageModal.scss';
 
 interface MessageModalProps {
@@ -14,7 +14,6 @@ const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose, recipientI
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const user = useSelector((state: RootState) => state.user);
 
   if (!isOpen) return null;
 
@@ -24,23 +23,12 @@ const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose, recipientI
     setError(null);
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          sender_id: Number(user.id),
-          receiver_id: Number(recipientId),
-          content: message
-        })
-      });
+      if (!AuthService.isLoggedIn()) throw new Error('Token manquant');
 
-      if (!response.ok) {
-        throw new Error('Erreur lors de l\'envoi du message');
-      }
+      await sendMessage({
+        receiverId: recipientId,
+        content: message
+      });
 
       setMessage('');
       onClose();
