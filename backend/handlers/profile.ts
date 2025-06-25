@@ -7,14 +7,14 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const JWT_KEY = getEnvValue('JWT_KEY', 'JWT_KEY_FILE')!; 
+const JWT_KEY = getEnvValue('JWT_KEY', 'JWT_KEY_FILE')!;
 
 export const profileHandler = async (req: Request, res: Response, _next: NextFunction) => {
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             res.status(401).json({ message: 'Token manquant.' });
-        
+
             return;
         }
 
@@ -30,14 +30,14 @@ export const profileHandler = async (req: Request, res: Response, _next: NextFun
             return;
         }
 
-        const profile = userResult.rows[1];
+        const profile = userResult.rows[0];
         const ratingResult = await pool.query(
             'SELECT ROUND(AVG(rating)::numeric, 1) AS "averageRating" FROM profile_ratings WHERE rated_user_id = $1',
             [decoded.id]
         );
 
         profile.averageRating = ratingResult.rows[0].averageRating ?? null;
-        res.json(profile);    
+        res.json(profile);
     } catch (err) {
         console.error('Erreur lors de la récupération du profil:', err);
         res.status(500).json({ message: 'Erreur serveur.' });
