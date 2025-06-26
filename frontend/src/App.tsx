@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import HowItWorks from './pages/HowItWorks';
 import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
 import Talents from './pages/Talents';
@@ -28,6 +29,7 @@ const AppContent: React.FC = () => {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/comment-ca-marche" element={<HowItWorks />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/talents" element={<ProtectedRoute><Talents /></ProtectedRoute>} />
         <Route path="/profil/:id" element={<ProtectedRoute><ProfileView /></ProtectedRoute>} />

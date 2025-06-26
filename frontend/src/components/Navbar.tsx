@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, NavLink } from 'react-router-dom';
 import { AuthService } from '../services/authService';
+import logo from '../assets/Logo-SMT.webp';
 import '../styles/navbar.scss';
 
 const Navbar: React.FC = () => {
@@ -39,26 +40,36 @@ const Navbar: React.FC = () => {
   return (
     <nav className="navbar">
       <NavLink to="/" className="logo">
-        <span className="logo-blue">SwipeM</span><span className="logo-orange">yTalent</span>
+        <img src={logo} alt="Logo SwipeMyTalent" className="logo-img" />
       </NavLink>
-      
-      {!(isLogin || isRegister) && isLoggedIn && (
-        <>
-          <button className="menu-toggle" onClick={toggleMenu}>
-            <span className={`hamburger ${isMenuOpen ? 'active' : ''}`}>
-              <span></span>
-              <span></span>
-              <span></span>
-            </span>
-          </button>
-          <ul className={`nav-links ${isMenuOpen ? 'active' : ''}`}>
+      <div className="nav-main">
+        <div className="logo-text">
+          <span className="logo-blue">SwipeM</span><span className="logo-orange">yTalent</span>
+        </div>
+        {!(isLogin || isRegister) && isLoggedIn && (
+          <>
+            <button className="menu-toggle" onClick={toggleMenu}>
+              <span className={`hamburger ${isMenuOpen ? 'active' : ''}`}>
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
+            </button>
+            <ul className={`nav-links ${isMenuOpen ? 'active' : ''}`}>
+              <li><NavLink to="/" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Accueil</NavLink></li>
+              <li><NavLink to="/comment-ca-marche" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Comment ça marche</NavLink></li>
+              <li><NavLink to="/dashboard" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Mon espace</NavLink></li>
+              <li><NavLink to="/talents" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Talents</NavLink></li>
+            </ul>
+          </>
+        )}
+        {!isLoggedIn && !(isLogin || isRegister) && (
+          <ul className="nav-links-public">
             <li><NavLink to="/" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Accueil</NavLink></li>
-            <li><NavLink to="/dashboard" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Mon espace</NavLink></li>
-            <li><NavLink to="/talents" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Talents</NavLink></li>
+            <li><NavLink to="/comment-ca-marche" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Comment ça marche</NavLink></li>
           </ul>
-        </>
-      )}
-
+        )}
+      </div>
       <div className="auth-buttons">
         {!isLoggedIn ? (
           <>

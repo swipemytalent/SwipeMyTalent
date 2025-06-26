@@ -19,7 +19,8 @@ export async function fetchUserMessages(userId: string): Promise<Message[]> {
 }
 
 export async function sendMessage(messageData: {
-  receiverId: string;
+  sender_id: string;
+  receiver_id: string;
   content: string;
 }): Promise<Message> {
   return await HttpService.post<Message>('/messages', messageData);
