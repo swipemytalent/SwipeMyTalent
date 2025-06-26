@@ -1,20 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import EditBioModal from '../EditBioModal';
 import SeeMoreModal from './SeeMoreModal';
+import { fetchUserProfile, updateUserProfile } from '../../api/userApi';
 import '../../styles/AboutCard.scss';
 
 const AboutCard = () => {
-  const [bio, setBio] = useState<string>(
-    ""
-  );
+  const [bio, setBio] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [voirPlusModal, setVoirPlusModal] = useState(false);
 
+  useEffect(() => {
+    fetchUserProfile().then(user => {
+      setBio(user.bio || "");
+    });
+  }, []);
+
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
-  const handleSaveBio = (newBio: string) => {
+
+  const handleSaveBio = async (newBio: string) => {
     setBio(newBio);
     setIsModalOpen(false);
+    const user = await fetchUserProfile();
+    await updateUserProfile({ ...user, bio: newBio });
   };
 
   function formatBioToHtml(bio: string) {
