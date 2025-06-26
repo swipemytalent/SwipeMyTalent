@@ -5,7 +5,7 @@ import '../../styles/AboutCard.scss';
 
 const AboutCard = () => {
   const [bio, setBio] = useState<string>(
-    "Développeur Front-End passionné, spécialisé en React et JavaScript, je crée des interfaces web modernes, performantes et pensées pour l'utilisateur. Mon objectif : proposer des expériences fluides, intuitives et optimisées, en m'appuyant sur les meilleures pratiques du web."
+    ""
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [voirPlusModal, setVoirPlusModal] = useState(false);

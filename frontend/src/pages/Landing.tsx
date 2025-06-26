@@ -27,6 +27,9 @@ const Landing: React.FC = () => {
           <button onClick={() => navigate('/dashboard')} className="btn-secondary">
             Voir mon tableau de bord
           </button>
+          <button onClick={() => navigate('/comment-ca-marche')} className="btn-tertiary">
+            Comment ça marche ?
+          </button>
         </div>
       </div>
       

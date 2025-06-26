@@ -61,6 +61,12 @@
           color: #fff;
           border: none;
         }
+
+        &.btn-tertiary {
+          background-color: transparent;
+          color: var(--primary-blue);
+          border: 2px solid var(--primary-blue);
+        }
       }
     }
   }
@@ -173,6 +179,10 @@
 .cta-buttons .btn-secondary:hover {
   background-color: var(--primary-orange-light);
   color: var(--primary-orange);
+}
+.cta-buttons .btn-tertiary:hover {
+  background-color: var(--primary-blue);
+  color: #fff;
 }
 .features-section .feature-card:hover {
   background: var(--bg-card-hover);

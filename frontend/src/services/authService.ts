@@ -35,4 +35,15 @@ export class AuthService {
 
     return nowInSeconds < expirationTime;
   }
+
+  static getUserId(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const decoded: any = jwtDecode(token);
+      return decoded.userId || decoded.id || decoded.sub || null;
+    } catch {
+      return null;
+    }
+  }
 } 

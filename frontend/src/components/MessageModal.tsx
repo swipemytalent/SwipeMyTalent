@@ -23,11 +23,13 @@ const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose, recipientI
     setError(null);
 
     try {
-      if (!AuthService.isLoggedIn()) throw new Error('Token manquant');
+      const senderId = AuthService.getUserId();
+      if (!senderId) throw new Error('Utilisateur non authentifié');
 
       await sendMessage({
-        receiverId: recipientId,
-        content: message
+        sender_id: senderId,
+        receiver_id: recipientId,
+        content: message  
       });
 
       setMessage('');
