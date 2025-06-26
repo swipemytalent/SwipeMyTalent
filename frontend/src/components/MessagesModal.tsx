@@ -23,12 +23,13 @@ const MessagesModal: React.FC<MessagesModalProps> = ({ isOpen, onClose, messages
     setReplySuccess(null);
     try {
       if (!AuthService.isLoggedIn()) throw new Error('Token manquant');
-      
+      const userId = AuthService.getUserId();
+      if (!userId) throw new Error('ID utilisateur manquant');
       await sendMessage({
-        receiverId: selectedMessage.sender_id,
+        sender_id: userId,
+        receiver_id: selectedMessage.sender_id,
         content: reply
       });
-      
       setReply('');
       setReplySuccess('Message envoyé !');
     } catch (error) {
