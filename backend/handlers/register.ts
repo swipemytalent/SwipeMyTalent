@@ -15,6 +15,8 @@ export const registerHandler = async (req: Request, res: Response, _next: NextFu
     for (const field of requiredFields) {
         if (!req.body[field.key]) {
             res.status(400).json({ message: `${field.label} requis.` });
+
+            return;
         }
     }
 
@@ -33,6 +35,8 @@ export const registerHandler = async (req: Request, res: Response, _next: NextFu
         const existingUser = await pool.query("SELECT id FROM users WHERE email = $1", [email]);
         if (existingUser.rows.length > 0) {
             res.status(409).json({ message: "Email déjà utilisé." });
+
+            return;
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
