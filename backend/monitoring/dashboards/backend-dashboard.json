@@ -1,0 +1,65 @@
+{
+    "id": null,
+    "title": "Backend Metrics",
+    "tags": [
+        "backend",
+        "prometheus"
+    ],
+    "timezone": "browser",
+    "schemaVersion": 36,
+    "version": 1,
+    "refresh": "10s",
+    "panels": [
+        {
+            "type": "graph",
+            "title": "HTTP Request Rate",
+            "targets": [
+                {
+                    "expr": "rate(http_requests_total[1m])",
+                    "legendFormat": "{{handler}}",
+                    "refId": "A"
+                }
+            ],
+            "gridPos": {
+                "x": 0,
+                "y": 0,
+                "w": 12,
+                "h": 8
+            }
+        },
+        {
+            "type": "graph",
+            "title": "Error Rate",
+            "targets": [
+                {
+                    "expr": "rate(http_requests_total{status=~\"5..\"}[1m])",
+                    "legendFormat": "5xx errors",
+                    "refId": "B"
+                }
+            ],
+            "gridPos": {
+                "x": 12,
+                "y": 0,
+                "w": 12,
+                "h": 8
+            }
+        },
+        {
+            "type": "graph",
+            "title": "Request Duration (95th percentile)",
+            "targets": [
+                {
+                    "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))",
+                    "legendFormat": "95th percentile",
+                    "refId": "C"
+                }
+            ],
+            "gridPos": {
+                "x": 0,
+                "y": 8,
+                "w": 24,
+                "h": 8
+            }
+        }
+    ]
+}
