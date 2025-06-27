@@ -4,12 +4,15 @@ import { profileHandler, updateProfileHandler } from './handlers/profile.js';
 import { registerHandler } from './handlers/register.js';
 import { getAllUsersHandler } from './handlers/users.js';
 import { rateProfileHandler } from './handlers/rateProfile.js';
+import { unsubscribeHandler } from './handlers/unsubscribe.js';
 import { getAllowedOrigins } from './utils/origins.js';
 
 import cors from 'cors';
+import cron from 'node-cron';
 import dotenv from 'dotenv';
 import express, { Express } from 'express';
 import { CorsOptions } from 'cors';
+import { deleteUnsubcribedUsers } from './jobs/deleteUnsubscribedUsers.js';
 
 dotenv.config();
 
@@ -35,7 +38,7 @@ const corsOptions: CorsOptions = {
         'Authorization'
     ],
     maxAge: 86400
-}
+};
 
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '1mb' }));
@@ -48,7 +51,14 @@ app.get('/messages/:userId', getMessages);
 app.post('/messages', sendMessage);
 app.get('/users', getAllUsersHandler);
 app.post('/rate/:userId', rateProfileHandler);
+app.delete('/unsubscribe', unsubscribeHandler);
 
 app.listen(port, () => {
     console.log(`🚀 Server listening on http://localhost:${port}`);
+});
+
+cron.schedule('0 0 * * *', () => {
+    console.log('🕛 Running scheduled cleanup for unsubscribed users...');
+
+    deleteUnsubcribedUsers();
 });
