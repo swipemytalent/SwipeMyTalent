@@ -14,10 +14,26 @@ CREATE TABLE IF NOT EXISTS users (
     bio TEXT,
     credits INTEGER DEFAULT 0,
     profile_views INTEGER DEFAULT 0,
-    messages INTEGER DEFAULT 0,
-    subscribed BOOLEAN DEFAULT TRUE,
-    unsubscribed_at TIMESTAMP
+    messages INTEGER DEFAULT 0
 );
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name='users' AND column_name='subscribed'
+  ) THEN
+    ALTER TABLE users ADD COLUMN subscribed BOOLEAN DEFAULT TRUE;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name='users' AND column_name='unsubscribed_at'
+  ) THEN
+    ALTER TABLE users ADD COLUMN unsubscribed_at TIMESTAMP;
+  END IF;
+END
+$$;
 
 CREATE TABLE IF NOT EXISTS messages (
     id SERIAL PRIMARY KEY,
