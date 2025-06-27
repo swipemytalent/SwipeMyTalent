@@ -14,7 +14,9 @@ CREATE TABLE IF NOT EXISTS users (
     bio TEXT,
     credits INTEGER DEFAULT 0,
     profile_views INTEGER DEFAULT 0,
-    messages INTEGER DEFAULT 0
+    messages INTEGER DEFAULT 0,
+    subscribed BOOLEAN DEFAULT TRUE,
+    unsubscribed_at TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS messages (
