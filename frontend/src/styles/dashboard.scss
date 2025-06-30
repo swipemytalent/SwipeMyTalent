@@ -155,3 +155,18 @@ body {
     }
   }
 }
+
+.dashboard-unsubscribe-link {
+  color: #888;
+  font-size: 0.95rem;
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+.dashboard-unsubscribe-link:hover {
+  color: #e53935;
+  text-decoration: underline;
+}

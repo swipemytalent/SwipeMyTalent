@@ -26,4 +26,12 @@ export async function login(data: AuthData): Promise<AuthResponse> {
 
 export async function register(data: AuthData): Promise<AuthResponse> {
   return await HttpService.post<AuthResponse>('/register', data, false);
+}
+
+export async function unsubscribe(email: string): Promise<{ message: string }> {
+  return await HttpService.request<{ message: string }>('/unsubscribe', { 
+    method: 'DELETE', 
+    body: { email }, 
+    requiresAuth: false 
+  });
 } 

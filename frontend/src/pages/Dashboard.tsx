@@ -5,6 +5,7 @@ import RecentActivityCard from '../components/cards/RecentActivityCard';
 import AboutCard from '../components/cards/AboutCard';
 import ProfileModal from '../components/ProfileModal';
 import MessagesModal from '../components/MessagesModal';
+import UnsubscribeModal from '../components/UnsubscribeModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
 import { useState, useEffect } from 'react';
@@ -23,6 +24,7 @@ const Dashboard: React.FC = () => {
     const { editUser, setEditUser, handleChange, handlePhotoChange, handleSubmit, error } = useEditProfile(user);
     const [messages, setMessages] = useState<any[]>([]);
     const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
+    const [isUnsubscribeModalOpen, setIsUnsubscribeModalOpen] = useState(false);
 
     useEffect(() => {
         if (AuthService.isLoggedIn()) {
@@ -93,6 +95,28 @@ const Dashboard: React.FC = () => {
                 isOpen={isMessagesModalOpen}
                 onClose={() => setIsMessagesModalOpen(false)}
                 messages={messages}
+            />
+            <div style={{ textAlign: 'right', marginTop: '2rem' }}>
+                <button
+                    className="dashboard-unsubscribe-link"
+                    onClick={() => setIsUnsubscribeModalOpen(true)}
+                    style={{
+                        background: 'none',
+                        border: 'none',
+                        color: '#888',
+                        fontSize: '0.95rem',
+                        textDecoration: 'underline',
+                        cursor: 'pointer',
+                        padding: 0
+                    }}
+                >
+                    Se désinscrire
+                </button>
+            </div>
+            <UnsubscribeModal
+                isOpen={isUnsubscribeModalOpen}
+                onClose={() => setIsUnsubscribeModalOpen(false)}
+                userEmail={user.email}
             />
         </div>
     );

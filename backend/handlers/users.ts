@@ -23,7 +23,7 @@ export const getAllUsersHandler = async (req: Request, res: Response, _next: Nex
         const result = await pool.query(
             `SELECT id, email, first_name AS "firstName", last_name AS "lastName", title, avatar, bio
             FROM users
-            WHERE id != $1`,
+            WHERE id != $1 AND subscribed = TRUE`,
             [decoded.id]
         );
         res.json(result.rows);

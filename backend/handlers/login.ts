@@ -33,6 +33,10 @@ export const loginHandler = async (req: Request, res: Response, _next: NextFunct
         }
 
         const user = result.rows[0];
+        if (user.subscribed === false) {
+            res.status(403).json({ message: "Ce compte a été désinscrit. Il sera supprimé prochainement." });
+            return;
+        }
         const match = await bcrypt.compare(password, user.password);
         if (!match) {
             res.status(401).json({ message: "Mot de passe invalide." });
