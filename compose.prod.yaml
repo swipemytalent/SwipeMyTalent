@@ -63,9 +63,6 @@ services:
       - POSTGRES_HOST=postgres
       - POSTGRES_USER_FILE=/run/secrets/db-user
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
-    configs:
-      - source: init-sql
-        target: /docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 10s
@@ -73,6 +70,7 @@ services:
       retries: 5
     volumes:
       - pg-data:/var/lib/postgresql/data/
+      - ./backend/db/migration/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - traefik
 
@@ -124,9 +122,7 @@ services:
       - "--config.file=/etc/prometheus/prometheus.yml"
     volumes:
       - prometheus-data:/prometheus
-    configs:
-      - source: prometheus-config
-        target: /etc/prometheus/prometheus.yml
+      - ./backend/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - traefik
     labels:
@@ -154,12 +150,6 @@ services:
       - "traefik.http.routers.grafana.entrypoints=websecure"
       - "traefik.http.routers.grafana.tls.certresolver=myresolver"
       - "traefik.http.services.grafana.loadbalancer.server.port=3000"
-
-configs:
-  init-sql:
-    file: ./backend/db/migration/init.sql
-  prometheus-config:
-    file: ./backend/monitoring/prometheus.yml
 
 volumes:
   pg-data:
