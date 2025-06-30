@@ -1,18 +1,13 @@
 import { useEffect, useState } from 'react';
 import EditBioModal from '../EditBioModal';
 import SeeMoreModal from './SeeMoreModal';
-import UnsubscribeModal from '../UnsubscribeModal';
 import { fetchUserProfile, updateUserProfile } from '../../api/userApi';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
 import '../../styles/AboutCard.scss';
 
 const AboutCard = () => {
   const [bio, setBio] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [voirPlusModal, setVoirPlusModal] = useState(false);
-  const [isUnsubscribeModalOpen, setIsUnsubscribeModalOpen] = useState(false);
-  const user = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     fetchUserProfile().then(user => {
@@ -22,8 +17,6 @@ const AboutCard = () => {
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
-  const handleOpenUnsubscribeModal = () => setIsUnsubscribeModalOpen(true);
-  const handleCloseUnsubscribeModal = () => setIsUnsubscribeModalOpen(false);
 
   const handleSaveBio = async (newBio: string) => {
     setBio(newBio);
@@ -93,13 +86,6 @@ const AboutCard = () => {
       )}
       {isModalOpen && (
         <EditBioModal isOpen={isModalOpen} currentBio={bio} onClose={handleCloseModal} onSave={handleSaveBio} />
-      )}
-      {isUnsubscribeModalOpen && (
-        <UnsubscribeModal
-          isOpen={isUnsubscribeModalOpen}
-          onClose={handleCloseUnsubscribeModal}
-          userEmail={user.email}
-        />
       )}
     </section>
   );
