@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+      annotations:
+        traefik.http.services.backend.loadbalancer.server.port: "5000"
+    spec:
+      containers:
+        - name: backend
+          image: ghcr.io/swipemytalent/backend:${GIT_COMMIT_HASH:-latest}
+          ports:
+            - containerPort: 5000
+          env:
+            - name: ALLOWED_ORIGINS_FILE
+              value: /run/secrets/allowed-origins
+            - name: NODE_ENV
+              value: prod
+            - name: JWT_KEY_FILE
+              value: /run/secrets/jwt
+            - name: POSTGRES_DB_FILE
+              value: /run/secrets/db-name
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_HOST
+              value: postgres
+            - name: POSTGRES_USER_FILE
+              value: /run/secrets/db-user
+            - name: POSTGRES_PASSWORD_FILE
+              value: /run/secrets/db-password
+          volumeMounts:
+            - name: jwt
+              mountPath: /run/secrets/jwt
+              subPath: jwt
+              readOnly: true
+            - name: db-password
+              mountPath: /run/secrets/db-password
+              subPath: db-password
+              readOnly: true
+            - name: db-name
+              mountPath: /run/secrets/db-name
+              subPath: db-name
+              readOnly: true
+            - name: db-user
+              mountPath: /run/secrets/db-user
+              subPath: db-user
+              readOnly: true
+            - name: allowed-origins
+              mountPath: /run/secrets/allowed-origins
+              subPath: allowed-origins
+              readOnly: true
+      volumes:
+        - name: jwt
+          secret:
+            secretName: jwt
+        - name: db-password
+          secret:
+            secretName: db-password
+        - name: db-name
+          secret:
+            secretName: db-name
+        - name: db-user
+          secret:
+            secretName: db-user
+        - name: allowed-origins
+          secret:
+            secretName: allowed-origins

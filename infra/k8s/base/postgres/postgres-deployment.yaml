@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  serviceName: postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB_FILE
+              value: /run/secrets/db-name
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_HOST
+              value: postgres
+            - name: POSTGRES_USER_FILE
+              value: /run/secrets/db-user
+            - name: POSTGRES_PASSWORD_FILE
+              value: /run/secrets/db-password
+          volumeMounts:
+            - name: pg-data
+              mountPath: /var/lib/postgresql/data
+            - name: db-password
+              mountPath: /run/secrets/db-password
+              subPath: db-password
+              readOnly: true
+            - name: db-name
+              mountPath: /run/secrets/db-name
+              subPath: db-name
+              readOnly: true
+            - name: db-user
+              mountPath: /run/secrets/db-user
+              subPath: db-user
+              readOnly: true
+            - name: init-sql
+              mountPath: /docker-entrypoint-initdb.d/init.sql
+              subPath: init.sql
+              readOnly: true
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+            initialDelaySeconds: 30
+            periodSeconds: 10
+      volumes:
+        - name: db-password
+          secret:
+            secretName: db-password
+        - name: db-name
+          secret:
+            secretName: db-name
+        - name: db-user
+          secret:
+            secretName: db-user
+        - name: init-sql
+          configMap:
+            name: init-sql
+  volumeClaimTemplates:
+    - metadata:
+        name: pg-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 5Gi

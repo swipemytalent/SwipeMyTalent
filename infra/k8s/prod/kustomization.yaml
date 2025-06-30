@@ -1,0 +1,12 @@
+resources:
+  - frontend/
+  - backend/
+  - postgres/
+  - ingress/
+  - secrets/sealed-secrets.yaml
+
+images:
+  - name: ghcr.io/swipemytalent/frontend
+    newTag: <tag>
+  - name: ghcr.io/swipemytalent/backend
+    newTag: <tag>

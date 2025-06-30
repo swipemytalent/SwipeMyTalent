@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: init-sql
+data:
+  init.sql: |-
+    # Content copied from ./backend/db/migration/init.sql
+    # (or mount as file from ConfigMap)

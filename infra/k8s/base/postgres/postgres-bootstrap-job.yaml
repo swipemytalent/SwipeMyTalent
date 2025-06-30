@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-bootstrapper
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      containers:
+        - name: bootstrap
+          image: postgres:17-alpine
+          command: ["sh", "/init/init-db.sh"]
+          env:
+            - name: POSTGRES_DB_FILE
+              value: /run/secrets/db-name
+            - name: POSTGRES_USER_FILE
+              value: /run/secrets/db-user
+            - name: POSTGRES_PASSWORD_FILE
+              value: /run/secrets/db-password
+            - name: POSTGRES_HOST
+              value: postgres
+          volumeMounts:
+            - name: init-script
+              mountPath: /init/init-db.sh
+              subPath: init-db.sh
+            - name: init-sql
+              mountPath: /init/init.sql
+              subPath: init.sql
+            - name: secrets
+              mountPath: /run/secrets
+              readOnly: true
+      volumes:
+        - name: init-script
+          configMap:
+            name: db-bootstrapper-script
+            items:
+              - key: init-db.sh
+                path: init-db.sh
+        - name: init-sql
+          configMap:
+            name: init-sql
+            items:
+              - key: init.sql
+                path: init.sql
+        - name: secrets
+          secret:
+            secretName: postgres-secrets
+      restartPolicy: OnFailure
