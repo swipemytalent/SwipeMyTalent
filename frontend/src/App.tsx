@@ -11,12 +11,15 @@ import ProfileView from './pages/ProfileView';
 import ProtectedRoute from './components/ProtectedRoute';
 import './styles/main.scss';
 import Footer from './components/Footer';
-import { Provider, useDispatch } from 'react-redux';
-import store, { AppDispatch } from './redux/store';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import store, { AppDispatch, RootState } from './redux/store';
 import { setupHttpService } from './services/httpService';
+import MessagingSystem from './components/MessagingSystem';
+import { closeMessaging } from './redux/messagingSlice';
 
 const AppContent: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
+  const messaging = useSelector((state: RootState) => state.messaging);
 
   useEffect(() => {
     setupHttpService(dispatch);
@@ -35,6 +38,11 @@ const AppContent: React.FC = () => {
         <Route path="/profil/:id" element={<ProtectedRoute><ProfileView /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
+      <MessagingSystem
+        isOpen={messaging.isOpen}
+        selectedUserId={messaging.selectedUserId}
+        onClose={() => dispatch(closeMessaging())}
+      />
       <Footer />
     </>
   );

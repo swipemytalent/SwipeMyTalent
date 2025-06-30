@@ -2,9 +2,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import MessageModal from '../components/MessageModal';
+import StartConversationModal from '../components/StartConversationModal';
 import { setViewedProfile } from '../redux/viewedProfileSlice';
 import { setUser } from '../redux/userSlice';
+import { openMessaging } from '../redux/messagingSlice';
 import { fetchUserProfile, fetchUserById } from '../api/userApi';
 import { AuthService } from '../services/authService';
 import { LoggerService } from '../services/loggerService';
@@ -102,7 +103,7 @@ const ProfileView: React.FC = () => {
           <div className="profile-view-actions">
             <button 
               className="btn btn--primary profile-view__message-btn"
-              onClick={() => setIsMessageModalOpen(true)}
+              onClick={() => dispatch(openMessaging(String(profile.id)))}
             >
               <i className="fa fa-envelope"></i> Envoyer un message
             </button>
@@ -115,7 +116,7 @@ const ProfileView: React.FC = () => {
           </div>
         </div>
       </div>
-      <MessageModal
+      <StartConversationModal
         isOpen={isMessageModalOpen}
         onClose={() => setIsMessageModalOpen(false)}
         recipientId={profile.id}
