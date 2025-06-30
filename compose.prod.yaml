@@ -82,7 +82,7 @@ services:
       DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable"
     depends_on:
       - postgres
-    netowrks:
+    networks:
       - traefik
     labels:
       - "traefik.enable=true"
