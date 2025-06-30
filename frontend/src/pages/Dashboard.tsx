@@ -4,27 +4,29 @@ import StatsCard from '../components/cards/StatsCard';
 import RecentActivityCard from '../components/cards/RecentActivityCard';
 import AboutCard from '../components/cards/AboutCard';
 import ProfileModal from '../components/ProfileModal';
-import MessagesModal from '../components/MessagesModal';
+import MessagingSystem from '../components/MessagingSystem';
 import UnsubscribeModal from '../components/UnsubscribeModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useEditProfile } from '../hooks/useEditProfile';
 import { setUser } from '../redux/userSlice';
+import { closeMessaging } from '../redux/messagingSlice';
 import { fetchUserProfile } from '../api/userApi';
-import { fetchUserMessages } from '../api/messagesApi';
+import { fetchUserConversations } from '../api/messagesApi';
 import { AuthService } from '../services/authService';
 import { LoggerService } from '../services/loggerService';
 import '../styles/dashboard.scss';
 
 const Dashboard: React.FC = () => {
     const user = useSelector((state: RootState) => state.user);
+    const messaging = useSelector((state: RootState) => state.messaging);
     const dispatch = useDispatch();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { editUser, setEditUser, handleChange, handlePhotoChange, handleSubmit, error } = useEditProfile(user);
-    const [messages, setMessages] = useState<any[]>([]);
-    const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
+    const [conversations, setConversations] = useState<any[]>([]);
     const [isUnsubscribeModalOpen, setIsUnsubscribeModalOpen] = useState(false);
+    const [refreshStat, setRefreshStat] = useState(0);
 
     useEffect(() => {
         if (AuthService.isLoggedIn()) {
@@ -34,18 +36,19 @@ const Dashboard: React.FC = () => {
         }
     }, [dispatch]);
 
-    useEffect(() => {
-        const fetchMessages = async () => {
-            if (!user.id) return;
-            try {
-                const messagesData = await fetchUserMessages(user.id);
-                setMessages(messagesData);
-            } catch (error) {
-                LoggerService.error('Erreur lors de la récupération des messages', error);
-            }
-        };
-        fetchMessages();
+    const fetchConversations = useCallback(async () => {
+        if (!user.id) return;
+        try {
+            const conversationsData = await fetchUserConversations(user.id);
+            setConversations(conversationsData);
+        } catch (error) {
+            LoggerService.error('Erreur lors de la récupération des conversations', error);
+        }
     }, [user.id]);
+
+    useEffect(() => {
+        fetchConversations();
+    }, [fetchConversations, refreshStat]);
 
     const handleOpenModal = () => {
         setEditUser(user);
@@ -56,6 +59,33 @@ const Dashboard: React.FC = () => {
         await handleSubmit();
         setIsModalOpen(false);
     };
+
+    // Fonction optimisée pour mettre à jour les stats avec debounce
+    const updateStats = useCallback(() => {
+        // Mise à jour immédiate sans délai
+        setRefreshStat(r => r + 1);
+    }, []);
+
+    // Quand la modale de messagerie se ferme, on recharge la liste pour mettre à jour la stat
+    const handleMessagingClose = () => {
+        dispatch(closeMessaging());
+    };
+
+    // Surveiller la fermeture de la modale de messagerie pour mettre à jour les stats
+    useEffect(() => {
+        if (!messaging.isOpen) {
+            // Mise à jour immédiate sans délai
+            updateStats();
+        }
+    }, [messaging.isOpen, updateStats]);
+
+    // Calcul du nombre total de messages non lus (LinkedIn style, sécurisé)
+    const unreadCount = conversations.reduce((acc, conv) => {
+        const n = Number(conv.unreadCount);
+        if (!isFinite(n) || n < 0) return acc;
+        return acc + n;
+    }, 0);
+    const displayUnread = unreadCount > 99 ? '99+' : unreadCount;
 
     return (
         <div className="dashboard">
@@ -73,10 +103,10 @@ const Dashboard: React.FC = () => {
                     <StatsCard 
                         stats={{ 
                             views: 0, 
-                            messages: messages.length, 
+                            messages: displayUnread, 
                             credits: 0 
                         }}
-                        onMessagesClick={() => setIsMessagesModalOpen(true)}
+                        onMessagesClick={() => dispatch({ type: 'messaging/openMessaging', payload: null })}
                     />
                     <OpportunitiesCard />
                     <RecentActivityCard />
@@ -91,10 +121,11 @@ const Dashboard: React.FC = () => {
                 onSubmit={handleModalSubmit}
                 error={error}
             />
-            <MessagesModal
-                isOpen={isMessagesModalOpen}
-                onClose={() => setIsMessagesModalOpen(false)}
-                messages={messages}
+            <MessagingSystem
+                isOpen={messaging.isOpen}
+                selectedUserId={messaging.selectedUserId}
+                onClose={handleMessagingClose}
+                onConversationsUpdate={updateStats}
             />
             <div style={{ textAlign: 'right', marginTop: '2rem' }}>
                 <button

@@ -1,8 +1,8 @@
 import { loginHandler } from './handlers/login.js';
-import { getMessages, sendMessage } from './handlers/messages.js';
+import { getUserConversations, getConversationMessages, markConversationAsRead } from './handlers/conversations.js';
 import { profileHandler, updateProfileHandler } from './handlers/profile.js';
 import { registerHandler } from './handlers/register.js';
-import { getAllUsersHandler } from './handlers/users.js';
+import { getAllUsersHandler, getUserByIdHandler } from './handlers/users.js';
 import { rateProfileHandler } from './handlers/rateProfile.js';
 import { unsubscribeHandler } from './handlers/unsubscribe.js';
 import { getAllowedOrigins } from './utils/origins.js';
@@ -47,9 +47,13 @@ app.post("/register", registerHandler);
 app.post("/login", loginHandler);
 app.get("/profile", profileHandler);
 app.put("/profile", updateProfileHandler);
-app.get('/messages/:userId', getMessages);
-app.post('/messages', sendMessage);
+
+app.get('/conversations/:userId', getUserConversations as express.RequestHandler);
+app.get('/conversations/:conversationId/messages', getConversationMessages as express.RequestHandler);
+app.put('/conversations/:conversationId/read', markConversationAsRead as express.RequestHandler);
+
 app.get('/users', getAllUsersHandler);
+app.get('/users/:id', getUserByIdHandler);
 app.post('/rate/:userId', rateProfileHandler);
 app.delete('/unsubscribe', unsubscribeHandler);
 
