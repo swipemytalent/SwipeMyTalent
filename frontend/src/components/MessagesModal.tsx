@@ -99,7 +99,7 @@ const MessagesModal: React.FC<MessagesModalProps> = ({ isOpen, onClose, messages
                   <li key={msg.id} style={{marginBottom: 15, borderBottom: '1px solid #eee', paddingBottom: 10, cursor: 'pointer'}} onClick={() => { setSelectedMessage(msg); setReply(''); setReplyError(null); setReplySuccess(null); }}>
                     <div style={{fontWeight: 'bold'}}>De : {getSenderName(msg)}</div>
                     <div style={{color: '#555', fontSize: '0.95em', margin: '5px 0'}}>{msg.content.slice(0, 40)}{msg.content.length > 40 ? '...' : ''}</div>
-                    <div style={{fontSize: '0.85em', color: '#888'}}>{msg.sent_at_pretty || msg.sent_at}</div>
+                    <div style={{fontSize: '0.85em', color: '#888'}}>{msg.sent_at ? new Date(msg.sent_at).toLocaleString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}</div>
                   </li>
                 ))}
               </ul>

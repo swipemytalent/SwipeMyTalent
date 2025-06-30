@@ -62,7 +62,7 @@ export class HttpService {
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
-      throw new Error(`Erreur HTTP ${response.status}: ${errorData.message || response.statusText}`);
+      throw new Error(errorData.message || response.statusText);
     }
 
     // Gérer le cas où la réponse est vide (ex: 204 No Content)
