@@ -1,4 +1,4 @@
-import { pool } from '../db/pool.js';
+import { getPool } from '../db/pool.js';
 
 import { Request, Response, NextFunction } from 'express';
 
@@ -13,6 +13,7 @@ export const unsubscribeHandler = async (req: Request, res: Response, _next: Nex
     }
 
     try {
+        const pool = await getPool();
         const result = await pool.query(
             'UPDATE users SET subscribed = FALSE, unsubscribed_at = NOW() WHERE email = $1 RETURNING *',
             [email]

@@ -1,4 +1,4 @@
-import { pool } from '../db/pool.js';
+import { getPool } from '../db/pool.js';
 import { getEnvValue } from '../utils/getEnv.js';
 
 import { Request, Response, NextFunction } from 'express';
@@ -20,6 +20,7 @@ export const profileHandler = async (req: Request, res: Response, _next: NextFun
 
         const token = authHeader.split(' ')[1];
         const decoded = jwt.verify(token, JWT_KEY) as { id: number, email: string };
+        const pool = await getPool();
         const userResult = await pool.query(
             'SELECT id, email, first_name AS "firstName", last_name AS "lastName", title, avatar, bio FROM users WHERE id = $1',
             [decoded.id]
@@ -56,6 +57,7 @@ export const updateProfileHandler = async (req: Request, res: Response, _next: N
         const token = authHeader.split(' ')[1];
         const decoded = jwt.verify(token, JWT_KEY) as { id: number, email: string };
         const { firstName, lastName, title, avatar, bio } = req.body;
+        const pool = await getPool();
         await pool.query(
             'UPDATE users SET first_name = $1, last_name = $2, title = $3, avatar = $4, bio = $5 WHERE id = $6',
             [firstName, lastName, title, avatar, bio, decoded.id]

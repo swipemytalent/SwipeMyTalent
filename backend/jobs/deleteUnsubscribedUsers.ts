@@ -1,7 +1,8 @@
-import { pool } from "../db/pool.js";
+import { getPool } from "../db/pool.js";
 
 export const deleteUnsubcribedUsers = async () => {
     try {
+        const pool = await getPool();
         const result = await pool.query(`
             DELETE FROM users
             WHERE subscribed = FALSE

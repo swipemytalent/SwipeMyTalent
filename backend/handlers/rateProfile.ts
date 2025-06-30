@@ -1,4 +1,4 @@
-import { pool } from '../db/pool.js';
+import { getPool } from '../db/pool.js';
 
 import { Request, Response } from 'express';
 
@@ -24,6 +24,7 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
     );
 
     try {
+        const pool = await getPool();
         await pool.query(`
             INSERT INTO profile_ratings (rater_id, rated_user_id, rating)
             VALUES ($1, $2, $3)

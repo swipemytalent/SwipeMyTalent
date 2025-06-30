@@ -1,4 +1,4 @@
-import { pool } from '../db/pool.js';
+import { getPool } from '../db/pool.js';
 
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
@@ -32,6 +32,7 @@ export const registerHandler = async (req: Request, res: Response, _next: NextFu
         messages = 0,
     } = req.body;
     try {
+        const pool = await getPool();
         const existingUser = await pool.query("SELECT id FROM users WHERE email = $1", [email]);
         if (existingUser.rows.length > 0) {
             res.status(409).json({ message: "Email déjà utilisé." });

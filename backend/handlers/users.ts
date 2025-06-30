@@ -1,4 +1,4 @@
-import { pool } from '../db/pool.js';
+import { getPool } from '../db/pool.js';
 import { getEnvValue } from '../utils/getEnv.js';
 
 import { Request, Response, NextFunction } from 'express';
@@ -20,6 +20,7 @@ export const getAllUsersHandler = async (req: Request, res: Response, _next: Nex
 
         const token = authHeader.split(' ')[1];
         const decoded = jwt.verify(token, JWT_KEY) as { id: number, email: string };
+        const pool = await getPool();
         const result = await pool.query(
             `SELECT id, email, first_name AS "firstName", last_name AS "lastName", title, avatar, bio
             FROM users
@@ -36,6 +37,7 @@ export const getAllUsersHandler = async (req: Request, res: Response, _next: Nex
 export const getUserByIdHandler = async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
     const userId = req.params.id;
     try {
+        const pool = await getPool();
         const result = await pool.query(
             `SELECT id, email, first_name AS "firstName", last_name AS "lastName", title, avatar, bio
             FROM users WHERE id = $1 AND subscribed = TRUE`,
