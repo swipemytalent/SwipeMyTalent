@@ -70,7 +70,9 @@ services:
       retries: 5
     volumes:
       - pg-data:/var/lib/postgresql/data/
-      - ./backend/db/migration/init.sql:/docker-entrypoint-initdb.d/init.sql
+    configs:
+      - source: init-sql
+        target: /docker-entrypoint-initdb.d/init.sql
     networks:
       - traefik
 
@@ -122,7 +124,9 @@ services:
       - "--config.file=/etc/prometheus/prometheus.yml"
     volumes:
       - prometheus-data:/prometheus
-      - ./backend/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    configs:
+      - source: prometheus-config
+        target: /etc/prometheus/prometheus.yml
     networks:
       - traefik
     labels:
@@ -156,6 +160,12 @@ volumes:
   letsencrypt:
   prometheus-data:
   grafana-data:
+
+configs:
+  init-sql:
+    file: ./backend/db/migration/init.sql
+  prometheus-config:
+    file: ./backend/monitoring/prometheus.yml
 
 secrets:
   db-password:

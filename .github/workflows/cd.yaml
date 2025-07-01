@@ -70,7 +70,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Create env file
-        run: echo 'GIT_COMMIT_HASH="${{ github.sha }}"' >> .env
+        run: |
+          echo 'GIT_COMMIT_HASH="${{ github.sha }}"' >> .env
       - name: Deploy app
         uses: cssnr/stack-deploy-action@v1
         with:

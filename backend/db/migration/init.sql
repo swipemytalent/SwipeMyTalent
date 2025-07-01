@@ -1,6 +1,6 @@
-SELECT 'CREATE DATABASE swipemytalent_database'
+SELECT 'CREATE DATABASE swipemytalent_db'
 WHERE NOT EXISTS (
-  SELECT FROM pg_database WHERE datname = 'swipemytalent_database'
+  SELECT FROM pg_database WHERE datname = 'swipemytalent_db'
 )\gexec
 
 CREATE TABLE IF NOT EXISTS users (
