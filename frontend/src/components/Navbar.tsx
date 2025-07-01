@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useLocation, NavLink } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { AuthService } from '../services/authService';
 import logo from '../assets/Logo-SMT.webp';
 import '../styles/navbar.scss';
@@ -8,11 +8,8 @@ const Navbar: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
   const navbarRef = useRef<HTMLDivElement | null>(null);
 
-  const isLogin = location.pathname === '/login';
-  const isRegister = location.pathname === '/register';
   const isLoggedIn = AuthService.isLoggedIn();
 
   // Responsive state
