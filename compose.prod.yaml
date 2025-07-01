@@ -76,6 +76,28 @@ services:
     networks:
       - traefik
 
+  db-boostrapper:
+    image: postgres:17-alpine
+    depends_on:
+      - postgres
+    secrets:
+      - db-password
+      - db-name
+      - db-user
+    environment:
+      POSTGRES_DB_FILE: /run/secrets/db-name
+      POSTGRES_USER_FILE: /run/secrets/db-user
+      POSTGRES_PASSWORD_FILE: /run/secrets/db-password
+      POSTGRES_HOST: postgres
+    volumes:
+      - ./backend/db/init-db.sh:/init/init-db.sh
+    configs:
+      - source: init-sql
+        target: /init/init.sql
+    entrypoint: [ "sh", "/init/init-db.sh" ]
+    networks:
+      - traefik
+
   postgres-exporter:
     image: prometheuscommunity/postgres-exporter:v0.17.1
     environment:
