@@ -1,8 +1,3 @@
-SELECT 'CREATE DATABASE swipemytalent_db'
-WHERE NOT EXISTS (
-  SELECT FROM pg_database WHERE datname = 'swipemytalent_db'
-)\gexec
-
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
