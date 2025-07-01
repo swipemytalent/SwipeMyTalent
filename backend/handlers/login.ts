@@ -1,4 +1,4 @@
-import { pool } from '../db/pool.js';
+import { getPool } from '../db/pool.js';
 import { getEnvValue } from '../utils/getEnv.js';
 
 import bcrypt from 'bcrypt';
@@ -25,6 +25,7 @@ export const loginHandler = async (req: Request, res: Response, _next: NextFunct
 
     const { email, password } = req.body;
     try {
+        const pool = await getPool();
         const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
         if (result.rows.length === 0) {
             res.status(401).json({ message: "Email invalide." });
@@ -47,7 +48,7 @@ export const loginHandler = async (req: Request, res: Response, _next: NextFunct
         const token = jwt.sign(
             { id: user.id, email: user.email },
             JWT_KEY,
-            { expiresIn: "1h"},
+            { expiresIn: "1h" },
         )
 
         res.json({ message: "Connexion réussie.", token });
