@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { fetchUserConversations, fetchConversationMessages, sendMessage, markConversationAsRead } from '../api/messagesApi';
 import { fetchUserById } from '../api/userApi';
-import { fetchUserExchanges, Exchange } from '../api/exchangesApi';
+import { Exchange } from '../api/exchangesApi';
 import ExchangeModal from './ExchangeModal';
-import ExchangeStatus from './ExchangeStatus';
 import RatingModal from './RatingModal';
 import '../styles/MessagingSystem.scss';
 
@@ -50,8 +49,6 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  // États pour les échanges
-  const [exchanges, setExchanges] = useState<Exchange[]>([]);
   const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [selectedExchangeForRating, setSelectedExchangeForRating] = useState<Exchange | null>(null);
@@ -75,7 +72,6 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
   useEffect(() => {
     if (isOpen) {
       loadConversations();
-      loadExchanges();
       setSelectedConversation(null);
     }
   }, [isOpen]);
@@ -135,33 +131,12 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
     }
   };
 
-  const loadExchanges = async () => {
-    if (!currentUser.id) return;
-    try {
-      const exchangesData = await fetchUserExchanges();
-      setExchanges(exchangesData);
-    } catch (err) {
-      console.error('Erreur lors du chargement des échanges:', err);
-    }
-  };
-
   const handleExchangeCreated = () => {
-    loadExchanges();
-  };
-
-  const handleExchangeUpdated = () => {
-    loadExchanges();
+    loadConversations();
   };
 
   const handleRatingSubmitted = () => {
-    loadExchanges();
-  };
-
-  const getExchangesForConversation = (participantId: string) => {
-    return exchanges.filter(exchange => 
-      (exchange.initiator.id === currentUser.id && exchange.recipient.id === parseInt(participantId)) ||
-      (exchange.recipient.id === currentUser.id && exchange.initiator.id === parseInt(participantId))
-    );
+    loadConversations();
   };
 
   const loadMessages = async (conversationId: string) => {

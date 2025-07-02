@@ -3,7 +3,6 @@ import { createPortal } from 'react-dom';
 import { fetchUserExchanges, Exchange, confirmExchange, completeExchange, fetchExchangeRating } from '../../api/exchangesApi';
 import '../../styles/RecentActivityCard.scss';
 import RatingModal from '../RatingModal';
-import { useSelector } from 'react-redux';
 
 const RecentActivityCard = () => {
   const [exchanges, setExchanges] = useState<Exchange[]>([]);
@@ -13,7 +12,6 @@ const RecentActivityCard = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [errorAction, setErrorAction] = useState<string | null>(null);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
-  const user = useSelector((state: any) => state.user);
   const [exchangeRating, setExchangeRating] = useState<any>(null);
 
   useEffect(() => {
@@ -117,7 +115,7 @@ const RecentActivityCard = () => {
     ((selectedExchange.isInitiator && !selectedExchange.initiator_confirmed) ||
      (!selectedExchange.isInitiator && !selectedExchange.recipient_confirmed));
   const canComplete = selectedExchange && selectedExchange.status === 'confirmed';
-  const canRate = selectedExchange && selectedExchange.status === 'completed' && !selectedExchange.rating;
+  const canRate = selectedExchange && selectedExchange.status === 'completed' && !exchangeRating?.rating;
 
   return (
     <section className="dashboard__card recent-activity-card">
