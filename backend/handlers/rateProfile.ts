@@ -1,35 +1,82 @@
 import { pool } from '../db/pool.js';
-
 import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+import { getEnvValue } from '../utils/getEnv.js';
+
+const JWT_KEY = getEnvValue('JWT_KEY', 'JWT_KEY_FILE')!;
 
 export const rateProfileHandler = async (req: Request, res: Response) => {
-    const raterId = req.body.raterId;
-    const raterUserId = parseInt(req.params.userId);
-    const {
-        serviceQuality,
-        communication,
-        timeliness
-    } = req.body;
-    const scores = [serviceQuality, communication, timeliness].map(Number);
-    if (!raterId || !raterUserId || scores.some(score => isNaN(score) || score < 1 || score > 5)) {
-        res.status(400).json({
-            message: 'Chaque critère doit avoir une note entre 1 et 5.'
-        });
-
-        return;
-    }
-
-    const averageRating = Math.round(
-        (scores[0] + scores[1] + scores[2]) / 3
-    );
-
     try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ message: 'Token manquant.' });
+        }
+
+        const token = authHeader.split(' ')[1];
+        const decoded = jwt.verify(token, JWT_KEY) as { id: number, email: string };
+        const raterId = decoded.id;
+
+        const ratedUserId = parseInt(req.params.userId);
+        const { exchange_id, serviceQuality, communication, timeliness } = req.body;
+        
+        const scores = [serviceQuality, communication, timeliness].map(Number);
+        
+        if (!ratedUserId || !exchange_id || scores.some(score => isNaN(score) || score < 1 || score > 5)) {
+            return res.status(400).json({
+                message: 'ID de l\'échange et chaque critère doivent avoir une note entre 1 et 5.'
+            });
+        }
+
+        // Vérifier que l'échange existe et est terminé
+        const exchangeCheck = await pool.query(
+            `SELECT * FROM exchanges 
+             WHERE id = $1 AND status = 'completed' 
+             AND (initiator_id = $2 OR recipient_id = $2)`,
+            [exchange_id, raterId]
+        );
+
+        if (exchangeCheck.rows.length === 0) {
+            return res.status(400).json({
+                message: 'Vous ne pouvez noter que les échanges terminés auxquels vous avez participé.'
+            });
+        }
+
+        const exchange = exchangeCheck.rows[0];
+
+        // Vérifier que l'utilisateur note bien l'autre participant de l'échange
+        const otherParticipantId = exchange.initiator_id === raterId 
+            ? exchange.recipient_id 
+            : exchange.initiator_id;
+
+        if (otherParticipantId !== ratedUserId) {
+            return res.status(400).json({
+                message: 'Vous ne pouvez noter que l\'autre participant de cet échange.'
+            });
+        }
+
+        // Vérifier qu'un avis n'a pas déjà été donné pour cet échange
+        const existingRating = await pool.query(
+            'SELECT id FROM profile_ratings WHERE exchange_id = $1 AND rater_id = $2',
+            [exchange_id, raterId]
+        );
+
+        if (existingRating.rows.length > 0) {
+            return res.status(400).json({
+                message: 'Vous avez déjà noté cette personne pour un échange précédent.'
+            });
+        }
+
+        const averageRating = Math.round(
+            (scores[0] + scores[1] + scores[2]) / 3
+        );
+
+        console.log('Tentative d\'avis :', { raterId, ratedUserId, exchange_id });
+
+        // Insérer l'avis avec l'ID de l'échange
         await pool.query(`
-            INSERT INTO profile_ratings (rater_id, rated_user_id, rating)
-            VALUES ($1, $2, $3)
-            ON CONFLICT (rater_id, rated_user_id)
-            DO UPDATE SET rating = $3
-        `, [raterId, raterUserId, averageRating]);
+            INSERT INTO profile_ratings (rater_id, rated_user_id, rating, exchange_id)
+            VALUES ($1, $2, $3, $4)
+        `, [raterId, ratedUserId, averageRating, exchange_id]);
 
         res.status(200).json({
             message: 'Votre avis a été enregistré avec succès.',

@@ -5,6 +5,7 @@ import { registerHandler } from './handlers/register.js';
 import { getAllUsersHandler, getUserByIdHandler } from './handlers/users.js';
 import { rateProfileHandler } from './handlers/rateProfile.js';
 import { unsubscribeHandler } from './handlers/unsubscribe.js';
+import { createExchangeHandler, confirmExchangeHandler, completeExchangeHandler, getUserExchangesHandler, getExchangeRatingHandler } from './handlers/exchanges.js';
 import { getAllowedOrigins } from './utils/origins.js';
 
 import cors from 'cors';
@@ -54,8 +55,15 @@ app.put('/conversations/:conversationId/read', markConversationAsRead as express
 
 app.get('/users', getAllUsersHandler);
 app.get('/users/:id', getUserByIdHandler);
-app.post('/rate/:userId', rateProfileHandler);
+app.post('/rate/:userId', rateProfileHandler as express.RequestHandler);
 app.delete('/unsubscribe', unsubscribeHandler);
+
+// Routes pour les échanges
+app.post('/exchanges', createExchangeHandler as express.RequestHandler);
+app.put('/exchanges/:id/confirm', confirmExchangeHandler as express.RequestHandler);
+app.put('/exchanges/:id/complete', completeExchangeHandler as express.RequestHandler);
+app.get('/exchanges', getUserExchangesHandler as express.RequestHandler);
+app.get('/exchanges/:id/rating', getExchangeRatingHandler as express.RequestHandler);
 
 app.listen(port, () => {
     console.log(`🚀 Server listening on http://localhost:${port}`);

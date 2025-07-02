@@ -3,6 +3,9 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { fetchUserConversations, fetchConversationMessages, sendMessage, markConversationAsRead } from '../api/messagesApi';
 import { fetchUserById } from '../api/userApi';
+import { Exchange } from '../api/exchangesApi';
+import ExchangeModal from './ExchangeModal';
+import RatingModal from './RatingModal';
 import '../styles/MessagingSystem.scss';
 
 interface Conversation {
@@ -45,6 +48,10 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
   const [newMessage, setNewMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false);
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+  const [selectedExchangeForRating, setSelectedExchangeForRating] = useState<Exchange | null>(null);
   
   const currentUser = useSelector((state: RootState) => state.user);
 
@@ -122,6 +129,14 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
     } catch (err) {
       setError('Erreur lors du chargement des conversations');
     }
+  };
+
+  const handleExchangeCreated = () => {
+    loadConversations();
+  };
+
+  const handleRatingSubmitted = () => {
+    loadConversations();
   };
 
   const loadMessages = async (conversationId: string) => {
@@ -270,9 +285,28 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
                       <div className="chat-title">{selectedConversation.participant.title}</div>
                     </div>
                   </div>
+                  <div className="chat-actions">
+                    <button
+                      className="exchange-button"
+                      onClick={() => setIsExchangeModalOpen(true)}
+                      style={{
+                        backgroundColor: '#007bff',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        padding: '8px 12px',
+                        fontSize: '12px',
+                        cursor: 'pointer',
+                        fontWeight: '500'
+                      }}
+                    >
+                      💼 Proposer un échange
+                    </button>
+                  </div>
                 </div>
 
                 <div className="messages-container">
+                  {/* Messages */}
                   {messages.map((message) => (
                     <div
                       key={message.id}
@@ -396,6 +430,35 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
           </div>
         )}
       </div>
+
+      {/* Modal pour proposer un échange */}
+      {selectedConversation && (
+        <ExchangeModal
+          isOpen={isExchangeModalOpen}
+          onClose={() => setIsExchangeModalOpen(false)}
+          recipientId={parseInt(selectedConversation.participant.id)}
+          recipientName={`${selectedConversation.participant.firstName} ${selectedConversation.participant.lastName}`}
+          onExchangeCreated={handleExchangeCreated}
+        />
+      )}
+
+      {/* Modal pour laisser un avis */}
+      {selectedExchangeForRating && (
+        <RatingModal
+          isOpen={isRatingModalOpen}
+          onClose={() => {
+            setIsRatingModalOpen(false);
+            setSelectedExchangeForRating(null);
+          }}
+          exchangeId={selectedExchangeForRating.id}
+          userId={selectedExchangeForRating.isInitiator ? selectedExchangeForRating.recipient.id : selectedExchangeForRating.initiator.id}
+          userName={selectedExchangeForRating.isInitiator 
+            ? `${selectedExchangeForRating.recipient.firstName} ${selectedExchangeForRating.recipient.lastName}`
+            : `${selectedExchangeForRating.initiator.firstName} ${selectedExchangeForRating.initiator.lastName}`
+          }
+          onRatingSubmitted={handleRatingSubmitted}
+        />
+      )}
     </div>
   );
 };

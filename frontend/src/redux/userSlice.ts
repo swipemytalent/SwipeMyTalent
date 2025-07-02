@@ -8,6 +8,7 @@ export interface UserState {
   email: string;
   avatar?: string;
   bio?: string;
+  averageRating?: number;
 }
 
 const initialState: UserState = {

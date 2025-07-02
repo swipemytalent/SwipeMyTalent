@@ -9,6 +9,7 @@ import { openMessaging } from '../redux/messagingSlice';
 import { fetchUserProfile, fetchUserById } from '../api/userApi';
 import { AuthService } from '../services/authService';
 import { LoggerService } from '../services/loggerService';
+import StarRating from '../components/StarRating';
 import '../styles/profileview.scss';
 
 function formatBioToHtml(bio: string) {
@@ -94,6 +95,15 @@ const ProfileView: React.FC = () => {
         <div className="profile-view-infos">
           <h1>{profile.firstName} {profile.lastName}</h1>
           <h2>{profile.title}</h2>
+          {profile.averageRating && (
+            <div className="profile-view-rating">
+              <StarRating 
+                rating={profile.averageRating} 
+                size="medium" 
+                showNumber={true}
+              />
+            </div>
+          )}
           {profile.bio && (
             <div className="profile-view-bio" dangerouslySetInnerHTML={{ __html: formatBioToHtml(profile.bio) }} />
           )}

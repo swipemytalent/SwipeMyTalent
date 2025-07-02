@@ -4,6 +4,7 @@ import { useState } from 'react';
 import ProfileModal from '../ProfileModal';
 import { setViewedProfile } from '../../redux/viewedProfileSlice';
 import { useNavigate } from 'react-router-dom';
+import StarRating from '../StarRating';
 
 interface UserWithBio {
   id: string;
@@ -13,6 +14,7 @@ interface UserWithBio {
   email: string;
   avatar?: string;
   bio?: string;
+  averageRating?: number;
 }
 
 interface ProfileCardProps {
@@ -50,6 +52,15 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ onEditProfile, user: propUser
             {avatar && <img src={avatar} alt="" />}
           </div>
           <div className="profile-card__job">{title}</div>
+          {user.averageRating && (
+            <div className="profile-card__rating">
+              <StarRating 
+                rating={user.averageRating} 
+                size="small" 
+                showNumber={true}
+              />
+            </div>
+          )}
         </div>
         <div className="profile-card__bottom">
           {!isViewOnly && (
