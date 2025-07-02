@@ -27,7 +27,6 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
             });
         }
 
-        // Vérifier que l'échange existe et est terminé
         const exchangeCheck = await pool.query(
             `SELECT * FROM exchanges 
              WHERE id = $1 AND status = 'completed' 
@@ -43,7 +42,6 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
 
         const exchange = exchangeCheck.rows[0];
 
-        // Vérifier que l'utilisateur note bien l'autre participant de l'échange
         const otherParticipantId = exchange.initiator_id === raterId 
             ? exchange.recipient_id 
             : exchange.initiator_id;
@@ -54,7 +52,6 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
             });
         }
 
-        // Vérifier qu'un avis n'a pas déjà été donné pour cet échange
         const existingRating = await pool.query(
             'SELECT id FROM profile_ratings WHERE exchange_id = $1 AND rater_id = $2',
             [exchange_id, raterId]
@@ -72,7 +69,6 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
 
         console.log('Tentative d\'avis :', { raterId, ratedUserId, exchange_id });
 
-        // Insérer l'avis avec l'ID de l'échange
         await pool.query(`
             INSERT INTO profile_ratings (rater_id, rated_user_id, rating, exchange_id)
             VALUES ($1, $2, $3, $4)

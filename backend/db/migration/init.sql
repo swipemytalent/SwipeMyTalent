@@ -66,7 +66,10 @@ CREATE TABLE IF NOT EXISTS profile_ratings (
     rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
     exchange_id INTEGER NOT NULL REFERENCES exchanges(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (rater_id, rated_user_id, exchange_id)
+    UNIQUE (rater_id, rated_user_id, exchange_id),
+    service_quality INTEGER CHECK (service_quality >= 1 AND service_quality <= 5),
+    communication INTEGER CHECK (communication >= 1 AND communication <= 5),
+    timeliness INTEGER CHECK (timeliness >= 1 AND timeliness <= 5)
 );
 
 CREATE INDEX IF NOT EXISTS idx_profile_ratings_exchange ON profile_ratings(exchange_id);

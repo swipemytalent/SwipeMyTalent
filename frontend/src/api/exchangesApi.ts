@@ -1,6 +1,5 @@
 import { HttpService } from '../services/httpService';
 
-// Types pour les échanges
 export interface Exchange {
     id: number;
     description: string;
@@ -38,7 +37,6 @@ export interface ExchangeRatingRequest {
     timeliness: number;
 }
 
-// Créer un nouvel échange
 export const createExchange = async (data: CreateExchangeRequest): Promise<{ message: string; exchange: Exchange }> => {
     return HttpService.request('/exchanges', {
         method: 'POST',
@@ -46,28 +44,24 @@ export const createExchange = async (data: CreateExchangeRequest): Promise<{ mes
     });
 };
 
-// Confirmer un échange
 export const confirmExchange = async (exchangeId: number): Promise<{ message: string; status: string }> => {
     return HttpService.request(`/exchanges/${exchangeId}/confirm`, {
         method: 'PUT'
     });
 };
 
-// Marquer un échange comme terminé
 export const completeExchange = async (exchangeId: number): Promise<{ message: string; exchange_id: number }> => {
     return HttpService.request(`/exchanges/${exchangeId}/complete`, {
         method: 'PUT'
     });
 };
 
-// Récupérer les échanges de l'utilisateur
 export const fetchUserExchanges = async (): Promise<Exchange[]> => {
     return HttpService.request('/exchanges', {
         method: 'GET'
     });
 };
 
-// Noter un utilisateur après un échange terminé
 export const rateUserAfterExchange = async (
     userId: number, 
     ratingData: ExchangeRatingRequest
@@ -78,7 +72,6 @@ export const rateUserAfterExchange = async (
     });
 };
 
-// Récupérer l'avis d'un utilisateur pour un échange donné
 export const fetchExchangeRating = async (exchangeId: number): Promise<any> => {
     return HttpService.request(`/exchanges/${exchangeId}/rating`, {
         method: 'GET'

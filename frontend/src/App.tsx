@@ -16,6 +16,9 @@ import store, { AppDispatch, RootState } from './redux/store';
 import { setupHttpService } from './services/httpService';
 import MessagingSystem from './components/MessagingSystem';
 import { closeMessaging } from './redux/messagingSlice';
+import CGU from './pages/CGU';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import CookiesPolicy from './pages/CookiesPolicy';
 
 const AppContent: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -36,6 +39,9 @@ const AppContent: React.FC = () => {
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/talents" element={<ProtectedRoute><Talents /></ProtectedRoute>} />
         <Route path="/profil/:id" element={<ProtectedRoute><ProfileView /></ProtectedRoute>} />
+        <Route path="/cgu" element={<CGU />} />
+        <Route path="/confidentialite" element={<PrivacyPolicy />} />
+        <Route path="/cookies" element={<CookiesPolicy />} />
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
       <MessagingSystem

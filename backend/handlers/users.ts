@@ -72,3 +72,21 @@ export const getUserByIdHandler = async (req: Request, res: Response, _next: Nex
         res.status(500).json({ message: 'Erreur serveur.' });
     }
 };
+
+export const getUserRatingsHandler = async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+    const userId = req.params.id;
+    try {
+        const result = await pool.query(
+            `SELECT pr.*, u.first_name AS "raterFirstName", u.last_name AS "raterLastName" FROM profile_ratings pr
+             JOIN users u ON pr.rater_id = u.id
+             WHERE pr.rated_user_id = $1
+             ORDER BY pr.created_at DESC
+             LIMIT 10`,
+            [userId]
+        );
+        res.json(result.rows);
+    } catch (err) {
+        console.error('getUserRatings error:', err);
+        res.status(500).json({ message: 'Erreur serveur.' });
+    }
+};

@@ -15,4 +15,8 @@ export async function fetchUsers(): Promise<UserState[]> {
 
 export async function fetchUserById(id: string): Promise<UserState> {
   return await HttpService.get<UserState>(`/users/${id}`);
-} 
+}
+
+export const fetchUserRatings = async (userId: string | number) => {
+  return HttpService.request(`/users/${userId}/ratings`, { method: 'GET' });
+}; 
