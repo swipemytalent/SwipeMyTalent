@@ -13,6 +13,9 @@ const Footer: React.FC = () => {
         </span>
         <nav className="footer-links">
           {isLoggedIn && <NavLink to="/">Accueil</NavLink>}
+          <NavLink to="/cgu">Conditions générales</NavLink>
+          <NavLink to="/confidentialite">Confidentialité</NavLink>
+          <NavLink to="/cookies">Cookies</NavLink>
         </nav>
         <span className="footer-copy">&copy; {new Date().getFullYear()} SwipeMyTalent. Tous droits réservés.</span>
       </div>

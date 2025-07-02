@@ -6,10 +6,13 @@ import StartConversationModal from '../components/StartConversationModal';
 import { setViewedProfile } from '../redux/viewedProfileSlice';
 import { setUser } from '../redux/userSlice';
 import { openMessaging } from '../redux/messagingSlice';
-import { fetchUserProfile, fetchUserById } from '../api/userApi';
+import { fetchUserProfile, fetchUserById, fetchUserRatings } from '../api/userApi';
 import { AuthService } from '../services/authService';
 import { LoggerService } from '../services/loggerService';
 import StarRating from '../components/StarRating';
+import AvisCarousel from '../components/AvisCarousel';
+import SeeMoreModal from '../components/cards/SeeMoreModal';
+import ProjetCard from '../components/cards/ProjetCard';
 import '../styles/profileview.scss';
 
 function formatBioToHtml(bio: string) {
@@ -44,7 +47,8 @@ const ProfileView: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
-
+  const [avis, setAvis] = useState<any[]>([]);
+  const [voirPlusModal, setVoirPlusModal] = useState(false);
 
   useEffect(() => {
     if (AuthService.isLoggedIn() && !user.id) {
@@ -82,48 +86,70 @@ const ProfileView: React.FC = () => {
     }
   }, [profile, id, dispatch]);
 
+  useEffect(() => {
+    if (profile && profile.id) {
+      fetchUserRatings(profile.id)
+        .then((data: any) => setAvis(Array.isArray(data) ? data : []))
+        .catch(() => {});
+    }
+  }, [profile]);
+
   if (!profile) {
     return <div className="profile-view__empty">Aucun profil sélectionné.</div>;
   }
 
+  const isLong = (profile.bio || "").length > 480;
+  const bioAffiche = (profile.bio || "").length > 480 ? (profile.bio || "").slice(0, 480) + "..." : (profile.bio || "");
+
   return (
-    <div className="profile-view-modern">
-      <div className="profile-view-content">
-        <div className="profile-view-avatar-large">
-          {profile.avatar && <img src={profile.avatar} alt="Avatar" />}
-        </div>
-        <div className="profile-view-infos">
-          <h1>{profile.firstName} {profile.lastName}</h1>
-          <h2>{profile.title}</h2>
-          {profile.averageRating && (
-            <div className="profile-view-rating">
-              <StarRating 
-                rating={profile.averageRating} 
-                size="medium" 
-                showNumber={true}
-              />
+    <div className="dashboard">
+      <button className="btn btn--link retour-talents-btn" onClick={() => navigate('/talents')}>
+        <i className="fa fa-arrow-left"></i> Retour aux talents
+      </button>
+      <div className="dashboard__content">
+        <div className="top-cards">
+          <div className="dashboard__card profile-card profile-card--full">
+            <div className="profile-card__avatar-large">
+              {profile.avatar && <img src={profile.avatar} alt="Avatar" />}
             </div>
-          )}
-          {profile.bio && (
-            <div className="profile-view-bio" dangerouslySetInnerHTML={{ __html: formatBioToHtml(profile.bio) }} />
-          )}
-          <div className="profile-view-contact">
-            <span><i className="fa fa-envelope"></i> {profile.email}</span>
+            <div className="profile-card__name">{profile.firstName} {profile.lastName}</div>
+            <div className="profile-card__title">{profile.title}</div>
+            {profile.averageRating && (
+              <div className="profile-card__rating">
+                <StarRating rating={profile.averageRating} size="medium" showNumber={true} />
+              </div>
+            )}
+            <div className="profile-card__actions" style={{ marginTop: '1.2rem', display: 'flex', justifyContent: 'center' }}>
+              <button className="btn btn--primary profile-view__message-btn" onClick={() => dispatch(openMessaging(String(profile.id)))}>
+                <i className="fa fa-envelope"></i> Envoyer un message
+              </button>
+            </div>
           </div>
-          <div className="profile-view-actions">
-            <button 
-              className="btn btn--primary profile-view__message-btn"
-              onClick={() => dispatch(openMessaging(String(profile.id)))}
-            >
-              <i className="fa fa-envelope"></i> Envoyer un message
-            </button>
-            <button 
-              className="btn btn--secondary"
-              onClick={() => navigate('/talents')}
-            >
-              Retour aux talents
-            </button>
+          <div className="dashboard__card bio-card">
+            <h3 className="bio-card__title">Présentation</h3>
+            {profile.bio ? (
+              <div className="bio-card__content">
+                <div dangerouslySetInnerHTML={{ __html: formatBioToHtml(bioAffiche || "") }} />
+                {isLong && (
+                  <button
+                    onClick={() => setVoirPlusModal(true)}
+                    className="voir-plus-btn"
+                  >
+                    Voir plus
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="bio-card__content">Aucune bio renseignée.</div>
+            )}
           </div>
+        </div>
+        <div className="cards-grid">
+          <div className="dashboard__card avis-card">
+            <h3 className="avis-card__title">Avis reçus</h3>
+            <AvisCarousel avisList={avis} />
+          </div>
+          <ProjetCard />
         </div>
       </div>
       <StartConversationModal
@@ -132,6 +158,13 @@ const ProfileView: React.FC = () => {
         recipientId={profile.id}
         recipientName={`${profile.firstName} ${profile.lastName}`}
       />
+      {voirPlusModal && (
+        <SeeMoreModal
+          isOpen={voirPlusModal}
+          onClose={() => setVoirPlusModal(false)}
+          htmlContent={formatBioToHtml(profile.bio || "")}
+        />
+      )}
     </div>
   );
 };

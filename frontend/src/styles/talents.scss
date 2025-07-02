@@ -42,4 +42,63 @@
       padding: 0.5rem;
     }
   }
+}
+
+.talents__pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 2rem 0 0 0;
+
+  button {
+    background: #fff;
+    border: 1.5px solid var(--primary-blue);
+    color: var(--primary-blue);
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.1rem;
+    font-size: 1.08rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border 0.2s;
+    outline: none;
+  }
+  button:not(:disabled):hover {
+    background: var(--primary-blue);
+    color: #fff;
+    border-color: var(--primary-blue-light);
+  }
+  button:disabled {
+    background: #f3f6fa;
+    color: #b0b8c9;
+    border-color: #e0e6f1;
+    cursor: not-allowed;
+  }
+  button.active {
+    background: var(--primary-orange);
+    color: #fff;
+    border-color: var(--primary-orange);
+  }
+}
+
+.talents__searchbar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+
+  input[type="text"] {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.7rem 1.1rem;
+    border: 1.5px solid var(--primary-blue);
+    border-radius: 2rem;
+    font-size: 1.08rem;
+    outline: none;
+    transition: border 0.2s;
+    box-shadow: 0 2px 8px 0 rgba(60, 72, 100, 0.04);
+  }
+  input[type="text"]:focus {
+    border-color: var(--primary-orange);
+    box-shadow: 0 2px 8px 0 rgba(255, 152, 0, 0.10);
+  }
 } 

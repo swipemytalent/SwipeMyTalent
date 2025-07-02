@@ -17,7 +17,7 @@ const RecentActivityCard = () => {
   useEffect(() => {
     fetchUserExchanges()
       .then(data => {
-        setExchanges(data.slice(0, 5)); // On affiche les 5 plus récents
+        setExchanges(data.slice(0, 5));
         setLoading(false);
       })
       .catch(() => {
@@ -83,10 +83,10 @@ const RecentActivityCard = () => {
     setErrorAction(null);
     try {
       await confirmExchange(selectedExchange.id);
-      // Refresh exchanges
+
       const data = await fetchUserExchanges();
       setExchanges(data.slice(0, 5));
-      // Met à jour la modale
+
       setSelectedExchange(data.find((ex: Exchange) => ex.id === selectedExchange.id) || null);
     } catch (err) {
       setErrorAction("Erreur lors de la confirmation");
@@ -252,7 +252,7 @@ const RecentActivityCard = () => {
                 }
                 onRatingSubmitted={async ()=>{
                   setIsRatingModalOpen(false);
-                  // Refresh exchanges
+                  
                   const data = await fetchUserExchanges();
                   setExchanges(data.slice(0, 5));
                   setSelectedExchange(data.find((ex: Exchange) => ex.id === selectedExchange.id) || null);

@@ -5,7 +5,6 @@ import { getEnvValue } from '../utils/getEnv.js';
 
 const JWT_KEY = getEnvValue('JWT_KEY', 'JWT_KEY_FILE')!;
 
-// Types pour les échanges
 interface Exchange {
     id: number;
     initiator_id: number;
@@ -18,7 +17,6 @@ interface Exchange {
     completed_at?: Date;
 }
 
-// Créer un nouvel échange
 export const createExchangeHandler = async (req: Request, res: Response, _next: NextFunction) => {
     try {
         const authHeader = req.headers.authorization;
@@ -38,14 +36,12 @@ export const createExchangeHandler = async (req: Request, res: Response, _next: 
             });
         }
 
-        // Vérifier que l'utilisateur ne propose pas un échange avec lui-même
         if (initiatorId === recipient_id) {
             return res.status(400).json({ 
                 message: 'Vous ne pouvez pas proposer un échange avec vous-même.' 
             });
         }
 
-        // Vérifier que le destinataire existe et est actif
         const recipientCheck = await pool.query(
             'SELECT id FROM users WHERE id = $1 AND subscribed = TRUE',
             [recipient_id]
@@ -57,7 +53,6 @@ export const createExchangeHandler = async (req: Request, res: Response, _next: 
             });
         }
 
-        // Créer l'échange
         const result = await pool.query(
             `INSERT INTO exchanges (initiator_id, recipient_id, description)
              VALUES ($1, $2, $3)
@@ -88,7 +83,6 @@ export const createExchangeHandler = async (req: Request, res: Response, _next: 
     }
 };
 
-// Confirmer un échange (initiateur ou destinataire)
 export const confirmExchangeHandler = async (req: Request, res: Response, _next: NextFunction) => {
     try {
         const authHeader = req.headers.authorization;
@@ -106,7 +100,6 @@ export const confirmExchangeHandler = async (req: Request, res: Response, _next:
             return res.status(400).json({ message: 'ID de l\'échange requis.' });
         }
 
-        // Récupérer l'échange
         const exchangeResult = await pool.query(
             'SELECT * FROM exchanges WHERE id = $1',
             [exchangeId]
@@ -118,21 +111,18 @@ export const confirmExchangeHandler = async (req: Request, res: Response, _next:
 
         const exchange = exchangeResult.rows[0];
 
-        // Vérifier que l'utilisateur peut confirmer cet échange
         if (exchange.initiator_id !== userId && exchange.recipient_id !== userId) {
             return res.status(403).json({ 
                 message: 'Vous n\'êtes pas autorisé à confirmer cet échange.' 
             });
         }
 
-        // Vérifier que l'échange n'est pas déjà terminé
         if (exchange.status === 'completed' || exchange.status === 'cancelled') {
             return res.status(400).json({ 
                 message: 'Cet échange est déjà terminé.' 
             });
         }
 
-        // Mettre à jour la confirmation
         let updateField = '';
         if (exchange.initiator_id === userId) {
             updateField = 'initiator_confirmed = TRUE';
@@ -145,7 +135,6 @@ export const confirmExchangeHandler = async (req: Request, res: Response, _next:
             [exchangeId]
         );
 
-        // Vérifier si les deux parties ont confirmé
         const updatedExchange = await pool.query(
             'SELECT * FROM exchanges WHERE id = $1',
             [exchangeId]
@@ -174,7 +163,6 @@ export const confirmExchangeHandler = async (req: Request, res: Response, _next:
     }
 };
 
-// Marquer un échange comme terminé
 export const completeExchangeHandler = async (req: Request, res: Response, _next: NextFunction) => {
     try {
         const authHeader = req.headers.authorization;
@@ -192,7 +180,6 @@ export const completeExchangeHandler = async (req: Request, res: Response, _next
             return res.status(400).json({ message: 'ID de l\'échange requis.' });
         }
 
-        // Récupérer l'échange
         const exchangeResult = await pool.query(
             'SELECT * FROM exchanges WHERE id = $1',
             [exchangeId]
@@ -204,21 +191,18 @@ export const completeExchangeHandler = async (req: Request, res: Response, _next
 
         const exchange = exchangeResult.rows[0];
 
-        // Vérifier que l'utilisateur peut terminer cet échange
         if (exchange.initiator_id !== userId && exchange.recipient_id !== userId) {
             return res.status(403).json({ 
                 message: 'Vous n\'êtes pas autorisé à terminer cet échange.' 
             });
         }
 
-        // Vérifier que l'échange est confirmé
         if (exchange.status !== 'confirmed') {
             return res.status(400).json({ 
                 message: 'L\'échange doit être confirmé par les deux parties avant d\'être terminé.' 
             });
         }
 
-        // Marquer comme terminé
         await pool.query(
             `UPDATE exchanges 
              SET status = 'completed', completed_at = CURRENT_TIMESTAMP 
@@ -238,7 +222,6 @@ export const completeExchangeHandler = async (req: Request, res: Response, _next
     }
 };
 
-// Récupérer les échanges d'un utilisateur
 export const getUserExchangesHandler = async (req: Request, res: Response, _next: NextFunction) => {
     try {
         const authHeader = req.headers.authorization;
