@@ -130,6 +130,11 @@
       font-weight: 600;
       margin-bottom: 0.5rem;
     }
+    .profile-view-rating {
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: flex-start;
+    }
     .profile-view-bio {
       font-style: italic;
       color: var(--text-secondary);

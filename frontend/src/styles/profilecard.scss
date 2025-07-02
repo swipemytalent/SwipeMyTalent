@@ -55,6 +55,12 @@
   margin: 1rem 0 0 0;
 }
 
+.profile-card__rating {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+}
+
 .profile-card__button {
   max-width: 200px;
   align-self: center;
