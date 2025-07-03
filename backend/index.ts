@@ -7,6 +7,7 @@ import { rateProfileHandler } from './handlers/rateProfile.js';
 import { unsubscribeHandler } from './handlers/unsubscribe.js';
 import { createExchangeHandler, confirmExchangeHandler, completeExchangeHandler, getUserExchangesHandler, getExchangeRatingHandler } from './handlers/exchanges.js';
 import { getAllowedOrigins } from './utils/origins.js';
+import { sendMessage } from './handlers/messages.js';
 
 import cors from 'cors';
 import cron from 'node-cron';
@@ -64,6 +65,8 @@ app.put('/exchanges/:id/confirm', confirmExchangeHandler as express.RequestHandl
 app.put('/exchanges/:id/complete', completeExchangeHandler as express.RequestHandler);
 app.get('/exchanges', getUserExchangesHandler as express.RequestHandler);
 app.get('/exchanges/:id/rating', getExchangeRatingHandler as express.RequestHandler);
+
+app.post('/messages', sendMessage as express.RequestHandler);
 
 app.listen(port, () => {
     console.log(`🚀 Server listening on http://localhost:${port}`);
