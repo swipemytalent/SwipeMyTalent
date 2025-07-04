@@ -18,9 +18,9 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
 
         const ratedUserId = parseInt(req.params.userId);
         const { exchange_id, serviceQuality, communication, timeliness } = req.body;
-        
+
         const scores = [serviceQuality, communication, timeliness].map(Number);
-        
+
         if (!ratedUserId || !exchange_id || scores.some(score => isNaN(score) || score < 1 || score > 5)) {
             return res.status(400).json({
                 message: 'ID de l\'échange et chaque critère doivent avoir une note entre 1 et 5.'
@@ -42,8 +42,8 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
 
         const exchange = exchangeCheck.rows[0];
 
-        const otherParticipantId = exchange.initiator_id === raterId 
-            ? exchange.recipient_id 
+        const otherParticipantId = exchange.initiator_id === raterId
+            ? exchange.recipient_id
             : exchange.initiator_id;
 
         if (otherParticipantId !== ratedUserId) {
@@ -73,6 +73,21 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
             INSERT INTO profile_ratings (rater_id, rated_user_id, rating, exchange_id)
             VALUES ($1, $2, $3, $4)
         `, [raterId, ratedUserId, averageRating, exchange_id]);
+
+        await pool.query(`
+            INSERT INTO notifications (user_id, type, data)
+            VALUES ($1, $2, $3)`,
+            [
+                ratedUserId,
+                'profile_rating',
+                {
+                    raterId,
+                    exchangeId: exchange_id,
+                    averageRating,
+                    message: `Vous avez reçu une nouvelle évaluation de la part d'un utilisateur.`
+                }
+            ]
+        );
 
         res.status(200).json({
             message: 'Votre avis a été enregistré avec succès.',
