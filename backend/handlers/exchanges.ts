@@ -31,14 +31,14 @@ export const createExchangeHandler = async (req: Request, res: Response, _next: 
         const { recipient_id, description } = req.body;
 
         if (!recipient_id || !description) {
-            return res.status(400).json({ 
-                message: 'ID du destinataire et description requis.' 
+            return res.status(400).json({
+                message: 'ID du destinataire et description requis.'
             });
         }
 
         if (initiatorId === recipient_id) {
-            return res.status(400).json({ 
-                message: 'Vous ne pouvez pas proposer un échange avec vous-même.' 
+            return res.status(400).json({
+                message: 'Vous ne pouvez pas proposer un échange avec vous-même.'
             });
         }
 
@@ -48,8 +48,8 @@ export const createExchangeHandler = async (req: Request, res: Response, _next: 
         );
 
         if (recipientCheck.rows.length === 0) {
-            return res.status(404).json({ 
-                message: 'Destinataire non trouvé ou compte désactivé.' 
+            return res.status(404).json({
+                message: 'Destinataire non trouvé ou compte désactivé.'
             });
         }
 
@@ -61,6 +61,20 @@ export const createExchangeHandler = async (req: Request, res: Response, _next: 
         );
 
         const exchange = result.rows[0];
+
+        await pool.query(
+            `INSERT INTO notifications (user_id, type, payload)
+            VALUES ($1, $2, $3)`,
+            [
+                recipient_id,
+                'exchange_requested',
+                {
+                    initiatorId,
+                    exchange_id: exchange.id,
+                    description,
+                }
+            ]
+        );
 
         res.status(201).json({
             message: 'Échange proposé avec succès.',
@@ -77,8 +91,8 @@ export const createExchangeHandler = async (req: Request, res: Response, _next: 
         });
     } catch (err) {
         console.error('Erreur lors de la création de l\'échange:', err);
-        res.status(500).json({ 
-            message: 'Une erreur est survenue lors de la création de l\'échange.' 
+        res.status(500).json({
+            message: 'Une erreur est survenue lors de la création de l\'échange.'
         });
     }
 };
@@ -112,14 +126,14 @@ export const confirmExchangeHandler = async (req: Request, res: Response, _next:
         const exchange = exchangeResult.rows[0];
 
         if (exchange.initiator_id !== userId && exchange.recipient_id !== userId) {
-            return res.status(403).json({ 
-                message: 'Vous n\'êtes pas autorisé à confirmer cet échange.' 
+            return res.status(403).json({
+                message: 'Vous n\'êtes pas autorisé à confirmer cet échange.'
             });
         }
 
         if (exchange.status === 'completed' || exchange.status === 'cancelled') {
-            return res.status(400).json({ 
-                message: 'Cet échange est déjà terminé.' 
+            return res.status(400).json({
+                message: 'Cet échange est déjà terminé.'
             });
         }
 
@@ -149,6 +163,23 @@ export const confirmExchangeHandler = async (req: Request, res: Response, _next:
                 'UPDATE exchanges SET status = $1 WHERE id = $2',
                 [newStatus, exchangeId]
             );
+
+            const targetUserId = (exchange.initiator_id === userId)
+                ? exchange.recipient_id
+                : exchange.initiator_id;
+
+            await pool.query(
+                `INSERT INTO notifications (user_id, type, payload)
+                VALUES ($1, $2, $3)`,
+                [
+                    targetUserId,
+                    'exchange_confirmed',
+                    {
+                        by_user_id: userId,
+                        exchange_id: exchangeId
+                    }
+                ]
+            );
         }
 
         res.status(200).json({
@@ -157,8 +188,8 @@ export const confirmExchangeHandler = async (req: Request, res: Response, _next:
         });
     } catch (err) {
         console.error('Erreur lors de la confirmation de l\'échange:', err);
-        res.status(500).json({ 
-            message: 'Une erreur est survenue lors de la confirmation.' 
+        res.status(500).json({
+            message: 'Une erreur est survenue lors de la confirmation.'
         });
     }
 };
@@ -192,14 +223,14 @@ export const completeExchangeHandler = async (req: Request, res: Response, _next
         const exchange = exchangeResult.rows[0];
 
         if (exchange.initiator_id !== userId && exchange.recipient_id !== userId) {
-            return res.status(403).json({ 
-                message: 'Vous n\'êtes pas autorisé à terminer cet échange.' 
+            return res.status(403).json({
+                message: 'Vous n\'êtes pas autorisé à terminer cet échange.'
             });
         }
 
         if (exchange.status !== 'confirmed') {
-            return res.status(400).json({ 
-                message: 'L\'échange doit être confirmé par les deux parties avant d\'être terminé.' 
+            return res.status(400).json({
+                message: 'L\'échange doit être confirmé par les deux parties avant d\'être terminé.'
             });
         }
 
@@ -210,14 +241,31 @@ export const completeExchangeHandler = async (req: Request, res: Response, _next
             [exchangeId]
         );
 
+        const otherUserId = (exchange.initiator_id === userId)
+            ? exchange.recipient_id
+            : exchange.initiator_id;
+
+        await pool.query(
+            `INSERT INTO notifications (user_id, type, payload)
+            VALUES ($1, $2, $3)`,
+            [
+                otherUserId,
+                'exchange_completed',
+                {
+                    completed_by: userId,
+                    exchange_id: exchangeId
+                }
+            ]
+        );
+
         res.status(200).json({
             message: 'Échange marqué comme terminé. Vous pouvez maintenant laisser un avis.',
             exchange_id: exchangeId
         });
     } catch (err) {
         console.error('Erreur lors de la finalisation de l\'échange:', err);
-        res.status(500).json({ 
-            message: 'Une erreur est survenue lors de la finalisation.' 
+        res.status(500).json({
+            message: 'Une erreur est survenue lors de la finalisation.'
         });
     }
 };
@@ -281,8 +329,8 @@ export const getUserExchangesHandler = async (req: Request, res: Response, _next
         res.json(exchanges);
     } catch (err) {
         console.error('Erreur lors de la récupération des échanges:', err);
-        res.status(500).json({ 
-            message: 'Une erreur est survenue lors de la récupération des échanges.' 
+        res.status(500).json({
+            message: 'Une erreur est survenue lors de la récupération des échanges.'
         });
     }
 };

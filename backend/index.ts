@@ -8,13 +8,15 @@ import { unsubscribeHandler } from './handlers/unsubscribe.js';
 import { createExchangeHandler, confirmExchangeHandler, completeExchangeHandler, getUserExchangesHandler, getExchangeRatingHandler } from './handlers/exchanges.js';
 import { getAllowedOrigins } from './utils/origins.js';
 import { sendMessage } from './handlers/messages.js';
+import { deleteUnsubcribedUsers } from './jobs/deleteUnsubscribedUsers.js';
 
 import cors from 'cors';
 import cron from 'node-cron';
 import dotenv from 'dotenv';
 import express, { Express } from 'express';
 import { CorsOptions } from 'cors';
-import { deleteUnsubcribedUsers } from './jobs/deleteUnsubscribedUsers.js';
+import { createServer } from 'http';
+import { Server as SocketIOServer } from 'socket.io';
 
 dotenv.config();
 
@@ -68,7 +70,37 @@ app.get('/exchanges/:id/rating', getExchangeRatingHandler as express.RequestHand
 
 app.post('/messages', sendMessage as express.RequestHandler);
 
-app.listen(port, () => {
+const server = createServer(app);
+const io = new SocketIOServer(server, {
+    cors: {
+        origin: allowedOrigins,
+        credentials: true
+    }
+});
+const connectedUsers = new Map<string, string>();
+
+app.set('io', io);
+
+io.on('connection', (socket) => {
+    console.log(`🔌 New client connected: ${socket.id}`);
+
+    socket.on('register', (userId: string) => {
+        connectedUsers.set(userId, socket.id)
+        console.log(`✅ Registered user ${userId} with socket ${socket.id}`);
+    });
+    socket.on('disconnect', () => {
+        for (const [userId, socketId] of connectedUsers.entries()) {
+            if (socketId === socket.id) {
+                connectedUsers.delete(userId);
+
+                break;
+            }
+        }
+        console.log(`❌ User disconnected: ${socket.id}`);
+    });
+});
+
+server.listen(port, () => {
     console.log(`🚀 Server listening on http://localhost:${port}`);
 });
 

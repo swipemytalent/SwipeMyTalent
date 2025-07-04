@@ -27,7 +27,7 @@ export async function sendMessage(req: Request, res: Response) {
     const { sender_id, receiver_id, content } = req.body;
     const result = await pool.query<Message>(
         `INSERT INTO messages (sender_id, receiver_id, content)
-        VALUES ($1, $2, $3) RETURNING *`,
+         VALUES ($1, $2, $3) RETURNING *`,
         [sender_id, receiver_id, content]
     );
     const message = result.rows[0];
@@ -36,6 +36,25 @@ export async function sendMessage(req: Request, res: Response) {
         sent_at_pretty: formatDate(message.sent_at),
         sent_at_relative: formatDate(message.sent_at, 'relative'),
     };
+
+    await pool.query(
+        `INSERT INTO notifications (user_id, type, payload)
+         VALUES ($1, $2, $3)`,
+        [receiver_id, 'message', {
+            sender_id,
+            message_id: message.id,
+            preview: content.slice(0, 100)
+        }]
+    );
+
+    const io = req.app.get('io');
+    const connectedUsers = io?.sockets.adapter.rooms;
+    const socketId = [...connectedUsers].find(([id, _]) =>
+        id === receiver_id.toString()
+    )?.[0];
+    if (socketId) {
+        io.to(socketId).emit('new_message', enrichedMessage);
+    }
 
     res.status(201).json(enrichedMessage);
 }

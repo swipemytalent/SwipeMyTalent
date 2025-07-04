@@ -81,7 +81,8 @@ BEGIN
     ) THEN
         ALTER TABLE profile_ratings DROP CONSTRAINT profile_ratings_rater_id_rated_user_id_key;
     END IF;
-END$$;
+END
+$$;
 
 ALTER TABLE profile_ratings
     ADD CONSTRAINT profile_ratings_rater_id_rated_user_id_exchange_id_key UNIQUE (rater_id, rated_user_id, exchange_id);
@@ -93,4 +94,17 @@ BEGIN
     ) THEN
         ALTER TABLE exchanges DROP CONSTRAINT exchanges_initiator_id_recipient_id_description_key;
     END IF;
-END$$;
+END
+$$;
+
+CREATE TABLE IF NOT EXISTS notifications (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    type VARCHAR(50) NOT NULL,
+    payload JSONB,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_notifications_user_id ON notifications(user_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_user_is_read ON notifications(user_id, is_read);
