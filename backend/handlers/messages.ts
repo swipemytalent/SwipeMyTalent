@@ -3,6 +3,8 @@ import { Message } from '../types/Message.js';
 import { formatDate } from '../utils/date.js';
 
 import { Request, Response } from 'express';
+import webpush from 'web-push';
+import { sendPushNotification } from '../utils/sendPushNotification.js';
 
 export async function getMessages(req: Request, res: Response) {
     const userId = Number(req.params.userId);
@@ -48,13 +50,20 @@ export async function sendMessage(req: Request, res: Response) {
     );
 
     const io = req.app.get('io');
-    const connectedUsers = io?.sockets.adapter.rooms;
-    const socketId = [...connectedUsers].find(([id, _]) =>
-        id === receiver_id.toString()
-    )?.[0];
+    const connectedUsers: Map<string, string> = req.app.get('connectedUsers');
+    const socketId = connectedUsers.get(receiver_id.toString());
     if (socketId) {
         io.to(socketId).emit('new_message', enrichedMessage);
     }
+
+    await sendPushNotification(
+        receiver_id,
+        {
+            title: 'Nouveau message',
+            body: content.length > 80 ? content.slice(0, 80) + '…' : content
+        },
+        connectedUsers
+    );
 
     res.status(201).json(enrichedMessage);
 }

@@ -17,8 +17,14 @@ import express, { Express } from 'express';
 import { CorsOptions } from 'cors';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
+import webpush from 'web-push';
 
 dotenv.config();
+webpush.setVapidDetails(
+    'mailto:no-reply@swipemytalent.com',
+    process.env.VAPID_PUBLIC_KEY!,
+    process.env.VAPID_PRIVATE_KEY!
+);
 
 const app: Express = express();
 const port: number = 5000;
@@ -79,7 +85,9 @@ const io = new SocketIOServer(server, {
 });
 const connectedUsers = new Map<string, string>();
 
+
 app.set('io', io);
+app.set('connectedUsers', connectedUsers);
 
 io.on('connection', (socket) => {
     console.log(`🔌 New client connected: ${socket.id}`);
