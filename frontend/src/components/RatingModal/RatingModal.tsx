@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { rateUserAfterExchange } from '../api/exchangesApi';
-import { LoggerService } from '../services/loggerService';
-import RatingStars from './RatingStars';
+import { rateUserAfterExchange } from '../../api/exchangesApi';
+import { LoggerService } from '../../services/loggerService';
+import RatingStars from '../RatingStars/RatingStars';
 
 interface RatingModalProps {
     isOpen: boolean;

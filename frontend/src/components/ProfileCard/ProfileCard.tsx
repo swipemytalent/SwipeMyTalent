@@ -1,10 +1,10 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useState } from 'react';
-import ProfileModal from '../ProfileModal';
+import ProfileModal from '../ProfileModal/ProfileModal';
 import { setViewedProfile } from '../../redux/viewedProfileSlice';
 import { useNavigate } from 'react-router-dom';
-import StarRating from '../StarRating';
+import StarRating from '../StarRating/StarRating';
 
 interface UserWithBio {
   id: string;

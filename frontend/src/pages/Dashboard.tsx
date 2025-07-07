@@ -1,11 +1,11 @@
-import OpportunitiesCard from '../components/cards/OpportunitiesCard';
-import ProfileCard from '../components/cards/ProfileCard';
-import StatsCard from '../components/cards/StatsCard';
-import RecentActivityCard from '../components/cards/RecentActivityCard';
-import AboutCard from '../components/cards/AboutCard';
-import ProfileModal from '../components/ProfileModal';
-import MessagingSystem from '../components/MessagingSystem';
-import UnsubscribeModal from '../components/UnsubscribeModal';
+import OpportunitiesCard from '../components/OpportunitiesCard/OpportunitiesCard';
+import ProfileCard from '../components/ProfileCard/ProfileCard';
+import StatsCard from '../components/StatsCard/StatsCard';
+import RecentActivityCard from '../components/RecentActivityCard/RecentActivityCard';
+import AboutCard from '../components/AboutCard/AboutCard';
+import ProfileModal from '../components/ProfileModal/ProfileModal';
+import MessagingSystem from '../components/MessagingSystem/MessagingSystem';
+import UnsubscribeModal from '../components/UnsubscribeModal/UnsubscribeModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
 import { useState, useEffect, useCallback } from 'react';
@@ -60,26 +60,20 @@ const Dashboard: React.FC = () => {
         setIsModalOpen(false);
     };
 
-    // Fonction optimisée pour mettre à jour les stats avec debounce
     const updateStats = useCallback(() => {
-        // Mise à jour immédiate sans délai
         setRefreshStat(r => r + 1);
     }, []);
 
-    // Quand la modale de messagerie se ferme, on recharge la liste pour mettre à jour la stat
     const handleMessagingClose = () => {
         dispatch(closeMessaging());
     };
 
-    // Surveiller la fermeture de la modale de messagerie pour mettre à jour les stats
     useEffect(() => {
         if (!messaging.isOpen) {
-            // Mise à jour immédiate sans délai
             updateStats();
         }
     }, [messaging.isOpen, updateStats]);
 
-    // Calcul du nombre total de messages non lus (LinkedIn style, sécurisé)
     const unreadCount = conversations.reduce((acc, conv) => {
         const n = Number(conv.unreadCount);
         if (!isFinite(n) || n < 0) return acc;

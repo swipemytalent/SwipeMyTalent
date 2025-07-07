@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import '../styles/MessageModal.scss';
+import '../../styles/MessageModal.scss';
 
 interface EditBioModalProps {
   isOpen: boolean;

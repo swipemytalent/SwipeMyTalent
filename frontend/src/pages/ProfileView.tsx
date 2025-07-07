@@ -2,17 +2,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import StartConversationModal from '../components/StartConversationModal';
+import StartConversationModal from '../components/StartConversationModal/StartConversationModal';
 import { setViewedProfile } from '../redux/viewedProfileSlice';
 import { setUser } from '../redux/userSlice';
 import { openMessaging } from '../redux/messagingSlice';
 import { fetchUserProfile, fetchUserById, fetchUserRatings } from '../api/userApi';
 import { AuthService } from '../services/authService';
 import { LoggerService } from '../services/loggerService';
-import StarRating from '../components/StarRating';
-import AvisCarousel from '../components/AvisCarousel';
-import SeeMoreModal from '../components/cards/SeeMoreModal';
-import ProjetCard from '../components/cards/ProjetCard';
+import StarRating from '../components/StarRating/StarRating';
+import AvisCarousel from '../components/AvisCarousel/AvisCarousel';
+import SeeMoreModal from '../components/SeeMoreModal/SeeMoreModal';
+import ProjetCard from '../components/ProjetCard/ProjetCard';
 import '../styles/profileview.scss';
 
 function formatBioToHtml(bio: string) {

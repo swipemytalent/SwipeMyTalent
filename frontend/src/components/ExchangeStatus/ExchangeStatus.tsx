@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Exchange, confirmExchange, completeExchange } from '../api/exchangesApi';
-import { LoggerService } from '../services/loggerService';
+import { Exchange, confirmExchange, completeExchange } from '../../api/exchangesApi';
+import { LoggerService } from '../../services/loggerService';
 
 interface ExchangeStatusProps {
     exchange: Exchange;

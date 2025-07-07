@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
-import { AuthService } from '../services/authService';
-import logo from '../assets/Logo-SMT.webp';
-import '../styles/navbar.scss';
+import { AuthService } from '../../services/authService';
+import logo from '../../assets/Logo-SMT.webp';
+import '../../styles/navbar.scss';
 
 const Navbar: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);

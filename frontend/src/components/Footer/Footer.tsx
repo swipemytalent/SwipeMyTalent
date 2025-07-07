@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
-import { AuthService } from '../services/authService';
-import '../styles/footer.scss';
+import { AuthService } from '../../services/authService';
+import '../../styles/footer.scss';
 
 const Footer: React.FC = () => {
   const isLoggedIn = AuthService.isLoggedIn();
