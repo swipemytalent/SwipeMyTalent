@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { sendMessage } from '../api/messagesApi';
-import { AuthService } from '../services/authService';
-import '../styles/MessageModal.scss';
+import { sendMessage } from '../../api/messagesApi';
+import { AuthService } from '../../services/authService';
+import '../../styles/MessageModal.scss';
 
 interface StartConversationModalProps {
   isOpen: boolean;

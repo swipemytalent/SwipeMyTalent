@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { createExchange } from '../api/exchangesApi';
-import { LoggerService } from '../services/loggerService';
+import { createExchange } from '../../api/exchangesApi';
+import { LoggerService } from '../../services/loggerService';
 
 interface ExchangeModalProps {
     isOpen: boolean;

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
-import { fetchUserConversations, fetchConversationMessages, sendMessage, markConversationAsRead } from '../api/messagesApi';
-import { fetchUserById } from '../api/userApi';
-import { Exchange } from '../api/exchangesApi';
-import ExchangeModal from './ExchangeModal';
-import RatingModal from './RatingModal';
-import '../styles/MessagingSystem.scss';
+import { RootState } from '../../redux/store';
+import { fetchUserConversations, fetchConversationMessages, sendMessage, markConversationAsRead } from '../../api/messagesApi';
+import { fetchUserById } from '../../api/userApi';
+import { Exchange } from '../../api/exchangesApi';
+import ExchangeModal from '../ExchangeModal/ExchangeModal';
+import RatingModal from '../RatingModal/RatingModal';
+import '../../styles/MessagingSystem.scss';
 
 interface Conversation {
   id: string;

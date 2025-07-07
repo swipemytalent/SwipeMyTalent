@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { unsubscribe } from '../api/authApi';
-import { AuthService } from '../services/authService';
+import { unsubscribe } from '../../api/authApi';
+import { AuthService } from '../../services/authService';
 import { useNavigate } from 'react-router-dom';
-import '../styles/UnsubscribeModal.scss';
+import '../../styles/UnsubscribeModal.scss';
 
 interface UnsubscribeModalProps {
   isOpen: boolean;

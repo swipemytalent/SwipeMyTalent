@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import ProfileCard from '../components/cards/ProfileCard';
+import ProfileCard from '../components/ProfileCard/ProfileCard';
 import { fetchUsers } from '../api/userApi';
 import { AuthService } from '../services/authService';
 import { LoggerService } from '../services/loggerService';

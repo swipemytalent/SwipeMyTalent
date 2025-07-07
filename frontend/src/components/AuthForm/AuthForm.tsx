@@ -1,10 +1,10 @@
 import { useState, FormEvent, ChangeEvent, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../redux/userSlice';
-import { login, register } from '../api/authApi';
-import { fetchUserProfile } from '../api/userApi';
-import type { UserState } from '../redux/userSlice';
+import { setUser } from '../../redux/userSlice';
+import type { UserState } from '../../redux/userSlice';
+import { login, register } from '../../api/authApi';
+import { fetchUserProfile } from '../../api/userApi';
 
 interface AuthFormProps {
   mode: 'login' | 'register';

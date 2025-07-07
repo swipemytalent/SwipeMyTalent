@@ -1,6 +1,6 @@
-import '../styles/ProfileModal.scss';
-import ProfileForm from './ProfileForm';
-import type { User } from './ProfileForm';
+import '../../styles/ProfileModal.scss';
+import ProfileForm from '../ProfileForm/ProfileForm';
+import type { User } from '../ProfileForm/ProfileForm';
 
 interface ProfileModalProps {
   isOpen: boolean;

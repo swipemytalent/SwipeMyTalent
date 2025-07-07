@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import type { UserState } from '../redux/userSlice';
+import type { UserState } from '../../redux/userSlice';
 
 export type User = UserState & { bio?: string };
 

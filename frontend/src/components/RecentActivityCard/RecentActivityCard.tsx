@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { fetchUserExchanges, Exchange, confirmExchange, completeExchange, fetchExchangeRating } from '../../api/exchangesApi';
 import '../../styles/RecentActivityCard.scss';
-import RatingModal from '../RatingModal';
+import RatingModal from '../RatingModal/RatingModal';
 
 const RecentActivityCard = () => {
   const [exchanges, setExchanges] = useState<Exchange[]>([]);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import RatingStars from './RatingStars';
+import RatingStars from '../RatingStars/RatingStars';
 
 interface Avis {
   id: number;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import EditBioModal from '../EditBioModal';
-import SeeMoreModal from './SeeMoreModal';
+import EditBioModal from '../EditBioModal/EditBioModal';
+import SeeMoreModal from '../SeeMoreModal/SeeMoreModal';
 import { fetchUserProfile, updateUserProfile } from '../../api/userApi';
 import '../../styles/AboutCard.scss';
 
