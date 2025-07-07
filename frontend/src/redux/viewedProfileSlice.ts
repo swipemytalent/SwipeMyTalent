@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { User } from '../components/ProfileForm';
+import type { User } from '../components/ProfileForm/ProfileForm';
 
 interface ViewedProfileState {
   value: User | null;
