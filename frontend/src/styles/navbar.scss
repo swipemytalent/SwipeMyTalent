@@ -97,6 +97,12 @@
     display: flex;
     gap: 0.7rem;
     align-items: center;
+
+    .user-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
     button {
       padding: 0.45rem 1.2rem;
       border-radius: 8px;

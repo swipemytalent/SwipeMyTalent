@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { AuthService } from '../../services/authService';
+import NotificationBell from '../NotificationBell/NotificationBell';
 import logo from '../../assets/Logo-SMT.webp';
 import '../../styles/navbar.scss';
 
@@ -12,7 +13,6 @@ const Navbar: React.FC = () => {
 
   const isLoggedIn = AuthService.isLoggedIn();
 
-  // Responsive state
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 900);
@@ -20,7 +20,6 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Menu burger mobile
   useEffect(() => {
     if (!isMenuOpen) return;
     function handleClickOutside(event: MouseEvent) {
@@ -109,16 +108,19 @@ const Navbar: React.FC = () => {
             </>
           )
         ) : (
-          <button className="logout" onClick={logout}>
-            <span className="logout-text">Déconnexion</span>
-            <span className="logout-icon">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="16" cy="16" r="15" fill="#F8485E" stroke="none"/>
-                <rect x="15" y="8" width="2" height="10" rx="1" fill="#fff"/>
-                <path d="M10.9289 21.0711C13.781 23.9232 18.219 23.9232 21.0711 21.0711C23.9232 18.219 23.9232 13.781 21.0711 10.9289" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
-              </svg>
-            </span>
-          </button>
+          <div className="user-actions">
+            <NotificationBell />
+            <button className="logout" onClick={logout}>
+              <span className="logout-text">Déconnexion</span>
+              <span className="logout-icon">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="16" cy="16" r="15" fill="#F8485E" stroke="none"/>
+                  <rect x="15" y="8" width="2" height="10" rx="1" fill="#fff"/>
+                  <path d="M10.9289 21.0711C13.781 23.9232 18.219 23.9232 21.0711 21.0711C23.9232 18.219 23.9232 13.781 21.0711 10.9289" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+                </svg>
+              </span>
+            </button>
+          </div>
         )}
         <button className="theme-toggle-navbar" onClick={toggleTheme} title="Changer le mode sombre/clair">
           {isDarkMode ? '☀️' : '🌙'}

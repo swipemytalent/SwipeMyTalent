@@ -39,11 +39,15 @@ export async function sendMessage(req: Request, res: Response) {
         sent_at_relative: formatDate(message.sent_at, 'relative'),
     };
 
+    const sender = await pool.query('SELECT first_name, last_name FROM users WHERE id = $1', [sender_id]);
+    const senderName = sender.rows[0] ? `${sender.rows[0].first_name} ${sender.rows[0].last_name}` : 'Quelqu\'un';
+
     await pool.query(
         `INSERT INTO notifications (user_id, type, payload)
          VALUES ($1, $2, $3)`,
         [receiver_id, 'message', {
             sender_id,
+            sender_name: senderName,
             message_id: message.id,
             preview: content.slice(0, 100)
         }]

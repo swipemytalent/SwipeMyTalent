@@ -10,6 +10,8 @@ import { completeExchangeHandler, getUserExchangesHandler, getExchangeRatingHand
 import { getAllowedOrigins } from './utils/origins.js';
 import { sendMessage } from './handlers/messages.js';
 import { deleteUnsubcribedUsers } from './jobs/deleteUnsubscribedUsers.js';
+import { getUserNotificationsHandler, markNotificationAsReadHandler, markAllNotificationsAsReadHandler, deleteNotificationHandler } from './handlers/notifications.js';
+import { getVapidPublicKeyHandler, subscribeToPushHandler, unsubscribeFromPushHandler } from './handlers/pushNotifications.js';
 
 import cors from 'cors';
 import cron from 'node-cron';
@@ -76,6 +78,15 @@ app.get('/exchanges', getUserExchangesHandler as express.RequestHandler);
 app.get('/exchanges/:id/rating', getExchangeRatingHandler as express.RequestHandler);
 
 app.post('/messages', sendMessage as express.RequestHandler);
+
+app.get('/notifications', getUserNotificationsHandler as express.RequestHandler);
+app.put('/notifications/:id/read', markNotificationAsReadHandler as express.RequestHandler);
+app.put('/notifications/read-all', markAllNotificationsAsReadHandler as express.RequestHandler);
+app.delete('/notifications/:id', deleteNotificationHandler as express.RequestHandler);
+
+app.get('/push/vapid-public-key', getVapidPublicKeyHandler as express.RequestHandler);
+app.post('/push/subscribe', subscribeToPushHandler as express.RequestHandler);
+app.post('/push/unsubscribe', unsubscribeFromPushHandler as express.RequestHandler);
 
 const server = createServer(app);
 const io = new SocketIOServer(server, {
