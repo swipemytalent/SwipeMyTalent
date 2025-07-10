@@ -64,7 +64,7 @@ services:
       - POSTGRES_USER_FILE=/run/secrets/db-user
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
     healthcheck:
-      test: [ "CMD", "pg_isready" ]
+      test: ["CMD", "pg_isready"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -94,7 +94,7 @@ services:
     configs:
       - source: init-sql
         target: /init/init.sql
-    entrypoint: [ "sh", "/init/init-db.sh" ]
+    entrypoint: ["sh", "/init/init-db.sh"]
     networks:
       - traefik
 
@@ -166,8 +166,8 @@ services:
       - GF_PATH_PROVISIONING=/etc/grafana/provisioning
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
-      - ./monitoring/dashboards:/var/lib/grafana/dashboards
+      - ./infra/monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./infra/monitoring/dashboards:/var/lib/grafana/dashboards
     networks:
       - traefik
     labels:
@@ -187,7 +187,7 @@ configs:
   init-sql:
     file: ./backend/db/migration/init.sql
   prometheus-config:
-    file: ./backend/monitoring/prometheus.yml
+    file: ./infra/monitoring/prometheus.yml
 
 secrets:
   db-password:
