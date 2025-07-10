@@ -1,4 +1,4 @@
-import { readSecret } from "./readSecret.js";
+import { readSecret } from "./readSecret";
 
 export function getEnvValue(name: string, fileEnvName: string, isRequired = true): string | undefined {
     let value: string | undefined;

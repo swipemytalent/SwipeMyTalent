@@ -1,27 +1,30 @@
-import { pool } from '../db/pool.js';
-import { Request, Response, NextFunction } from 'express';
+import { pool } from '../db/pool';
+import { getEnvValue } from '../utils/getEnv';
+import { sendPushNotification } from '../utils/sendPushNotification';
+
 import jwt from 'jsonwebtoken';
-import { getEnvValue } from '../utils/getEnv.js';
-import { sendPushNotification } from '../utils/sendPushNotification.js';
+import { Request, Response, NextFunction } from 'express';
 
 const JWT_KEY = getEnvValue('JWT_KEY', 'JWT_KEY_FILE')!;
 
 export const completeExchangeHandler = async (req: Request, res: Response, _next: NextFunction) => {
     try {
         const connectedUsers: Map<string, string> = req.app.get('connectedUsers');
-        
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ message: 'Token manquant.' });
+            res.status(401).json({ message: 'Token manquant.' });
+
+            return;
         }
 
         const token = authHeader.split(' ')[1];
         const decoded = jwt.verify(token, JWT_KEY) as { id: number, email: string };
         const userId = decoded.id;
-
         const exchangeId = parseInt(req.params.id);
         if (!exchangeId) {
-            return res.status(400).json({ message: 'ID de l\'échange requis.' });
+            res.status(400).json({ message: 'ID de l\'échange requis.' });
+
+            return;
         }
 
         const exchangeResult = await pool.query(
@@ -29,20 +32,26 @@ export const completeExchangeHandler = async (req: Request, res: Response, _next
             [exchangeId]
         );
         if (exchangeResult.rows.length === 0) {
-            return res.status(404).json({ message: 'Échange non trouvé.' });
+            res.status(404).json({ message: 'Échange non trouvé.' });
+
+            return;
         }
 
         const exchange = exchangeResult.rows[0];
         if (exchange.initiator_id !== userId && exchange.recipient_id !== userId) {
-            return res.status(403).json({
+            res.status(403).json({
                 message: 'Vous n\'êtes pas autorisé à terminer cet échange.'
             });
+
+            return;
         }
 
         if (exchange.status !== 'confirmed') {
-            return res.status(400).json({
+            res.status(400).json({
                 message: 'L\'échange doit être confirmé par les deux parties avant d\'être terminé.'
             });
+
+            return;
         }
 
         await pool.query(
@@ -103,13 +112,14 @@ export const getUserExchangesHandler = async (req: Request, res: Response, _next
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ message: 'Token manquant.' });
+            res.status(401).json({ message: 'Token manquant.' });
+
+            return;
         }
 
         const token = authHeader.split(' ')[1];
         const decoded = jwt.verify(token, JWT_KEY) as { id: number, email: string };
         const userId = decoded.id;
-
         const exchangesQuery = `
             SELECT 
                 e.*,
@@ -127,7 +137,6 @@ export const getUserExchangesHandler = async (req: Request, res: Response, _next
             WHERE e.initiator_id = $1 OR e.recipient_id = $1
             ORDER BY e.created_at DESC
         `;
-        
         const result = await pool.query(exchangesQuery, [userId]);
         const exchanges = result.rows.map(row => ({
             id: row.id,
@@ -167,25 +176,29 @@ export const getExchangeRatingHandler = async (req: Request, res: Response, _nex
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ message: 'Token manquant.' });
+            res.status(401).json({ message: 'Token manquant.' });
+
+            return;
         }
 
         const token = authHeader.split(' ')[1];
         const decoded = jwt.verify(token, JWT_KEY) as { id: number, email: string };
         const userId = decoded.id;
-
         const exchangeId = parseInt(req.params.id);
         if (!exchangeId) {
-            return res.status(400).json({ message: 'ID de l\'échange requis.' });
+            res.status(400).json({ message: 'ID de l\'échange requis.' });
+
+            return;
         }
 
         const result = await pool.query(
             `SELECT * FROM profile_ratings WHERE exchange_id = $1 AND rater_id = $2`,
             [exchangeId, userId]
         );
-        
         if (result.rows.length === 0) {
-            return res.json(null);
+            res.json(null);
+
+            return;
         }
 
         res.json(result.rows[0]);

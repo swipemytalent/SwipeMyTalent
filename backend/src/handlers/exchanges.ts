@@ -1,35 +1,40 @@
-import { pool } from '../db/pool.js';
-import { Request, Response, NextFunction } from 'express';
+import { pool } from '../db/pool';
+import { getEnvValue } from '../utils/getEnv';
+import { sendPushNotification } from '../utils/sendPushNotification';
+
 import jwt from 'jsonwebtoken';
-import { getEnvValue } from '../utils/getEnv.js';
-import { sendPushNotification } from '../utils/sendPushNotification.js';
+import { Request, Response, NextFunction } from 'express';
 
 const JWT_KEY = getEnvValue('JWT_KEY', 'JWT_KEY_FILE')!;
 
 export const createExchangeHandler = async (req: Request, res: Response, _next: NextFunction) => {
     try {
         const connectedUsers: Map<string, string> = req.app.get('connectedUsers');
-        
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ message: 'Token manquant.' });
+            res.status(401).json({ message: 'Token manquant.' });
+
+            return;
         }
 
         const token = authHeader.split(' ')[1];
         const decoded = jwt.verify(token, JWT_KEY) as { id: number, email: string };
         const initiatorId = decoded.id;
-
         const { recipient_id, description } = req.body;
         if (!recipient_id || !description) {
-            return res.status(400).json({
+            res.status(400).json({
                 message: 'ID du destinataire et description requis.'
             });
+
+            return;
         }
 
         if (initiatorId === recipient_id) {
-            return res.status(400).json({
+            res.status(400).json({
                 message: 'Vous ne pouvez pas proposer un échange avec vous-même.'
             });
+
+            return;
         }
 
         const recipientCheck = await pool.query(
@@ -37,9 +42,11 @@ export const createExchangeHandler = async (req: Request, res: Response, _next: 
             [recipient_id]
         );
         if (recipientCheck.rows.length === 0) {
-            return res.status(404).json({
+            res.status(404).json({
                 message: 'Destinataire non trouvé ou compte désactivé.'
             });
+
+            return;
         }
 
         const result = await pool.query(
@@ -49,7 +56,6 @@ export const createExchangeHandler = async (req: Request, res: Response, _next: 
             [initiatorId, recipient_id, description]
         );
         const exchange = result.rows[0];
-
         const userResult = await pool.query(
             'SELECT first_name, last_name FROM users WHERE id = $1',
             [initiatorId]
@@ -107,19 +113,21 @@ export const createExchangeHandler = async (req: Request, res: Response, _next: 
 export const confirmExchangeHandler = async (req: Request, res: Response, _next: NextFunction) => {
     try {
         const connectedUsers: Map<string, string> = req.app.get('connectedUsers');
-        
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ message: 'Token manquant.' });
+            res.status(401).json({ message: 'Token manquant.' });
+
+            return;
         }
 
         const token = authHeader.split(' ')[1];
         const decoded = jwt.verify(token, JWT_KEY) as { id: number, email: string };
         const userId = decoded.id;
-
         const exchangeId = parseInt(req.params.id);
         if (!exchangeId) {
-            return res.status(400).json({ message: 'ID de l\'échange requis.' });
+            res.status(400).json({ message: 'ID de l\'échange requis.' });
+
+            return;
         }
 
         const exchangeResult = await pool.query(
@@ -127,20 +135,26 @@ export const confirmExchangeHandler = async (req: Request, res: Response, _next:
             [exchangeId]
         );
         if (exchangeResult.rows.length === 0) {
-            return res.status(404).json({ message: 'Échange non trouvé.' });
+            res.status(404).json({ message: 'Échange non trouvé.' });
+
+            return;
         }
 
         const exchange = exchangeResult.rows[0];
         if (exchange.initiator_id !== userId && exchange.recipient_id !== userId) {
-            return res.status(403).json({
+            res.status(403).json({
                 message: 'Vous n\'êtes pas autorisé à confirmer cet échange.'
             });
+
+            return;
         }
 
         if (exchange.status === 'completed' || exchange.status === 'cancelled') {
-            return res.status(400).json({
+            res.status(400).json({
                 message: 'Cet échange est déjà terminé.'
             });
+
+            return;
         }
 
         let updateField = '';
