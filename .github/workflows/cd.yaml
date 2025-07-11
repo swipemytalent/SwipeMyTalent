@@ -85,8 +85,9 @@ jobs:
           key: ${{ secrets.REMOTE_SSH_PRIVATE_KEY }}
           port: ${{ secrets.REMOTE_PORT }}
           script: |
-            docker config rm init-sql || true
-            docker config rm prometheus-config || true
+            docker stack rm swipemytalent
+            docker config rm swipemytalent_init-sql || true
+            docker config rm swipemytalent_prometheus-config || true
 
       - name: Deploy app
         uses: cssnr/stack-deploy-action@v1
