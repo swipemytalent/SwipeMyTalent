@@ -22,6 +22,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import CookiesPolicy from './pages/CookiesPolicy';
 import ExchangeModal from './components/ExchangeModal/ExchangeModal';
 import { closeExchangeModal } from './redux/exchangeModalSlice';
+import ForumDiscord from './pages/ForumDiscord';
 
 const ExchangeDetail = () => <div style={{padding:40, textAlign:'center'}}>Détail de l'échange (à implémenter)</div>;
 
@@ -46,6 +47,7 @@ const AppContent: React.FC = () => {
         <Route path="/talents" element={<ProtectedRoute><Talents /></ProtectedRoute>} />
         <Route path="/profil/:id" element={<ProtectedRoute><ProfileView /></ProtectedRoute>} />
         <Route path="/echanges/:id" element={<ProtectedRoute><ExchangeDetail /></ProtectedRoute>} />
+        <Route path="/forum" element={<ProtectedRoute><ForumDiscord /></ProtectedRoute>} />
         <Route path="/cgu" element={<CGU />} />
         <Route path="/confidentialite" element={<PrivacyPolicy />} />
         <Route path="/cookies" element={<CookiesPolicy />} />
