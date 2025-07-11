@@ -86,6 +86,11 @@ jobs:
           port: ${{ secrets.REMOTE_PORT }}
           script: |
             docker stack rm swipemytalent
+            # Attendre que le stack disparaisse vraiment
+            while docker stack ls | grep -q swipemytalent; do
+              echo 'Waiting for stack to be removed...'
+              sleep 5
+            done
             docker config rm swipemytalent_init-sql || true
             docker config rm swipemytalent_prometheus-config || true
 
