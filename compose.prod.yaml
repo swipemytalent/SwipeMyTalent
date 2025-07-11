@@ -90,7 +90,7 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/db-password
       POSTGRES_HOST: postgres
     volumes:
-      - ./backend/db/init-db.sh:/init/init-db.sh
+      - ./backend/src/db/init-db.sh:/init/init-db.sh
     configs:
       - source: init-sql
         target: /init/init.sql
@@ -185,7 +185,7 @@ volumes:
 
 configs:
   init-sql:
-    file: ./backend/db/migration/init.sql
+    file: ./backend/src/db/migration/init.sql
   prometheus-config:
     file: ./infra/monitoring/prometheus.yml
 
