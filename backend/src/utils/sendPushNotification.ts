@@ -1,5 +1,6 @@
+import { pool } from '../db/pool';
+
 import webpush from 'web-push';
-import { pool } from '../db/pool.js';
 
 export async function sendPushNotification(
     userId: number,

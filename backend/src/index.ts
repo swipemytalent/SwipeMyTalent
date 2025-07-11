@@ -1,18 +1,18 @@
-import { loginHandler } from './handlers/login.js';
-import { getUserConversations, getConversationMessages, markConversationAsRead } from './handlers/conversations.js';
-import { profileHandler, updateProfileHandler } from './handlers/profile.js';
-import { registerHandler } from './handlers/register.js';
-import { getAllUsersHandler, getUserByIdHandler, getUserRatingsHandler } from './handlers/users.js';
-import { rateProfileHandler } from './handlers/rateProfile.js';
-import { unsubscribeHandler } from './handlers/unsubscribe.js';
-import { createExchangeHandler, confirmExchangeHandler } from './handlers/exchanges.js';
-import { completeExchangeHandler, getUserExchangesHandler, getExchangeRatingHandler } from './handlers/exchangeActions.js';
-import { getAllowedOrigins } from './utils/origins.js';
-import { sendMessage } from './handlers/messages.js';
-import { deleteUnsubcribedUsers } from './jobs/deleteUnsubscribedUsers.js';
-import { getUserNotificationsHandler, markNotificationAsReadHandler, markAllNotificationsAsReadHandler, deleteNotificationHandler } from './handlers/notifications.js';
-import { getVapidPublicKeyHandler, subscribeToPushHandler, unsubscribeFromPushHandler } from './handlers/pushNotifications.js';
-import { getAllForumsHandler, getForumByIdHandler, createTopicHandler, getTopicByIdHandler, createPostHandler } from './handlers/forums.js';
+import { loginHandler } from './handlers/login';
+import { getUserConversations, getConversationMessages, markConversationAsRead } from './handlers/conversations';
+import { profileHandler, updateProfileHandler } from './handlers/profile';
+import { registerHandler } from './handlers/register';
+import { getAllUsersHandler, getUserByIdHandler, getUserRatingsHandler } from './handlers/users';
+import { rateProfileHandler } from './handlers/rateProfile';
+import { unsubscribeHandler } from './handlers/unsubscribe';
+import { createExchangeHandler, confirmExchangeHandler } from './handlers/exchanges';
+import { completeExchangeHandler, getUserExchangesHandler, getExchangeRatingHandler } from './handlers/exchangeActions';
+import { getAllowedOrigins } from './utils/origins';
+import { sendMessage } from './handlers/messages';
+import { deleteUnsubcribedUsers } from './jobs/deleteUnsubscribedUsers';
+import { getUserNotificationsHandler, markNotificationAsReadHandler, markAllNotificationsAsReadHandler, deleteNotificationHandler } from './handlers/notifications';
+import { getVapidPublicKeyHandler, subscribeToPushHandler, unsubscribeFromPushHandler } from './handlers/pushNotifications';
+import { getAllForumsHandler, getForumByIdHandler, createTopicHandler, getTopicByIdHandler, createPostHandler } from './handlers/forums';
 
 import cors from 'cors';
 import cron from 'node-cron';
@@ -62,32 +62,32 @@ app.post("/login", loginHandler);
 app.get("/profile", profileHandler);
 app.put("/profile", updateProfileHandler);
 
-app.get('/conversations/:userId', getUserConversations as express.RequestHandler);
-app.get('/conversations/:conversationId/messages', getConversationMessages as express.RequestHandler);
-app.put('/conversations/:conversationId/read', markConversationAsRead as express.RequestHandler);
+app.get('/conversations/:userId', getUserConversations);
+app.get('/conversations/:conversationId/messages', getConversationMessages);
+app.put('/conversations/:conversationId/read', markConversationAsRead);
 
 app.get('/users', getAllUsersHandler);
 app.get('/users/:id', getUserByIdHandler);
-app.get('/users/:id/ratings', getUserRatingsHandler as express.RequestHandler);
-app.post('/rate/:userId', rateProfileHandler as express.RequestHandler);
+app.get('/users/:id/ratings', getUserRatingsHandler);
+app.post('/rate/:userId', rateProfileHandler);
 app.delete('/unsubscribe', unsubscribeHandler);
 
-app.post('/exchanges', createExchangeHandler as express.RequestHandler);
-app.put('/exchanges/:id/confirm', confirmExchangeHandler as express.RequestHandler);
-app.put('/exchanges/:id/complete', completeExchangeHandler as express.RequestHandler);
-app.get('/exchanges', getUserExchangesHandler as express.RequestHandler);
-app.get('/exchanges/:id/rating', getExchangeRatingHandler as express.RequestHandler);
+app.post('/exchanges', createExchangeHandler);
+app.put('/exchanges/:id/confirm', confirmExchangeHandler);
+app.put('/exchanges/:id/complete', completeExchangeHandler);
+app.get('/exchanges', getUserExchangesHandler);
+app.get('/exchanges/:id/rating', getExchangeRatingHandler);
 
-app.post('/messages', sendMessage as express.RequestHandler);
+app.post('/messages', sendMessage);
 
-app.get('/notifications', getUserNotificationsHandler as express.RequestHandler);
-app.put('/notifications/:id/read', markNotificationAsReadHandler as express.RequestHandler);
-app.put('/notifications/read-all', markAllNotificationsAsReadHandler as express.RequestHandler);
-app.delete('/notifications/:id', deleteNotificationHandler as express.RequestHandler);
+app.get('/notifications', getUserNotificationsHandler);
+app.put('/notifications/:id/read', markNotificationAsReadHandler);
+app.put('/notifications/read-all', markAllNotificationsAsReadHandler);
+app.delete('/notifications/:id', deleteNotificationHandler);
 
-app.get('/push/vapid-public-key', getVapidPublicKeyHandler as express.RequestHandler);
-app.post('/push/subscribe', subscribeToPushHandler as express.RequestHandler);
-app.post('/push/unsubscribe', unsubscribeFromPushHandler as express.RequestHandler);
+app.get('/push/vapid-public-key', getVapidPublicKeyHandler);
+app.post('/push/subscribe', subscribeToPushHandler);
+app.post('/push/unsubscribe', unsubscribeFromPushHandler);
 
 app.get('/forums', getAllForumsHandler as express.RequestHandler);
 app.get('/forums/:id', getForumByIdHandler as express.RequestHandler);
