@@ -12,6 +12,7 @@ import { sendMessage } from './handlers/messages';
 import { deleteUnsubcribedUsers } from './jobs/deleteUnsubscribedUsers';
 import { getUserNotificationsHandler, markNotificationAsReadHandler, markAllNotificationsAsReadHandler, deleteNotificationHandler } from './handlers/notifications';
 import { getVapidPublicKeyHandler, subscribeToPushHandler, unsubscribeFromPushHandler } from './handlers/pushNotifications';
+import { getAllForumsHandler, getForumByIdHandler, createTopicHandler, getTopicByIdHandler, createPostHandler } from './handlers/forums';
 
 import cors from 'cors';
 import cron from 'node-cron';
@@ -87,6 +88,12 @@ app.delete('/notifications/:id', deleteNotificationHandler);
 app.get('/push/vapid-public-key', getVapidPublicKeyHandler);
 app.post('/push/subscribe', subscribeToPushHandler);
 app.post('/push/unsubscribe', unsubscribeFromPushHandler);
+
+app.get('/forums', getAllForumsHandler as express.RequestHandler);
+app.get('/forums/:id', getForumByIdHandler as express.RequestHandler);
+app.post('/topics', createTopicHandler as express.RequestHandler);
+app.get('/topics/:id', getTopicByIdHandler as express.RequestHandler);
+app.post('/posts', createPostHandler as express.RequestHandler);
 
 const server = createServer(app);
 const io = new SocketIOServer(server, {
