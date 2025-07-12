@@ -68,6 +68,7 @@ const Navbar: React.FC = () => {
               <li><NavLink to="/comment-ca-marche" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Comment ça marche</NavLink></li>
               <li><NavLink to="/dashboard" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Mon espace</NavLink></li>
               <li><NavLink to="/talents" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Talents</NavLink></li>
+              <li><NavLink to="/forum" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Forum</NavLink></li>
             </ul>
           </>
         ) : (

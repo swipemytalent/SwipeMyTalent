@@ -10,6 +10,17 @@
     "strict": true,
     "skipLibCheck": true,
     "noImplicitAny": true,
-    "types": ["@types/express"]
-  }
+    "types": [
+      "@types/express",
+      "jest"
+    ]
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "tests",
+    "**/*.test.ts",
+    "jest*"
+  ]
 }
