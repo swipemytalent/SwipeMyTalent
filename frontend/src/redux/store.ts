@@ -3,7 +3,6 @@ import userReducer from './userSlice';
 import viewedProfileReducer from './viewedProfileSlice';
 import messagingReducer from './messagingSlice';
 import exchangeModalReducer from './exchangeModalSlice';
-import forumReducer from './forumSlice';
 
 const store = configureStore({
   reducer: {
@@ -11,7 +10,6 @@ const store = configureStore({
     viewedProfile: viewedProfileReducer,
     messaging: messagingReducer,
     exchangeModal: exchangeModalReducer,
-    forum: forumReducer,
   },
 });
 
