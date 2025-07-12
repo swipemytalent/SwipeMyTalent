@@ -1,9 +1,10 @@
-import { pool } from '../db/pool';
-import { Message } from '../types/Message';
-import { formatDate } from '../utils/date';
-import { sendPushNotification } from '../utils/sendPushNotification';
+import { pool } from '../db/pool.js';
+import { Message } from '../types/Message.js';
+import { formatDate } from '../utils/date.js';
 
 import { Request, Response } from 'express';
+import webpush from 'web-push';
+import { sendPushNotification } from '../utils/sendPushNotification.js';
 
 export async function getMessages(req: Request, res: Response) {
     const userId = Number(req.params.userId);

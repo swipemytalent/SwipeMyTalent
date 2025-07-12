@@ -1,10 +1,9 @@
-import { pool } from '../db/pool';
-
+import { pool } from '../db/pool.js';
 import { Request, Response, NextFunction } from 'express';
 
 export async function getUserConversations(req: Request, res: Response, _next: NextFunction) {
     const userId = Number(req.params.userId);
-
+    
     try {
         const conversationsQuery = `
             WITH conversation_pairs AS (
@@ -57,7 +56,9 @@ export async function getUserConversations(req: Request, res: Response, _next: N
             WHERE u.subscribed = true
             ORDER BY lm.last_message_time DESC
         `;
+        
         const result = await pool.query(conversationsQuery, [userId]);
+        
         const conversations = result.rows.map(row => ({
             id: `conv_${userId}_${row.participant_id}`,
             participant: {
@@ -74,7 +75,7 @@ export async function getUserConversations(req: Request, res: Response, _next: N
             },
             unreadCount: row.unread_count
         }));
-
+        
         res.json(conversations);
     } catch (err) {
         console.error('Erreur lors de la récupération des conversations:', err);
@@ -84,18 +85,17 @@ export async function getUserConversations(req: Request, res: Response, _next: N
 
 export async function getConversationMessages(req: Request, res: Response, _next: NextFunction) {
     const conversationId = req.params.conversationId;
-
+    
     try {
         const match = conversationId.match(/conv_(\d+)_(\d+)/);
         if (!match) {
-            res.status(400).json({ message: 'ID de conversation invalide.' });
-
-            return;
+            return res.status(400).json({ message: 'ID de conversation invalide.' });
         }
-
+        
         const [, user1Id, user2Id] = match;
         const userId1 = Number(user1Id);
         const userId2 = Number(user2Id);
+        
         const messagesQuery = `
             SELECT 
                 m.id,
@@ -115,7 +115,9 @@ export async function getConversationMessages(req: Request, res: Response, _next
                OR (m.sender_id = $2 AND m.receiver_id = $1)
             ORDER BY m.sent_at ASC
         `;
+        
         const result = await pool.query(messagesQuery, [userId1, userId2]);
+        
         const messages = result.rows.map(row => ({
             id: row.id.toString(),
             senderId: row.sender_id.toString(),
@@ -125,7 +127,7 @@ export async function getConversationMessages(req: Request, res: Response, _next
             senderName: `${row.sender_first_name} ${row.sender_last_name}`,
             receiverName: `${row.receiver_first_name} ${row.receiver_last_name}`
         }));
-
+        
         res.json(messages);
     } catch (err) {
         console.error('Erreur lors de la récupération des messages:', err);
@@ -135,26 +137,25 @@ export async function getConversationMessages(req: Request, res: Response, _next
 
 export async function markConversationAsRead(req: Request, res: Response, _next: NextFunction) {
     const conversationId = req.params.conversationId;
-
+    
     try {
         const match = conversationId.match(/conv_(\d+)_(\d+)/);
         if (!match) {
-            res.status(400).json({ message: 'ID de conversation invalide.' });
-
-            return;
+            return res.status(400).json({ message: 'ID de conversation invalide.' });
         }
-
+        
         const [, user1Id, user2Id] = match;
         const userId1 = Number(user1Id);
         const userId2 = Number(user2Id);
+        
         const updateQuery = `
             UPDATE messages 
             SET is_read = true 
             WHERE sender_id = $1 AND receiver_id = $2 AND is_read = false
         `;
-
+        
         await pool.query(updateQuery, [userId2, userId1]);
-
+        
         res.status(200).json({ message: 'Conversation marquée comme lue.' });
     } catch (err) {
         console.error('Erreur lors du marquage de la conversation:', err);

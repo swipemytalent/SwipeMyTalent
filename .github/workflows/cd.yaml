@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   commit-hash:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       commit_hash: ${{ steps.get_commit.outputs.commit_hash }}
     steps:
@@ -22,7 +22,7 @@ jobs:
   push-images:
     needs:
       - commit-hash
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -65,7 +65,7 @@ jobs:
           tags: ghcr.io/swipemytalent/frontend:${{ needs.commit-hash.outputs.commit_hash }}
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - commit-hash
       - push-images

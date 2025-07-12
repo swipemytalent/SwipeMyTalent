@@ -1,5 +1,5 @@
-import { pool } from '../db/pool';
-import { getEnvValue } from '../utils/getEnv';
+import { pool } from '../db/pool.js';
+import { getEnvValue } from '../utils/getEnv.js';
 
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
@@ -45,7 +45,6 @@ export const getAllUsersHandler = async (req: Request, res: Response, _next: Nex
 
 export const getUserByIdHandler = async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
     const userId = req.params.id;
-
     try {
         const result = await pool.query(
             `SELECT 
@@ -65,10 +64,8 @@ export const getUserByIdHandler = async (req: Request, res: Response, _next: Nex
         );
         if (result.rows.length === 0) {
             res.status(404).json({ message: 'Utilisateur non trouvé.' });
-
             return;
         }
-
         res.json(result.rows[0]);
     } catch (err) {
         console.error('getUserById error:', err);
@@ -78,7 +75,6 @@ export const getUserByIdHandler = async (req: Request, res: Response, _next: Nex
 
 export const getUserRatingsHandler = async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
     const userId = req.params.id;
-
     try {
         const result = await pool.query(
             `SELECT pr.*, u.first_name AS "raterFirstName", u.last_name AS "raterLastName" FROM profile_ratings pr
@@ -88,7 +84,6 @@ export const getUserRatingsHandler = async (req: Request, res: Response, _next: 
              LIMIT 10`,
             [userId]
         );
-
         res.json(result.rows);
     } catch (err) {
         console.error('getUserRatings error:', err);

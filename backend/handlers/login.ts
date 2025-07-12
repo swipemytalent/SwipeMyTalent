@@ -1,5 +1,5 @@
-import { pool } from '../db/pool';
-import { getEnvValue } from '../utils/getEnv';
+import { pool } from '../db/pool.js';
+import { getEnvValue } from '../utils/getEnv.js';
 
 import bcrypt from 'bcrypt';
 import { Request, Response, NextFunction } from 'express';
@@ -47,7 +47,7 @@ export const loginHandler = async (req: Request, res: Response, _next: NextFunct
         const token = jwt.sign(
             { id: user.id, email: user.email },
             JWT_KEY,
-            { expiresIn: "1h" },
+            { expiresIn: "1h"},
         )
 
         res.json({ message: "Connexion réussie.", token });
