@@ -1,4 +1,4 @@
-import { getEnvValue } from '../utils/getEnv';
+import { getEnvValue } from '../utils/getEnv.js';
 
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
@@ -16,5 +16,5 @@ export const pool = new Pool({
     port: parseInt(POSTGRES_PORT!, 10),
     user: POSTGRES_USER,
     password: POSTGRES_PASSWORD,
-    database: POSTGRES_DB,
+    database: POSTGRES_DB,    
 });

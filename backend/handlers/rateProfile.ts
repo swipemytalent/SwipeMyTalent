@@ -1,9 +1,8 @@
-import { pool } from '../db/pool';
-import { getEnvValue } from '../utils/getEnv';
-import { sendPushNotification } from '../utils/sendPushNotification';
-
+import { pool } from '../db/pool.js';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import { getEnvValue } from '../utils/getEnv.js';
+import { sendPushNotification } from '../utils/sendPushNotification.js';
 
 const JWT_KEY = getEnvValue('JWT_KEY', 'JWT_KEY_FILE')!;
 
@@ -12,9 +11,7 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
         const connectedUsers: Map<string, string> = req.app.get('connectedUsers');
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            res.status(401).json({ message: 'Token manquant.' });
-
-            return;
+            return res.status(401).json({ message: 'Token manquant.' });
         }
 
         const token = authHeader.split(' ')[1];
@@ -24,11 +21,9 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
         const { exchange_id, serviceQuality, communication, timeliness } = req.body;
         const scores = [serviceQuality, communication, timeliness].map(Number);
         if (!ratedUserId || !exchange_id || scores.some(score => isNaN(score) || score < 1 || score > 5)) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: 'ID de l\'échange et chaque critère doivent avoir une note entre 1 et 5.'
             });
-
-            return;
         }
 
         const exchangeCheck = await pool.query(
@@ -38,11 +33,9 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
             [exchange_id, raterId]
         );
         if (exchangeCheck.rows.length === 0) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: 'Vous ne pouvez noter que les échanges terminés auxquels vous avez participé.'
             });
-
-            return;
         }
 
         const exchange = exchangeCheck.rows[0];
@@ -50,11 +43,9 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
             ? exchange.recipient_id
             : exchange.initiator_id;
         if (otherParticipantId !== ratedUserId) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: 'Vous ne pouvez noter que l\'autre participant de cet échange.'
             });
-
-            return;
         }
 
         const existingRating = await pool.query(
@@ -62,11 +53,9 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
             [exchange_id, raterId]
         );
         if (existingRating.rows.length > 0) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: 'Vous avez déjà noté cette personne pour un échange précédent.'
             });
-
-            return;
         }
 
         const averageRating = Math.round(

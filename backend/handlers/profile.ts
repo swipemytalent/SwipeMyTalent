@@ -1,5 +1,5 @@
-import { pool } from '../db/pool';
-import { getEnvValue } from '../utils/getEnv';
+import { pool } from '../db/pool.js';
+import { getEnvValue } from '../utils/getEnv.js';
 
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
