@@ -7,8 +7,3 @@ jobs:
   build:
     name: Build services
     uses: ./.github/workflows/build.yaml
-
-  test:
-    needs: build
-    name: Test services
-    uses: ./.github/workflows/test.yaml

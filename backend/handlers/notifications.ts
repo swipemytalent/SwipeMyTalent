@@ -1,8 +1,7 @@
-import { pool } from '../db/pool';
-import { getEnvValue } from '../utils/getEnv';
-
+import { pool } from '../db/pool.js';
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { getEnvValue } from '../utils/getEnv.js';
 
 const JWT_KEY = getEnvValue('JWT_KEY', 'JWT_KEY_FILE')!;
 
@@ -10,14 +9,13 @@ export const getUserNotificationsHandler = async (req: Request, res: Response, _
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            res.status(401).json({ message: 'Token manquant.' });
-
-            return;
+            return res.status(401).json({ message: 'Token manquant.' });
         }
 
         const token = authHeader.split(' ')[1];
         const decoded = jwt.verify(token, JWT_KEY) as { id: number, email: string };
         const userId = decoded.id;
+
         const result = await pool.query(
             `SELECT id, type, payload, is_read, created_at
              FROM notifications 
@@ -40,19 +38,16 @@ export const markNotificationAsReadHandler = async (req: Request, res: Response,
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            res.status(401).json({ message: 'Token manquant.' });
-
-            return;
+            return res.status(401).json({ message: 'Token manquant.' });
         }
 
         const token = authHeader.split(' ')[1];
         const decoded = jwt.verify(token, JWT_KEY) as { id: number, email: string };
         const userId = decoded.id;
         const notificationId = parseInt(req.params.id);
-        if (!notificationId) {
-            res.status(400).json({ message: 'ID de notification requis.' });
 
-            return;
+        if (!notificationId) {
+            return res.status(400).json({ message: 'ID de notification requis.' });
         }
 
         const result = await pool.query(
@@ -61,10 +56,9 @@ export const markNotificationAsReadHandler = async (req: Request, res: Response,
              WHERE id = $1 AND user_id = $2`,
             [notificationId, userId]
         );
-        if (result.rowCount === 0) {
-            res.status(404).json({ message: 'Notification non trouvée.' });
 
-            return;
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Notification non trouvée.' });
         }
 
         res.json({ message: 'Notification marquée comme lue.' });
@@ -80,9 +74,7 @@ export const markAllNotificationsAsReadHandler = async (req: Request, res: Respo
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            res.status(401).json({ message: 'Token manquant.' });
-
-            return;
+            return res.status(401).json({ message: 'Token manquant.' });
         }
 
         const token = authHeader.split(' ')[1];
@@ -109,19 +101,16 @@ export const deleteNotificationHandler = async (req: Request, res: Response, _ne
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            res.status(401).json({ message: 'Token manquant.' });
-
-            return;
+            return res.status(401).json({ message: 'Token manquant.' });
         }
 
         const token = authHeader.split(' ')[1];
         const decoded = jwt.verify(token, JWT_KEY) as { id: number, email: string };
         const userId = decoded.id;
         const notificationId = parseInt(req.params.id);
-        if (!notificationId) {
-            res.status(400).json({ message: 'ID de notification requis.' });
 
-            return;
+        if (!notificationId) {
+            return res.status(400).json({ message: 'ID de notification requis.' });
         }
 
         const result = await pool.query(
@@ -129,10 +118,9 @@ export const deleteNotificationHandler = async (req: Request, res: Response, _ne
              WHERE id = $1 AND user_id = $2`,
             [notificationId, userId]
         );
-        if (result.rowCount === 0) {
-            res.status(404).json({ message: 'Notification non trouvée.' });
 
-            return;
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Notification non trouvée.' });
         }
 
         res.json({ message: 'Notification supprimée.' });
