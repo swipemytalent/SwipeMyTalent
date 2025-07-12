@@ -1,15 +1,23 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
-    "outDir": "build",
-    "noEmitOnError": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "noImplicitAny": true,
-    "types": ["@types/express"]
-  }
+    "compilerOptions": {
+        "target": "es2016",
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "outDir": "build",
+        "skipLibCheck": true,
+        "types": [
+            "@types/express",
+            "jest"
+        ]
+    },
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "tests",
+        "**/*.test.ts",
+        "jest*"
+    ]
 }
