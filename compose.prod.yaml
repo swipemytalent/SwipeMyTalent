@@ -46,6 +46,8 @@ services:
       - POSTGRES_HOST=postgres
       - POSTGRES_USER_FILE=/run/secrets/db-user
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+      - VAPID_PUBLIC_KEY=BIFgtQXeBE66zuSoUoOKM-dg5aXTvhrR_Y3Xy91KfsWsehl_32HCj9ERVl2o8nybRtx_Bm70v5PgM60d0tWB3yg
+      - VAPID_PRIVATE_KEY=SSolhdgar8dqQpyedvlP39Z5_E7ekUnMliiTu_DGktQ
     depends_on:
       - postgres
     networks:
