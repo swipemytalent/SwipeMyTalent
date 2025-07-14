@@ -4,7 +4,7 @@
     "scripts": {
         "build": "tsc",
         "start": "node build/index.js",
-        "dev": "node --loader ts-node/esm index.ts",
+        "dev": "ts-node src/index.ts",
         "test": "jest"
     },
     "dependencies": {
