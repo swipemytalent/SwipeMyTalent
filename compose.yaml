@@ -26,7 +26,7 @@ services:
       - ./backend/.env
     volumes:
       - pg-data:/var/lib/postgresql/data/
-      - ./backend/db/migration/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./backend/src/db/migration/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   pg-data:

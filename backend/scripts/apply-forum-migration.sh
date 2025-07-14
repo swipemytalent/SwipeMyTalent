@@ -10,7 +10,7 @@ fi
 
 # Appliquer la migration
 echo "📝 Application du schéma du forum..."
-psql -h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER -d $POSTGRES_DB -f db/migration/forum.sql
+psql -h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER -d $POSTGRES_DB -f src/db/migration/forum.sql
 
 if [ $? -eq 0 ]; then
     echo "✅ Migration du forum appliquée avec succès!"
