@@ -54,22 +54,26 @@ export class HttpService {
       config.body = JSON.stringify(body);
     }
 
-    const response = await fetch(`${this.BASE_URL}${endpoint}`, config);
+    const fullUrl = `${this.BASE_URL}${endpoint}`;
+    console.log('[PROD] URL appelée:', fullUrl);
+
+    const response = await fetch(fullUrl, config);
 
     if (response.status === 401) {
-      this.handleUnauthorized();
+        this.handleUnauthorized();
     }
     
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: response.statusText }));
-      throw new Error(errorData.message || response.statusText);
+        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+        throw new Error(errorData.message || response.statusText);
     }
 
     // Gérer le cas où la réponse est vide (ex: 204 No Content)
     const responseText = await response.text();
     if (!responseText) {
-      return {} as T;
+        return {} as T;
     }
+    
     return JSON.parse(responseText);
   }
 

@@ -9,6 +9,7 @@ dotenv.config();
 const JWT_KEY = getEnvValue('JWT_KEY', 'JWT_KEY_FILE')!;
 
 export const getAllForumsHandler = async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+    console.log('[PROD] Route /forums appelée');
     try {
         const result = await pool.query(
             `SELECT 
@@ -27,14 +28,19 @@ export const getAllForumsHandler = async (req: Request, res: Response, _next: Ne
         );
         res.json(result.rows);
     } catch (err) {
-        console.error('getAllForums error:', err);
+        console.error('[PROD] Erreur route /forums :', err);
         res.status(500).json({ message: 'Erreur serveur.' });
     }
 };
 
 export const getForumByIdHandler = async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
     const forumId = req.params.id;
+    console.log('[PROD] Route /forums/:id appelée - getForumByIdHandler');
+    console.log('[PROD] Forum ID:', forumId);
+    console.log('[PROD] Headers:', JSON.stringify(req.headers, null, 2));
+    
     try {
+        console.log('[PROD] Tentative de récupération du forum...');
         const forumResult = await pool.query(
             `SELECT 
                 f.id,
@@ -48,10 +54,12 @@ export const getForumByIdHandler = async (req: Request, res: Response, _next: Ne
         );
 
         if (forumResult.rows.length === 0) {
+            console.log('[PROD] Forum non trouvé pour ID:', forumId);
             res.status(404).json({ message: 'Forum non trouvé.' });
             return;
         }
 
+        console.log('[PROD] Forum trouvé, récupération des topics...');
         const topicsResult = await pool.query(
             `SELECT 
                 t.id,
@@ -77,35 +85,46 @@ export const getForumByIdHandler = async (req: Request, res: Response, _next: Ne
             [forumId]
         );
 
+        console.log('[PROD] Topics récupérés, nombre:', topicsResult.rows.length);
         res.json({
             forum: forumResult.rows[0],
             topics: topicsResult.rows
         });
     } catch (err) {
-        console.error('getForumById error:', err);
+        console.error('[PROD] Erreur route /forums/:id - getForumByIdHandler:', err);
+        console.error('[PROD] Stack trace:', err instanceof Error ? err.stack : 'Pas de stack trace');
         res.status(500).json({ message: 'Erreur serveur.' });
     }
 };
 
 // Créer un nouveau topic
 export const createTopicHandler = async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+    console.log('[PROD] Route /topics appelée - createTopicHandler');
+    console.log('[PROD] Body:', JSON.stringify(req.body, null, 2));
+    console.log('[PROD] Headers:', JSON.stringify(req.headers, null, 2));
+    
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            console.log('[PROD] Token manquant ou invalide');
             res.status(401).json({ message: 'Token manquant.' });
             return;
         }
 
         const token = authHeader.split(' ')[1];
+        console.log('[PROD] Tentative de vérification du token JWT...');
         const decoded = jwt.verify(token, JWT_KEY) as { id: number, email: string };
+        console.log('[PROD] Token décodé, user ID:', decoded.id);
         
         const { forumId, title, content } = req.body;
 
         if (!forumId || !title || !content) {
+            console.log('[PROD] Champs manquants:', { forumId, title: !!title, content: !!content });
             res.status(400).json({ message: 'Tous les champs sont requis.' });
             return;
         }
 
+        console.log('[PROD] Tentative de création du topic...');
         const result = await pool.query(
             `INSERT INTO topics (forum_id, author_id, title, content)
              VALUES ($1, $2, $3, $4)
@@ -113,12 +132,14 @@ export const createTopicHandler = async (req: Request, res: Response, _next: Nex
             [forumId, decoded.id, title, content]
         );
 
+        console.log('[PROD] Topic créé avec succès, ID:', result.rows[0].id);
         res.status(201).json({ 
             message: 'Topic créé avec succès.',
             topicId: result.rows[0].id 
         });
     } catch (err) {
-        console.error('createTopic error:', err);
+        console.error('[PROD] Erreur route /topics - createTopicHandler:', err);
+        console.error('[PROD] Stack trace:', err instanceof Error ? err.stack : 'Pas de stack trace');
         res.status(500).json({ message: 'Erreur serveur.' });
     }
 };
@@ -126,12 +147,18 @@ export const createTopicHandler = async (req: Request, res: Response, _next: Nex
 // Récupérer un topic avec ses posts
 export const getTopicByIdHandler = async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
     const topicId = req.params.id;
+    console.log('[PROD] Route /topics/:id appelée - getTopicByIdHandler');
+    console.log('[PROD] Topic ID:', topicId);
+    console.log('[PROD] Headers:', JSON.stringify(req.headers, null, 2));
+    
     try {
+        console.log('[PROD] Mise à jour du compteur de vues...');
         await pool.query(
             `UPDATE topics SET views_count = views_count + 1 WHERE id = $1`,
             [topicId]
         );
 
+        console.log('[PROD] Récupération du topic...');
         const topicResult = await pool.query(
             `SELECT 
                 t.id,
@@ -156,10 +183,12 @@ export const getTopicByIdHandler = async (req: Request, res: Response, _next: Ne
         );
 
         if (topicResult.rows.length === 0) {
+            console.log('[PROD] Topic non trouvé pour ID:', topicId);
             res.status(404).json({ message: 'Topic non trouvé.' });
             return;
         }
 
+        console.log('[PROD] Topic trouvé, récupération des posts...');
         const postsResult = await pool.query(
             `SELECT 
                 p.id,
@@ -178,50 +207,64 @@ export const getTopicByIdHandler = async (req: Request, res: Response, _next: Ne
             [topicId]
         );
 
+        console.log('[PROD] Posts récupérés, nombre:', postsResult.rows.length);
         res.json({
             topic: topicResult.rows[0],
             posts: postsResult.rows
         });
     } catch (err) {
-        console.error('getTopicById error:', err);
+        console.error('[PROD] Erreur route /topics/:id - getTopicByIdHandler:', err);
+        console.error('[PROD] Stack trace:', err instanceof Error ? err.stack : 'Pas de stack trace');
         res.status(500).json({ message: 'Erreur serveur.' });
     }
 };
 
 // Créer un nouveau post
 export const createPostHandler = async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+    console.log('[PROD] Route /posts appelée - createPostHandler');
+    console.log('[PROD] Body:', JSON.stringify(req.body, null, 2));
+    console.log('[PROD] Headers:', JSON.stringify(req.headers, null, 2));
+    
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            console.log('[PROD] Token manquant ou invalide');
             res.status(401).json({ message: 'Token manquant.' });
             return;
         }
 
         const token = authHeader.split(' ')[1];
+        console.log('[PROD] Tentative de vérification du token JWT...');
         const decoded = jwt.verify(token, JWT_KEY) as { id: number, email: string };
+        console.log('[PROD] Token décodé, user ID:', decoded.id);
         
         const { topicId, content } = req.body;
 
         if (!topicId || !content) {
+            console.log('[PROD] Champs manquants:', { topicId, content: !!content });
             res.status(400).json({ message: 'Tous les champs sont requis.' });
             return;
         }
 
+        console.log('[PROD] Vérification du topic...');
         const topicCheck = await pool.query(
             `SELECT is_locked FROM topics WHERE id = $1`,
             [topicId]
         );
 
         if (topicCheck.rows.length === 0) {
+            console.log('[PROD] Topic non trouvé pour ID:', topicId);
             res.status(404).json({ message: 'Topic non trouvé.' });
             return;
         }
 
         if (topicCheck.rows[0].is_locked) {
+            console.log('[PROD] Topic verrouillé pour ID:', topicId);
             res.status(403).json({ message: 'Ce topic est verrouillé.' });
             return;
         }
 
+        console.log('[PROD] Tentative de création du post...');
         const result = await pool.query(
             `INSERT INTO posts (topic_id, author_id, content)
              VALUES ($1, $2, $3)
@@ -229,17 +272,20 @@ export const createPostHandler = async (req: Request, res: Response, _next: Next
             [topicId, decoded.id, content]
         );
 
+        console.log('[PROD] Mise à jour de la date du topic...');
         await pool.query(
             `UPDATE topics SET updated_at = CURRENT_TIMESTAMP WHERE id = $1`,
             [topicId]
         );
 
+        console.log('[PROD] Post créé avec succès, ID:', result.rows[0].id);
         res.status(201).json({ 
             message: 'Post créé avec succès.',
             postId: result.rows[0].id 
         });
     } catch (err) {
-        console.error('createPost error:', err);
+        console.error('[PROD] Erreur route /posts - createPostHandler:', err);
+        console.error('[PROD] Stack trace:', err instanceof Error ? err.stack : 'Pas de stack trace');
         res.status(500).json({ message: 'Erreur serveur.' });
     }
 }; 

@@ -24,6 +24,13 @@ import { Server as SocketIOServer } from 'socket.io';
 import webpush from 'web-push';
 
 dotenv.config();
+
+// Log des variables d'environnement importantes
+console.log('[PROD] Configuration de démarrage:');
+console.log('[PROD] NODE_ENV:', process.env.NODE_ENV);
+console.log('[PROD] VAPID_PUBLIC_KEY:', process.env.VAPID_PUBLIC_KEY ? 'Défini' : 'Non défini');
+console.log('[PROD] VAPID_PRIVATE_KEY:', process.env.VAPID_PRIVATE_KEY ? 'Défini' : 'Non défini');
+
 webpush.setVapidDetails(
     'mailto:no-reply@swipemytalent.com',
     process.env.VAPID_PUBLIC_KEY!,
@@ -33,11 +40,17 @@ webpush.setVapidDetails(
 const app: Express = express();
 const port: number = 5000;
 const allowedOrigins = getAllowedOrigins();
+
+console.log('[PROD] Origines autorisées:', allowedOrigins);
+
 const corsOptions: CorsOptions = {
     origin: function (origin, callback) {
+        console.log('[PROD] CORS - Origine demandée:', origin);
         if (!origin || allowedOrigins.includes(origin)) {
+            console.log('[PROD] CORS - Origine autorisée:', origin);
             callback(null, true);
         } else {
+            console.log('[PROD] CORS - Origine refusée:', origin);
             callback(new Error("Not authorized by CORS"), false);
         }
     },
@@ -56,6 +69,17 @@ const corsOptions: CorsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '1mb' }));
+
+// Middleware pour logger toutes les requêtes
+app.use((req, res, next) => {
+    console.log(`[PROD] ${new Date().toISOString()} - ${req.method} ${req.path}`);
+    console.log('[PROD] Headers:', JSON.stringify(req.headers, null, 2));
+    console.log('[PROD] Query:', JSON.stringify(req.query, null, 2));
+    if (req.body && Object.keys(req.body).length > 0) {
+        console.log('[PROD] Body:', JSON.stringify(req.body, null, 2));
+    }
+    next();
+});
 
 app.post("/register", registerHandler);
 app.post("/login", loginHandler);
@@ -94,6 +118,15 @@ app.get('/forums/:id', getForumByIdHandler as express.RequestHandler);
 app.post('/topics', createTopicHandler as express.RequestHandler);
 app.get('/topics/:id', getTopicByIdHandler as express.RequestHandler);
 app.post('/posts', createPostHandler as express.RequestHandler);
+
+// Middleware pour logger les erreurs 500
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.error('[PROD] Erreur 500:', err);
+    console.error('[PROD] URL:', req.url);
+    console.error('[PROD] Méthode:', req.method);
+    console.error('[PROD] Headers:', req.headers);
+    res.status(500).json({ error: 'Erreur interne serveur' });
+});
 
 const server = createServer(app);
 const io = new SocketIOServer(server, {
