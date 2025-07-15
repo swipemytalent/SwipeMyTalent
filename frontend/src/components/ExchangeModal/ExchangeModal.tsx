@@ -23,8 +23,6 @@ const ExchangeModal: React.FC<ExchangeModalProps> = ({
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
-    console.log('ExchangeModal render:', { isOpen, recipientId, recipientName });
-
     if (!isOpen) return null;
 
     const handleSubmit = async (e: React.FormEvent) => {
