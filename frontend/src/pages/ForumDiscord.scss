@@ -1,10 +1,62 @@
 .forum-discord-layout {
   display: flex;
+  flex-direction: column;
   height: 85vh;
   background: var(--bg-main);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-card);
   overflow: hidden;
+}
+
+// Barre de navigation (visible sur tous les écrans)
+.forum-discord-nav {
+  display: flex;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--bg-card-hover);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  width: 100%;
+}
+
+.forum-discord-nav__tab {
+  flex: 1;
+  padding: 1rem;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+  
+  &:hover {
+    color: var(--primary-blue);
+  }
+  
+  &.active {
+    color: var(--primary-blue);
+    border-bottom-color: var(--primary-blue);
+    background: var(--bg-card-hover);
+  }
+}
+
+// Conteneur principal pour les sections
+.forum-discord-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+// Desktop: affichage normal des sections
+.forum-discord-sidebar, .forum-discord-topics, .forum-discord-messages {
+  display: flex;
+}
+
+// Desktop: masquer la barre de navigation par défaut
+.forum-discord-nav {
+  display: none;
 }
 
 .forum-discord-sidebar {
@@ -16,6 +68,9 @@
   flex-direction: column;
   gap: 0.5rem;
   min-width: 140px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .forum-discord-sidebar__title {
@@ -43,6 +98,9 @@
   transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
   margin-bottom: 0.2rem;
   border: 2px solid transparent;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
   &:hover, &.active {
     background: var(--bg-card-hover);
     box-shadow: var(--shadow-card-hover);
@@ -56,6 +114,8 @@
   font-weight: 700;
   color: var(--primary-orange);
   text-align: center;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .forum-discord-sidebar__item-desc {
@@ -89,6 +149,9 @@
   flex-direction: column;
   gap: 0.5rem;
   min-width: 180px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .forum-discord-topics__header {
@@ -98,16 +161,19 @@
   margin-bottom: 1.2rem;
   letter-spacing: 0.5px;
   padding-left: 1rem;
+  padding-right: 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .forum-discord-topics__new-btn {
   margin-left: auto;
-  font-size: 0.98rem;
-  padding: 0.5rem 1.2rem;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
   border-radius: 0.7rem;
   font-weight: 700;
   background: var(--primary-blue);
@@ -116,60 +182,15 @@
   box-shadow: 0 2px 8px 0 rgba(60, 72, 100, 0.08);
   transition: background 0.2s, box-shadow 0.2s;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
   &:hover {
     background: var(--primary-blue-light);
     box-shadow: var(--shadow-card-hover);
   }
 }
 
-.forum-discord-topics__new-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-  background: var(--bg-card);
-  border-radius: 1rem;
-  box-shadow: var(--shadow-card);
-  padding: 1.2rem 1.5rem;
-  margin-bottom: 1.2rem;
-}
 
-.forum-discord-topics__input {
-  padding: 0.7rem 1rem;
-  border-radius: 0.7rem;
-  border: 1.5px solid var(--bg-card-hover);
-  font-size: 1rem;
-  font-family: var(--font-main);
-  background: var(--bg-main);
-  color: var(--text-primary);
-  transition: border 0.2s;
-  &:focus {
-    border: 1.5px solid var(--primary-blue);
-    outline: none;
-  }
-}
-
-.forum-discord-topics__textarea {
-  padding: 0.7rem 1rem;
-  border-radius: 0.7rem;
-  border: 1.5px solid var(--bg-card-hover);
-  font-size: 1rem;
-  font-family: var(--font-main);
-  background: var(--bg-main);
-  color: var(--text-primary);
-  transition: border 0.2s;
-  resize: vertical;
-  min-height: 80px;
-  &:focus {
-    border: 1.5px solid var(--primary-blue);
-    outline: none;
-  }
-}
-
-.forum-discord-topics__error {
-  color: var(--danger);
-  font-size: 0.98rem;
-  margin-bottom: 0.2rem;
-}
 
 .forum-discord-topics__list {
   display: flex;
@@ -191,6 +212,9 @@
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
   &:hover, &.active {
     background: var(--primary-blue);
     color: #fff;
@@ -204,6 +228,8 @@
 .forum-discord-topics__item-title {
   font-size: 1.02rem;
   font-weight: 700;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .forum-discord-topics__item-meta {
@@ -242,6 +268,8 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .forum-discord-messages__header {
@@ -267,6 +295,9 @@
   flex-direction: column;
   gap: 0.3rem;
   position: relative;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
   &.original {
     border-left: 5px solid var(--primary-blue);
   }
@@ -283,6 +314,8 @@
   color: var(--primary-blue);
   font-weight: 600;
   margin-bottom: 0.2rem;
+  flex-wrap: wrap;
+  min-width: 0;
   .avatar-placeholder {
     width: 32px;
     height: 32px;
@@ -294,16 +327,21 @@
     justify-content: center;
     font-weight: 700;
     font-size: 1.1rem;
+    flex-shrink: 0;
   }
   .author-name {
     font-weight: 700;
     color: var(--primary-blue);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   .date {
     font-size: 0.92rem;
     color: var(--text-secondary);
     font-weight: 400;
     margin-left: 0.5rem;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 }
 
@@ -312,6 +350,8 @@
   font-size: 1.05rem;
   line-height: 1.5;
   word-break: break-word;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .forum-discord-empty, .forum-discord-loading, .forum-discord-error {
@@ -330,6 +370,8 @@
   border-radius: 1rem;
   box-shadow: var(--shadow-card);
   padding: 1rem 1.2rem;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .forum-discord-message-form__textarea {
@@ -345,6 +387,9 @@
   resize: vertical;
   min-height: 40px;
   max-height: 120px;
+  min-width: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   &:focus {
     border: 1.5px solid var(--primary-blue);
     outline: none;
@@ -368,6 +413,8 @@
   box-shadow: 0 2px 8px 0 rgba(60, 72, 100, 0.08);
   transition: background 0.2s, box-shadow 0.2s;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
   &:hover {
     background: var(--primary-blue-light);
     box-shadow: var(--shadow-card-hover);
@@ -384,26 +431,102 @@
   .forum-discord-layout {
     flex-direction: column;
     height: auto;
+    position: relative;
+    overflow-x: hidden; // Empêcher le débordement horizontal
   }
+  
+  .forum-discord-content {
+    flex-direction: column;
+  }
+  
+  // Navigation par onglets en responsive
   .forum-discord-sidebar, .forum-discord-topics {
     width: 100%;
     min-width: 0;
-    flex-direction: row;
+    flex-direction: column;
     gap: 0.5rem;
     padding: 1rem 0.5rem;
-    overflow-x: auto;
+    overflow-y: auto;
     border-radius: var(--border-radius) var(--border-radius) 0 0;
     border-right: none;
     border-bottom: 1px solid var(--bg-card-hover);
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-blue) #f0f4fa;
+    display: none; // Caché par défaut
   }
+  
+  .forum-discord-sidebar.active, .forum-discord-topics.active {
+    display: flex; // Affiché quand actif
+  }
+  
   .forum-discord-sidebar__item, .forum-discord-topics__item {
-    min-width: 120px;
-    margin-bottom: 0;
-    margin-right: 0.5rem;
+    min-width: 0;
+    max-width: none;
+    margin-bottom: 0.5rem;
+    margin-right: 0;
     padding: 0.7rem 1rem;
     font-size: 1rem;
+    box-sizing: border-box;
+    word-wrap: break-word; // Gérer les longs textes
+    overflow-wrap: break-word;
   }
+  
   .forum-discord-messages {
     padding: 1.2rem 0.5rem;
+    display: none; // Caché par défaut
+    width: 100%;
+    overflow-x: hidden;
+  }
+  
+  .forum-discord-messages.active {
+    display: flex; // Affiché quand actif
+  }
+  
+  // Barre de navigation responsive
+  .forum-discord-nav {
+    display: flex !important;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--bg-card-hover);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    width: 100%;
+    overflow-x: hidden;
+  }
+  
+  .forum-discord-nav__tab {
+    flex: 1;
+    padding: 1rem 0.5rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    
+    &:hover {
+      color: var(--primary-blue);
+    }
+    
+    &.active {
+      color: var(--primary-blue);
+      border-bottom-color: var(--primary-blue);
+      background: var(--bg-card-hover);
+    }
+  }
+}
+
+.forum-discord-sidebar, .forum-discord-topics {
+  &::-webkit-scrollbar {
+    width: 7px; // Largeur pour scroll vertical
+    background: #f0f4fa;
+    border-radius: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--primary-blue);
+    border-radius: 8px;
   }
 } 
