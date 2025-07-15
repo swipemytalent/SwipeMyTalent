@@ -48,11 +48,11 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'conversations' | 'messages'>('conversations');
-  
+
   const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [selectedExchangeForRating, setSelectedExchangeForRating] = useState<Exchange | null>(null);
-  
+
   const currentUser = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
