@@ -318,7 +318,13 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
                 <div className="chat-actions">
                   <button
                     className="exchange-button"
-                    onClick={() => setIsExchangeModalOpen(true)}
+                    onClick={() => {
+                      console.log('Bouton "Proposer un échange" cliqué');
+                      console.log('selectedConversation:', selectedConversation);
+                      console.log('isExchangeModalOpen avant:', isExchangeModalOpen);
+                      setIsExchangeModalOpen(true);
+                      console.log('isExchangeModalOpen après:', true);
+                    }}
                     style={{
                       backgroundColor: '#007bff',
                       color: 'white',
