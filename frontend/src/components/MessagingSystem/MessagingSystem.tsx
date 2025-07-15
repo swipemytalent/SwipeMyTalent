@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { fetchUserConversations, fetchConversationMessages, sendMessage, markConversationAsRead } from '../../api/messagesApi';
+import { fetchUserById } from '../../api/userApi';
 import { Exchange } from '../../api/exchangesApi';
 import ExchangeModal from '../ExchangeModal/ExchangeModal';
 import RatingModal from '../RatingModal/RatingModal';
@@ -48,6 +49,13 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'conversations' | 'messages'>('conversations');
+  const [selectedUserInfo, setSelectedUserInfo] = useState<{
+    id: string;
+    firstName: string;
+    lastName: string;
+    title: string;
+    avatar?: string;
+  } | null>(null);
 
   const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
@@ -59,8 +67,15 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
     if (isOpen) {
       loadConversations();
       setSelectedConversation(null);
+      setSelectedUserInfo(null);
+      setMessages([]);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    // Vider les messages quand l'utilisateur sélectionné change
+    setMessages([]);
+  }, [selectedUserId]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -95,9 +110,17 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
       const conv = conversations.find(c => c.participant.id === String(selectedUserId));
       if (conv) {
         setSelectedConversation(conv);
+        setSelectedUserInfo(null);
       } else {
         setSelectedConversation(null);
+        setMessages([]); // Vider les messages car pas de conversation existante
+        loadSelectedUserInfo(selectedUserId);
       }
+    } else if (isOpen && selectedUserId && conversations.length === 0) {
+      // Si pas de conversations et qu'un utilisateur est sélectionné, charger ses infos
+      setSelectedConversation(null);
+      setMessages([]); // Vider les messages car pas de conversation existante
+      loadSelectedUserInfo(selectedUserId);
     }
   }, [isOpen, selectedUserId, conversations]);
 
@@ -105,8 +128,13 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
     if (selectedConversation) {
       handleOpenConversation(selectedConversation);
       setActiveTab('messages');
+    } else if (selectedUserId && !selectedConversation) {
+      // Si un utilisateur est sélectionné mais pas de conversation, passer à l'onglet messages
+      setActiveTab('messages');
+      // Vider les messages car il n'y a pas de conversation existante
+      setMessages([]);
     }
-  }, [selectedConversation]);
+  }, [selectedConversation, selectedUserId]);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -124,6 +152,21 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
       if (onConversationsUpdate) onConversationsUpdate();
     } catch (err) {
       setError('Erreur lors du chargement des conversations');
+    }
+  };
+
+  const loadSelectedUserInfo = async (userId: string) => {
+    try {
+      const userData = await fetchUserById(userId);
+      setSelectedUserInfo({
+        id: userData.id,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        title: userData.title,
+        avatar: userData.avatar
+      });
+    } catch (err) {
+      console.error('Erreur lors du chargement des informations utilisateur:', err);
     }
   };
 
@@ -158,23 +201,41 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedConversation || !newMessage.trim()) return;
+    if (!newMessage.trim()) return;
 
     setIsSending(true);
     try {
+      let receiverId: string;
+      let isNewConversation = false;
+      
+      if (selectedConversation) {
+        // Conversation existante
+        receiverId = selectedConversation.participant.id;
+      } else if (selectedUserId) {
+        // Premier message - utiliser selectedUserId
+        receiverId = selectedUserId;
+        isNewConversation = true;
+      } else {
+        setError('Aucun destinataire sélectionné');
+        return;
+      }
+
       const messageData = {
         sender_id: currentUser.id,
-        receiver_id: selectedConversation.participant.id,
+        receiver_id: receiverId,
         content: newMessage.trim()
       };
 
       await sendMessage(messageData);
       setNewMessage('');
       
-      await Promise.all([
-        loadMessages(selectedConversation.id),
-        loadConversations()
-      ]);
+      // Recharger les conversations pour inclure la nouvelle
+      await loadConversations();
+      
+      // Si c'était une nouvelle conversation, vider les messages pour éviter qu'ils s'affichent ailleurs
+      if (isNewConversation) {
+        setMessages([]);
+      }
       
       if (onConversationsUpdate) onConversationsUpdate();
     } catch (err) {
@@ -215,7 +276,7 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
             <button 
               className={`tab-button ${activeTab === 'messages' ? 'active' : ''}`}
               onClick={() => setActiveTab('messages')}
-              disabled={!selectedConversation}
+              disabled={!selectedConversation && !selectedUserId}
             >
               Messages
             </button>
@@ -280,44 +341,72 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
             </div>
           )}
 
-          {activeTab === 'messages' && selectedConversation && (
+          {activeTab === 'messages' && (selectedConversation || selectedUserId) && (
             <div className="chat-area">
               <div className="chat-header">
                 <div className="chat-participant">
                   <div className="chat-avatar">
-                    {selectedConversation.participant.avatar ? (
-                      <img src={selectedConversation.participant.avatar} alt="Avatar" />
+                    {selectedConversation ? (
+                      selectedConversation.participant.avatar ? (
+                        <img src={selectedConversation.participant.avatar} alt="Avatar" />
+                      ) : (
+                        <div className="avatar-placeholder">
+                          {selectedConversation.participant.firstName.charAt(0)}
+                        </div>
+                      )
+                    ) : selectedUserInfo ? (
+                      selectedUserInfo.avatar ? (
+                        <img src={selectedUserInfo.avatar} alt="Avatar" />
+                      ) : (
+                        <div className="avatar-placeholder">
+                          {selectedUserInfo.firstName.charAt(0)}
+                        </div>
+                      )
                     ) : (
                       <div className="avatar-placeholder">
-                        {selectedConversation.participant.firstName.charAt(0)}
+                        ?
                       </div>
                     )}
                   </div>
                   <div className="chat-info">
                     <div className="chat-name">
-                      {selectedConversation.participant.firstName} {selectedConversation.participant.lastName}
+                      {selectedConversation 
+                        ? `${selectedConversation.participant.firstName} ${selectedConversation.participant.lastName}`
+                        : selectedUserInfo
+                        ? `${selectedUserInfo.firstName} ${selectedUserInfo.lastName}`
+                        : 'Nouvelle conversation'
+                      }
                     </div>
-                    <div className="chat-title">{selectedConversation.participant.title}</div>
+                    <div className="chat-title">
+                      {selectedConversation 
+                        ? selectedConversation.participant.title 
+                        : selectedUserInfo 
+                        ? selectedUserInfo.title 
+                        : ''
+                      }
+                    </div>
                   </div>
                 </div>
-                <div className="chat-actions">
-                  <button
-                    className="exchange-button"
-                    onClick={() => setIsExchangeModalOpen(true)}
-                    style={{
-                      backgroundColor: '#007bff',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px',
-                      padding: '8px 12px',
-                      fontSize: '12px',
-                      cursor: 'pointer',
-                      fontWeight: '500'
-                    }}
-                  >
-                    💼 Proposer un échange
-                  </button>
-                </div>
+                {selectedConversation && (
+                  <div className="chat-actions">
+                    <button
+                      className="exchange-button"
+                      onClick={() => setIsExchangeModalOpen(true)}
+                      style={{
+                        backgroundColor: '#007bff',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        padding: '8px 12px',
+                        fontSize: '12px',
+                        cursor: 'pointer',
+                        fontWeight: '500'
+                      }}
+                    >
+                      💼 Proposer un échange
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="messages-container">
