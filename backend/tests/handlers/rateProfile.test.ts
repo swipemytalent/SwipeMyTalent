@@ -101,14 +101,14 @@ describe('rateProfile', () => {
         await rateProfileHandler(req, res);
         expect(res.status).toHaveBeenCalledWith(400);
         expect(res.json).toHaveBeenCalledWith({
-            message: 'Vous ne pouvez noter que les échanges terminés auxquels vous avez participé.'
+            message: 'Échange non trouvé ou vous n\'y avez pas participé.'
         });
     });
 
-    it('returns 400 if other participant is not the rated user', async () => {
+    it('returns 400 if exchange is not completed', async () => {
         mockVerify.mockReturnValue({ id: 1 });
         mockQuery.mockResolvedValueOnce({
-            rows: [{ initiator_id: 1, recipient_id: 3 }]
+            rows: [{ initiator_id: 1, recipient_id: 2, status: 'pending' }]
         });
         const req = createMockReq();
         const res = createMockRes();
@@ -116,7 +116,22 @@ describe('rateProfile', () => {
         await rateProfileHandler(req, res);
         expect(res.status).toHaveBeenCalledWith(400);
         expect(res.json).toHaveBeenCalledWith({
-            message: 'Vous ne pouvez noter que l\'autre participant de cet échange.'
+            message: 'Vous ne pouvez noter que les échanges terminés. Statut actuel: pending'
+        });
+    });
+
+    it('returns 400 if other participant is not the rated user', async () => {
+        mockVerify.mockReturnValue({ id: 1 });
+        mockQuery.mockResolvedValueOnce({
+            rows: [{ initiator_id: 1, recipient_id: 3, status: 'completed' }]
+        });
+        const req = createMockReq();
+        const res = createMockRes();
+
+        await rateProfileHandler(req, res);
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({
+            message: 'Vous ne pouvez noter que l\'autre participant de cet échange. Vous essayez de noter l\'utilisateur 2 mais l\'autre participant est 3.'
         });
     });
 
@@ -124,7 +139,7 @@ describe('rateProfile', () => {
         mockVerify.mockReturnValue({ id: 1 });
         mockQuery
             .mockResolvedValueOnce({
-                rows: [{ initiator_id: 1, recipient_id: 2 }]
+                rows: [{ initiator_id: 1, recipient_id: 2, status: 'completed' }]
             })
             .mockResolvedValueOnce({
                 rows: [{ id: 123 }]
@@ -144,12 +159,12 @@ describe('rateProfile', () => {
         mockVerify.mockReturnValue({ id: 1 });
         mockQuery
             .mockResolvedValueOnce({
-                rows: [{ initiator_id: 1, recipient_id: 2 }]
+                rows: [{ initiator_id: 1, recipient_id: 2, status: 'completed' }]
             }) // check exchange
-            .mockResolvedValueOnce({ rows: [] })
-            .mockResolvedValueOnce({})
-            .mockResolvedValueOnce({ rows: [{ first_name: 'Alice', last_name: 'Smith' }] })
-            .mockResolvedValueOnce({});
+            .mockResolvedValueOnce({ rows: [] }) // check existing rating
+            .mockResolvedValueOnce({}) // insert rating
+            .mockResolvedValueOnce({ rows: [{ first_name: 'Alice', last_name: 'Smith' }] }) // get rater info
+            .mockResolvedValueOnce({}); // insert notification
 
         const req = createMockReq();
         const res = createMockRes();
@@ -173,7 +188,12 @@ describe('rateProfile', () => {
         console.error = jest.fn();
 
         mockVerify.mockReturnValue({ id: 1 });
-        mockQuery.mockRejectedValueOnce(new Error('DB Error'));
+        mockQuery
+            .mockResolvedValueOnce({
+                rows: [{ initiator_id: 1, recipient_id: 2, status: 'completed' }]
+            }) // check exchange
+            .mockRejectedValueOnce(new Error('DB Error')); // error on existing rating check
+
         const req = createMockReq();
         const res = createMockRes();
 

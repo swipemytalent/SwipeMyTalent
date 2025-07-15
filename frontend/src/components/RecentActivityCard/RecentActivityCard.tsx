@@ -15,15 +15,24 @@ const RecentActivityCard = () => {
   const [exchangeRating, setExchangeRating] = useState<any>(null);
 
   useEffect(() => {
-    fetchUserExchanges()
-      .then(data => {
-        setExchanges(data.slice(0, 5));
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('Erreur lors du chargement des échanges');
-        setLoading(false);
-      });
+    const fetchData = () => {
+      fetchUserExchanges()
+        .then(data => {
+          setExchanges(data.slice(0, 5));
+          setLoading(false);
+        })
+        .catch(() => {
+          setError('Erreur lors du chargement des échanges');
+          setLoading(false);
+        });
+    };
+
+    fetchData();
+    
+    // Rafraîchir automatiquement toutes les 30 secondes
+    const interval = setInterval(fetchData, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -115,7 +124,7 @@ const RecentActivityCard = () => {
     ((selectedExchange.isInitiator && !selectedExchange.initiator_confirmed) ||
      (!selectedExchange.isInitiator && !selectedExchange.recipient_confirmed));
   const canComplete = selectedExchange && selectedExchange.status === 'confirmed';
-  const canRate = selectedExchange && selectedExchange.status === 'completed' && !exchangeRating?.rating;
+  const canRate = selectedExchange && selectedExchange.status === 'completed' && !exchangeRating;
 
   return (
     <section className="dashboard__card recent-activity-card">
@@ -219,7 +228,23 @@ const RecentActivityCard = () => {
                   </button>
                 )}
                 {canRate && (
-                  <button className="btn btn--success" onClick={()=>setIsRatingModalOpen(true)}>
+                  <button className="btn btn--success" onClick={async ()=>{
+                    // Rafraîchir les données avant d'ouvrir la modale
+                    try {
+                      const data = await fetchUserExchanges();
+                      setExchanges(data.slice(0, 5));
+                      const updatedExchange = data.find((ex: Exchange) => ex.id === selectedExchange.id) || null;
+                      setSelectedExchange(updatedExchange);
+                      
+                      if (updatedExchange && updatedExchange.status === 'completed') {
+                        const rating = await fetchExchangeRating(updatedExchange.id);
+                        setExchangeRating(rating);
+                      }
+                    } catch (error) {
+                      console.error('Erreur lors du rafraîchissement:', error);
+                    }
+                    setIsRatingModalOpen(true);
+                  }}>
                     ⭐ Laisser un avis
                   </button>
                 )}
@@ -228,10 +253,10 @@ const RecentActivityCard = () => {
                     <h4>⭐ Évaluation</h4>
                     <p className="exchange-detail__rating">
                       {exchangeRating && exchangeRating.rating ? (
-                        <span>Note : {exchangeRating.rating}/5</span>
+                        <span>Votre note : {exchangeRating.rating}/5</span>
                       ) : (
                         <span style={{ color: '#666', fontStyle: 'italic' }}>
-                          Aucune évaluation pour le moment
+                          Vous n'avez pas encore noté cet échange
                         </span>
                       )}
                     </p>
@@ -255,7 +280,18 @@ const RecentActivityCard = () => {
                   
                   const data = await fetchUserExchanges();
                   setExchanges(data.slice(0, 5));
-                  setSelectedExchange(data.find((ex: Exchange) => ex.id === selectedExchange.id) || null);
+                  const updatedExchange = data.find((ex: Exchange) => ex.id === selectedExchange.id) || null;
+                  setSelectedExchange(updatedExchange);
+                  
+                  // Rafraîchir aussi l'évaluation
+                  if (updatedExchange && updatedExchange.status === 'completed') {
+                    try {
+                      const rating = await fetchExchangeRating(updatedExchange.id);
+                      setExchangeRating(rating);
+                    } catch (error) {
+                      setExchangeRating(null);
+                    }
+                  }
                 }}
               />
             )}

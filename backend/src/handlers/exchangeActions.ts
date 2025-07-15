@@ -46,11 +46,17 @@ export const completeExchangeHandler = async (req: Request, res: Response, _next
             return;
         }
 
+        if (exchange.status === 'completed') {
+            res.status(400).json({
+                message: 'Cet échange est déjà terminé.'
+            });
+            return;
+        }
+        
         if (exchange.status !== 'confirmed') {
             res.status(400).json({
-                message: 'L\'échange doit être confirmé par les deux parties avant d\'être terminé.'
+                message: `L'échange doit être confirmé par les deux parties avant d'être terminé. Statut actuel: ${exchange.status}`
             });
-
             return;
         }
 
