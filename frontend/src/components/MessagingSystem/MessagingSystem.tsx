@@ -60,15 +60,7 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
     ? String(selectedUserId)
     : null;
 
-  const [newRecipientProfile, setNewRecipientProfile] = useState<any | null>(null);
-  useEffect(() => {
-    if (newRecipient) {
-      setNewRecipientProfile(null);
-      fetchUserById(newRecipient)
-        .then(setNewRecipientProfile)
-        .catch(() => setNewRecipientProfile(null));
-    }
-  }, [newRecipient]);
+
 
   useEffect(() => {
     if (isOpen) {
