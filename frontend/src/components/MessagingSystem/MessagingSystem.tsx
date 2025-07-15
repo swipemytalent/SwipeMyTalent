@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { fetchUserConversations, fetchConversationMessages, sendMessage, markConversationAsRead } from '../../api/messagesApi';
-import { fetchUserById } from '../../api/userApi';
+
 import { Exchange } from '../../api/exchangesApi';
 import ExchangeModal from '../ExchangeModal/ExchangeModal';
 import RatingModal from '../RatingModal/RatingModal';
@@ -55,20 +55,6 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
   const [selectedExchangeForRating, setSelectedExchangeForRating] = useState<Exchange | null>(null);
   
   const currentUser = useSelector((state: RootState) => state.user);
-
-  const newRecipient = selectedUserId && !conversations.some(c => c.participant.id === String(selectedUserId))
-    ? String(selectedUserId)
-    : null;
-
-  const [newRecipientProfile, setNewRecipientProfile] = useState<any | null>(null);
-  useEffect(() => {
-    if (newRecipient) {
-      setNewRecipientProfile(null);
-      fetchUserById(newRecipient)
-        .then(setNewRecipientProfile)
-        .catch(() => setNewRecipientProfile(null));
-    }
-  }, [newRecipient]);
 
   useEffect(() => {
     if (isOpen) {
