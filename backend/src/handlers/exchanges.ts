@@ -174,7 +174,8 @@ export const confirmExchangeHandler = async (req: Request, res: Response, _next:
             [exchangeId]
         );
         const updated = updatedExchange.rows[0];
-        let newStatus = 'pending';
+        let newStatus = updated.status; // Utiliser le statut actuel
+        
         if (updated.initiator_confirmed && updated.recipient_confirmed) {
             newStatus = 'confirmed';
             await pool.query(

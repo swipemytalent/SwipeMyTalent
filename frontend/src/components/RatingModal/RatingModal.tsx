@@ -69,8 +69,8 @@ const RatingModal: React.FC<RatingModalProps> = ({
             }, 1500);
         } catch (err: any) {
             let msg = 'Une erreur est survenue lors de l\'envoi de l\'avis';
-            if (err && err.message && err.message.includes('déjà noté cette personne')) {
-                msg = 'Vous avez déjà noté cette personne pour un échange précédent.';
+            if (err?.message) {
+                msg = err.message;
             }
             setError(msg);
             LoggerService.error('Erreur envoi avis', err);

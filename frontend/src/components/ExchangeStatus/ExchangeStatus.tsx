@@ -47,8 +47,12 @@ const ExchangeStatus: React.FC<ExchangeStatusProps> = ({
             if (onExchangeUpdated) {
                 onExchangeUpdated();
             }
-        } catch (err) {
-            setError('Erreur lors de la finalisation');
+        } catch (err: any) {
+            let errorMessage = 'Erreur lors de la finalisation';
+            if (err?.message) {
+                errorMessage = err.message;
+            }
+            setError(errorMessage);
             LoggerService.error('Erreur finalisation échange', err);
         } finally {
             setIsUpdating(false);

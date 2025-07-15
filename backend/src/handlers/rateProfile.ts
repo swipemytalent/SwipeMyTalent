@@ -33,27 +33,31 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
 
         const exchangeCheck = await pool.query(
             `SELECT * FROM exchanges 
-             WHERE id = $1 AND status = 'completed' 
-             AND (initiator_id = $2 OR recipient_id = $2)`,
+             WHERE id = $1 AND (initiator_id = $2 OR recipient_id = $2)`,
             [exchange_id, raterId]
         );
         if (exchangeCheck.rows.length === 0) {
             res.status(400).json({
-                message: 'Vous ne pouvez noter que les échanges terminés auxquels vous avez participé.'
+                message: 'Échange non trouvé ou vous n\'y avez pas participé.'
             });
-
+            return;
+        }
+        
+        const exchange = exchangeCheck.rows[0];
+        if (exchange.status !== 'completed') {
+            res.status(400).json({
+                message: `Vous ne pouvez noter que les échanges terminés. Statut actuel: ${exchange.status}`
+            });
             return;
         }
 
-        const exchange = exchangeCheck.rows[0];
         const otherParticipantId = exchange.initiator_id === raterId
             ? exchange.recipient_id
             : exchange.initiator_id;
         if (otherParticipantId !== ratedUserId) {
             res.status(400).json({
-                message: 'Vous ne pouvez noter que l\'autre participant de cet échange.'
+                message: `Vous ne pouvez noter que l'autre participant de cet échange. Vous essayez de noter l'utilisateur ${ratedUserId} mais l'autre participant est ${otherParticipantId}.`
             });
-
             return;
         }
 
@@ -89,7 +93,7 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
 
 
         await pool.query(`
-            INSERT INTO notifications (user_id, type, data)
+            INSERT INTO notifications (user_id, type, payload)
             VALUES ($1, $2, $3)`,
             [
                 ratedUserId,
