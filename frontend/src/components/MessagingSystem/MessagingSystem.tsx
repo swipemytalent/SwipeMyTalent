@@ -56,10 +56,6 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
   
   const currentUser = useSelector((state: RootState) => state.user);
 
-
-
-
-
   useEffect(() => {
     if (isOpen) {
       loadConversations();

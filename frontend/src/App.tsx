@@ -20,8 +20,6 @@ import NotificationPermission from './components/NotificationPermission/Notifica
 import CGU from './pages/CGU';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import CookiesPolicy from './pages/CookiesPolicy';
-import ExchangeModal from './components/ExchangeModal/ExchangeModal';
-import { closeExchangeModal } from './redux/exchangeModalSlice';
 import ForumDiscord from './pages/ForumDiscord';
 
 const ExchangeDetail = () => <div style={{padding:40, textAlign:'center'}}>Détail de l'échange (à implémenter)</div>;
@@ -29,7 +27,6 @@ const ExchangeDetail = () => <div style={{padding:40, textAlign:'center'}}>Déta
 const AppContent: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const messaging = useSelector((state: RootState) => state.messaging);
-  const exchangeModal = useSelector((state: RootState) => state.exchangeModal);
 
   useEffect(() => {
     setupHttpService(dispatch);
@@ -57,12 +54,6 @@ const AppContent: React.FC = () => {
         isOpen={messaging.isOpen}
         selectedUserId={messaging.selectedUserId}
         onClose={() => dispatch(closeMessaging())}
-      />
-      <ExchangeModal
-        isOpen={exchangeModal.isOpen}
-        onClose={() => dispatch(closeExchangeModal())}
-        recipientId={0}
-        recipientName={''}
       />
       <NotificationPermission />
       <Footer />

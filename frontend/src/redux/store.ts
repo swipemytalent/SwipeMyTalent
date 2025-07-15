@@ -2,7 +2,6 @@ import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './userSlice';
 import viewedProfileReducer from './viewedProfileSlice';
 import messagingReducer from './messagingSlice';
-import exchangeModalReducer from './exchangeModalSlice';
 import forumReducer from './forumSlice';
 
 const store = configureStore({
@@ -10,7 +9,6 @@ const store = configureStore({
     user: userReducer,
     viewedProfile: viewedProfileReducer,
     messaging: messagingReducer,
-    exchangeModal: exchangeModalReducer,
     forum: forumReducer,
   },
 });
