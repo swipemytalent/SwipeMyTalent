@@ -43,6 +43,13 @@ class NotificationService {
     if (!this.swRegistration || !this.isSupported) return false;
 
     try {
+      // Vérifier s'il y a déjà un abonnement existant
+      const existingSubscription = await this.swRegistration.pushManager.getSubscription();
+      if (existingSubscription) {
+        console.log('Désabonnement de l\'ancienne subscription...');
+        await existingSubscription.unsubscribe();
+      }
+
       const response = await fetch('/api/push/vapid-public-key');
       if (!response.ok) {
         throw new Error('Impossible de récupérer la clé VAPID');
