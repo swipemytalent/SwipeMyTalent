@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { fetchUserConversations, fetchConversationMessages, sendMessage, markConversationAsRead } from '../../api/messagesApi';
+
 import { Exchange } from '../../api/exchangesApi';
 import ExchangeModal from '../ExchangeModal/ExchangeModal';
 import RatingModal from '../RatingModal/RatingModal';
