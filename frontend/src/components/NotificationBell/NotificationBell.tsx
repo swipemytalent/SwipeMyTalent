@@ -8,7 +8,7 @@ import '../../styles/NotificationBell.scss';
 import { useDispatch } from 'react-redux';
 import { openMessaging } from '../../redux/messagingSlice';
 import { createPortal } from 'react-dom';
-import { confirmExchange, completeExchange, fetchExchangeRating } from '../../api/exchangesApi';
+import { confirmExchange, completeExchange } from '../../api/exchangesApi';
 import RatingModal from '../RatingModal/RatingModal';
 
 interface Notification {
@@ -53,7 +53,6 @@ const NotificationBell: React.FC = () => {
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [errorAction, setErrorAction] = useState<string | null>(null);
-  const [exchangeRating, setExchangeRating] = useState<any>(null);
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -267,7 +266,6 @@ const NotificationBell: React.FC = () => {
     ((selectedExchange.isInitiator && !selectedExchange.initiator_confirmed) ||
      (!selectedExchange.isInitiator && !selectedExchange.recipient_confirmed));
   const canComplete = selectedExchange && selectedExchange.status === 'confirmed';
-  const canRate = selectedExchange && selectedExchange.status === 'completed' && !exchangeRating?.rating;
 
   return (
     <>
@@ -447,25 +445,6 @@ const NotificationBell: React.FC = () => {
                   <button className="btn btn--success" onClick={handleComplete} disabled={isUpdating}>
                     {isUpdating ? 'Finalisation...' : 'Marquer comme terminé'}
                   </button>
-                )}
-                {canRate && (
-                  <button className="btn btn--success" onClick={()=>setIsRatingModalOpen(true)}>
-                    ⭐ Laisser un avis
-                  </button>
-                )}
-                {selectedExchange.status === 'completed' && (
-                  <div className="exchange-detail__section">
-                    <h4>⭐ Évaluation</h4>
-                    <p className="exchange-detail__rating">
-                      {exchangeRating && exchangeRating.rating ? (
-                        <span>Note : {exchangeRating.rating}/5</span>
-                      ) : (
-                        <span style={{ color: '#666', fontStyle: 'italic' }}>
-                          Aucune évaluation pour le moment
-                        </span>
-                      )}
-                    </p>
-                  </div>
                 )}
               </div>
             </div>
