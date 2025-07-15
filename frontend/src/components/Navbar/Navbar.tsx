@@ -64,17 +64,17 @@ const Navbar: React.FC = () => {
               </button>
             )}
             <ul className={`nav-links${isMobile && isMenuOpen ? ' active' : ''}`}> 
-              <li><NavLink to="/" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Accueil</NavLink></li>
-              <li><NavLink to="/comment-ca-marche" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Comment ça marche</NavLink></li>
-              <li><NavLink to="/dashboard" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Mon espace</NavLink></li>
-              <li><NavLink to="/talents" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Talents</NavLink></li>
-              <li><NavLink to="/forum" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Forum</NavLink></li>
+              <li><NavLink to="/" className={({ isActive }) => isActive ? 'navlink-active' : ''} onClick={() => setIsMenuOpen(false)}>Accueil</NavLink></li>
+              <li><NavLink to="/comment-ca-marche" className={({ isActive }) => isActive ? 'navlink-active' : ''} onClick={() => setIsMenuOpen(false)}>Comment ça marche</NavLink></li>
+              <li><NavLink to="/dashboard" className={({ isActive }) => isActive ? 'navlink-active' : ''} onClick={() => setIsMenuOpen(false)}>Mon espace</NavLink></li>
+              <li><NavLink to="/talents" className={({ isActive }) => isActive ? 'navlink-active' : ''} onClick={() => setIsMenuOpen(false)}>Talents</NavLink></li>
+              <li><NavLink to="/forum" className={({ isActive }) => isActive ? 'navlink-active' : ''} onClick={() => setIsMenuOpen(false)}>Forum</NavLink></li>
             </ul>
           </>
         ) : (
           <ul className="nav-links-public">
-            <li><NavLink to="/" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Accueil</NavLink></li>
-            <li><NavLink to="/comment-ca-marche" className={({ isActive }) => isActive ? 'navlink-active' : ''}>Comment ça marche</NavLink></li>
+            <li><NavLink to="/" className={({ isActive }) => isActive ? 'navlink-active' : ''} onClick={() => setIsMenuOpen(false)}>Accueil</NavLink></li>
+            <li><NavLink to="/comment-ca-marche" className={({ isActive }) => isActive ? 'navlink-active' : ''} onClick={() => setIsMenuOpen(false)}>Comment ça marche</NavLink></li>
           </ul>
         )}
       </div>
