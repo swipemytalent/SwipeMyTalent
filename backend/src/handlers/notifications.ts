@@ -57,8 +57,8 @@ export const markNotificationAsReadHandler = async (req: Request, res: Response,
         const userId = decoded.id;
         console.log('[PROD] Token décodé, user ID:', userId);
         
-        if (!notificationId) {
-            console.log('[PROD] ID de notification manquant');
+        if (!notificationId || isNaN(Number(notificationId))) {
+            console.log('[PROD] ID de notification manquant ou invalide');
             res.status(400).json({ message: 'ID de notification requis.' });
             return;
         }
@@ -145,8 +145,8 @@ export const deleteNotificationHandler = async (req: Request, res: Response, _ne
         const userId = decoded.id;
         console.log('[PROD] Token décodé, user ID:', userId);
         
-        if (!notificationId) {
-            console.log('[PROD] ID de notification manquant');
+        if (!notificationId || isNaN(Number(notificationId))) {
+            console.log('[PROD] ID de notification manquant ou invalide');
             res.status(400).json({ message: 'ID de notification requis.' });
             return;
         }
