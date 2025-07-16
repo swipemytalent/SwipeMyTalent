@@ -13,6 +13,7 @@ import { deleteUnsubcribedUsers } from './jobs/deleteUnsubscribedUsers';
 import { getUserNotificationsHandler, markNotificationAsReadHandler, markAllNotificationsAsReadHandler, deleteNotificationHandler } from './handlers/notifications';
 import { getVapidPublicKeyHandler, subscribeToPushHandler, unsubscribeFromPushHandler } from './handlers/pushNotifications';
 import { getAllForumsHandler, getForumByIdHandler, createTopicHandler, getTopicByIdHandler, createPostHandler } from './handlers/forums';
+import { verifyEmailHandler, resendVerificationEmailHandler } from './handlers/emailVerification';
 
 import cors from 'cors';
 import cron from 'node-cron';
@@ -83,6 +84,8 @@ app.use((req, res, next) => {
 
 app.post("/register", registerHandler);
 app.post("/login", loginHandler);
+app.post("/verify-email", verifyEmailHandler);
+app.post("/resend-verification", resendVerificationEmailHandler);
 app.get("/profile", profileHandler);
 app.put("/profile", updateProfileHandler);
 

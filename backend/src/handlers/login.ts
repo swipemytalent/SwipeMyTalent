@@ -18,7 +18,6 @@ export const loginHandler = async (req: Request, res: Response, _next: NextFunct
     for (const field of requiredFields) {
         if (!req.body[field.key]) {
             res.status(400).json({ message: `${field.label} requis.` });
-
             return;
         }
     }
@@ -28,19 +27,29 @@ export const loginHandler = async (req: Request, res: Response, _next: NextFunct
         const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
         if (result.rows.length === 0) {
             res.status(401).json({ message: "Email invalide." });
-
             return;
         }
 
         const user = result.rows[0];
+        
+        // Vérifier si le compte est désactivé
         if (user.subscribed === false) {
             res.status(403).json({ message: "Ce compte a été désinscrit. Il sera supprimé prochainement." });
             return;
         }
+
+        // Vérifier si l'email est vérifié
+        if (user.email_verified === false) {
+            res.status(403).json({ 
+                message: "Votre email n'est pas encore vérifié. Veuillez vérifier votre boîte mail et cliquer sur le lien de vérification.",
+                needsVerification: true
+            });
+            return;
+        }
+
         const match = await bcrypt.compare(password, user.password);
         if (!match) {
             res.status(401).json({ message: "Mot de passe invalide." });
-
             return;
         }
 

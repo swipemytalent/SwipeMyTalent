@@ -13,7 +13,6 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             res.status(401).json({ message: 'Token manquant.' });
-
             return;
         }
 
@@ -66,6 +65,22 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
             return;
         }
 
+        // Vérification du délai de 24h après finalisation
+        if (exchange.completed_at) {
+            const completedAt = new Date(exchange.completed_at);
+            const now = new Date();
+            const timeDiff = now.getTime() - completedAt.getTime();
+            const hoursDiff = timeDiff / (1000 * 60 * 60);
+            
+            if (hoursDiff < 24) {
+                const remainingHours = Math.ceil(24 - hoursDiff);
+                res.status(400).json({
+                    message: `Vous devez attendre 24h après la finalisation de l'échange avant de pouvoir noter. Temps restant: ${remainingHours}h.`
+                });
+                return;
+            }
+        }
+
         const otherParticipantId = exchange.initiator_id === raterId
             ? exchange.recipient_id
             : exchange.initiator_id;
@@ -84,7 +99,6 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
             res.status(400).json({
                 message: 'Vous avez déjà noté cette personne pour un échange précédent.'
             });
-
             return;
         }
 
@@ -105,7 +119,6 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
         const raterName = first_name && last_name
             ? `${first_name} ${last_name}`
             : 'Un talent';
-
 
         await pool.query(`
             INSERT INTO notifications (user_id, type, payload)
