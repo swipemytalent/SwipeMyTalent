@@ -74,6 +74,18 @@ CREATE TABLE IF NOT EXISTS profile_ratings (
 
 CREATE INDEX IF NOT EXISTS idx_profile_ratings_exchange ON profile_ratings(exchange_id);
 
+-- Migration pour ajouter exchange_id si elle n'existe pas
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'profile_ratings' AND column_name = 'exchange_id'
+    ) THEN
+        ALTER TABLE profile_ratings ADD COLUMN exchange_id INTEGER REFERENCES exchanges(id) ON DELETE CASCADE;
+    END IF;
+END
+$$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -84,8 +96,16 @@ BEGIN
 END
 $$;
 
-ALTER TABLE profile_ratings
-    ADD CONSTRAINT profile_ratings_rater_id_rated_user_id_exchange_id_key UNIQUE (rater_id, rated_user_id, exchange_id);
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'profile_ratings_rater_id_rated_user_id_exchange_id_key'
+    ) THEN
+        ALTER TABLE profile_ratings
+            ADD CONSTRAINT profile_ratings_rater_id_rated_user_id_exchange_id_key UNIQUE (rater_id, rated_user_id, exchange_id);
+    END IF;
+END
+$$;
 
 DO $$
 BEGIN
