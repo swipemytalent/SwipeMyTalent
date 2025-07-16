@@ -231,7 +231,9 @@ describe('exchangeActions', () => {
 
         it('should return null if no rating found', async () => {
             (jwt.verify as jest.Mock).mockReturnValue(decodedToken);
-            (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
+            (pool.query as jest.Mock)
+                .mockResolvedValueOnce({ rows: [{ id: 456, initiator_id: mockUserId, recipient_id: 2 }] }) // exchange exists
+                .mockResolvedValueOnce({ rows: [] }); // no rating found
 
             const res = mockRes();
             await getExchangeRatingHandler(validReq, res, jest.fn());
@@ -242,7 +244,9 @@ describe('exchangeActions', () => {
         it('should return rating if found', async () => {
             const rating = { id: 1, rating: 5, comment: 'Great!' };
             (jwt.verify as jest.Mock).mockReturnValue(decodedToken);
-            (pool.query as jest.Mock).mockResolvedValue({ rows: [rating] });
+            (pool.query as jest.Mock)
+                .mockResolvedValueOnce({ rows: [{ id: 456, initiator_id: mockUserId, recipient_id: 2 }] }) // exchange exists
+                .mockResolvedValueOnce({ rows: [rating] }); // rating found
 
             const res = mockRes();
             await getExchangeRatingHandler(validReq, res, jest.fn());
