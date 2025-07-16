@@ -22,12 +22,27 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
         const raterId = decoded.id;
         const ratedUserId = parseInt(req.params.userId);
         const { exchange_id, serviceQuality, communication, timeliness } = req.body;
-        const scores = [serviceQuality, communication, timeliness].map(Number);
-        if (!ratedUserId || !exchange_id || scores.some(score => isNaN(score) || score < 1 || score > 5)) {
+        
+        // Validation plus stricte des données
+        if (!exchange_id || typeof exchange_id !== 'number') {
             res.status(400).json({
-                message: 'ID de l\'échange et chaque critère doivent avoir une note entre 1 et 5.'
+                message: 'ID de l\'échange requis et doit être un nombre.'
             });
+            return;
+        }
 
+        if (!serviceQuality || !communication || !timeliness) {
+            res.status(400).json({
+                message: 'Tous les critères de notation sont requis.'
+            });
+            return;
+        }
+
+        const scores = [serviceQuality, communication, timeliness].map(Number);
+        if (scores.some(score => isNaN(score) || score < 1 || score > 5)) {
+            res.status(400).json({
+                message: 'Chaque critère doit avoir une note entre 1 et 5.'
+            });
             return;
         }
 

@@ -197,6 +197,18 @@ export const getExchangeRatingHandler = async (req: Request, res: Response, _nex
             return;
         }
 
+        // Vérifier que l'utilisateur a participé à cet échange
+        const exchangeCheck = await pool.query(
+            `SELECT * FROM exchanges WHERE id = $1 AND (initiator_id = $2 OR recipient_id = $2)`,
+            [exchangeId, userId]
+        );
+        if (exchangeCheck.rows.length === 0) {
+            res.status(403).json({
+                message: 'Vous n\'êtes pas autorisé à voir cet échange.'
+            });
+            return;
+        }
+
         const result = await pool.query(
             `SELECT * FROM profile_ratings WHERE exchange_id = $1 AND rater_id = $2`,
             [exchangeId, userId]
