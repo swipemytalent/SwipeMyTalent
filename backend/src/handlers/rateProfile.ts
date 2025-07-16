@@ -78,9 +78,9 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
         );
 
         await pool.query(`
-            INSERT INTO profile_ratings (rater_id, rated_user_id, rating, exchange_id)
-            VALUES ($1, $2, $3, $4)
-        `, [raterId, ratedUserId, averageRating, exchange_id]);
+            INSERT INTO profile_ratings (rater_id, rated_user_id, rating, exchange_id, service_quality, communication, timeliness)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+        `, [raterId, ratedUserId, averageRating, exchange_id, scores[0], scores[1], scores[2]]);
 
         const raterResult = await pool.query(
             'SELECT first_name, last_name FROM users WHERE id = $1',
