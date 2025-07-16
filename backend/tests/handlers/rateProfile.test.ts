@@ -88,7 +88,7 @@ describe('rateProfile', () => {
         await rateProfileHandler(req, res);
         expect(res.status).toHaveBeenCalledWith(400);
         expect(res.json).toHaveBeenCalledWith({
-            message: 'ID de l\'échange et chaque critère doivent avoir une note entre 1 et 5.'
+            message: 'Chaque critère doit avoir une note entre 1 et 5.'
         });
     });
 
