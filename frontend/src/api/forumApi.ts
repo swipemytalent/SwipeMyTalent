@@ -53,11 +53,11 @@ export interface TopicDetail {
 }
 
 export async function getAllForums(): Promise<Forum[]> {
-  return await HttpService.get<Forum[]>('/forums');
+  return await HttpService.get<Forum[]>('/forums', false);
 }
 
 export async function getForumById(id: number): Promise<ForumDetail> {
-  return await HttpService.get<ForumDetail>(`/forums/${id}`);
+  return await HttpService.get<ForumDetail>(`/forums/${id}`, false);
 }
 
 export async function createTopic(data: {
