@@ -136,3 +136,26 @@
   min-height: 100px;
   resize: vertical;
 }
+
+.auth-form__register-link {
+  text-align: center;
+  margin-top: 1rem;
+  
+  p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+  
+  a {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+    
+    &:hover {
+      color: var(--primary-orange);
+      text-decoration: underline;
+    }
+  }
+}

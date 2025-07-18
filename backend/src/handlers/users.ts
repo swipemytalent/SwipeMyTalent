@@ -32,7 +32,7 @@ export const getAllUsersHandler = async (req: Request, res: Response, _next: Nex
                 ROUND(AVG(pr.rating)::numeric, 1) AS "averageRating"
             FROM users u
             LEFT JOIN profile_ratings pr ON u.id = pr.rated_user_id
-            WHERE u.id != $1 AND u.subscribed = TRUE
+            WHERE u.id != $1 AND u.subscribed = TRUE AND u.email_verified = TRUE
             GROUP BY u.id, u.email, u.first_name, u.last_name, u.title, u.avatar, u.bio`,
             [decoded.id]
         );
@@ -59,7 +59,7 @@ export const getUserByIdHandler = async (req: Request, res: Response, _next: Nex
                 ROUND(AVG(pr.rating)::numeric, 1) AS "averageRating"
             FROM users u
             LEFT JOIN profile_ratings pr ON u.id = pr.rated_user_id
-            WHERE u.id = $1 AND u.subscribed = TRUE
+            WHERE u.id = $1 AND u.subscribed = TRUE AND u.email_verified = TRUE
             GROUP BY u.id, u.email, u.first_name, u.last_name, u.title, u.avatar, u.bio`,
             [userId]
         );
