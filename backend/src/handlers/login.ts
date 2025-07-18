@@ -18,7 +18,6 @@ export const loginHandler = async (req: Request, res: Response, _next: NextFunct
     for (const field of requiredFields) {
         if (!req.body[field.key]) {
             res.status(400).json({ message: `${field.label} requis.` });
-
             return;
         }
     }
@@ -28,7 +27,6 @@ export const loginHandler = async (req: Request, res: Response, _next: NextFunct
         const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
         if (result.rows.length === 0) {
             res.status(401).json({ message: "Email invalide." });
-
             return;
         }
 
@@ -37,10 +35,14 @@ export const loginHandler = async (req: Request, res: Response, _next: NextFunct
             res.status(403).json({ message: "Ce compte a été désinscrit. Il sera supprimé prochainement." });
             return;
         }
+        // Blocage si email non vérifié
+        if (!user.email_verified) {
+            res.status(403).json({ message: "Veuillez vérifier votre email avant de vous connecter." });
+            return;
+        }
         const match = await bcrypt.compare(password, user.password);
         if (!match) {
             res.status(401).json({ message: "Mot de passe invalide." });
-
             return;
         }
 

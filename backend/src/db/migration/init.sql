@@ -101,8 +101,8 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1 FROM pg_constraint WHERE conname = 'profile_ratings_rater_id_rated_user_id_exchange_id_key'
     ) THEN
-        ALTER TABLE profile_ratings
-            ADD CONSTRAINT profile_ratings_rater_id_rated_user_id_exchange_id_key UNIQUE (rater_id, rated_user_id, exchange_id);
+ALTER TABLE profile_ratings
+    ADD CONSTRAINT profile_ratings_rater_id_rated_user_id_exchange_id_key UNIQUE (rater_id, rated_user_id, exchange_id);
     END IF;
 END
 $$;

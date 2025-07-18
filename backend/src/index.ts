@@ -2,6 +2,7 @@ import { loginHandler } from './handlers/login';
 import { getUserConversations, getConversationMessages, markConversationAsRead } from './handlers/conversations';
 import { profileHandler, updateProfileHandler } from './handlers/profile';
 import { registerHandler } from './handlers/register';
+import { verifyEmail } from './handlers/verifyEmail';
 import { getAllUsersHandler, getUserByIdHandler, getUserRatingsHandler } from './handlers/users';
 import { rateProfileHandler } from './handlers/rateProfile';
 import { unsubscribeHandler } from './handlers/unsubscribe';
@@ -83,6 +84,10 @@ app.use((req, res, next) => {
 
 app.post("/register", registerHandler);
 app.post("/login", loginHandler);
+app.get("/auth/verify-email", verifyEmail);
+
+// Route de vérification d'email (temporairement désactivée)
+// app.get("/auth/verify-email", verifyEmail as express.RequestHandler);
 app.get("/profile", profileHandler);
 app.put("/profile", updateProfileHandler);
 
