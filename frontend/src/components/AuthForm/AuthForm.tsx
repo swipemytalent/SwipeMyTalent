@@ -202,6 +202,11 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
       <button type="submit" className="btn btn--primary" disabled={loading}>
         {loading ? 'Chargement...' : mode === 'login' ? 'Se connecter' : "S'inscrire"}
       </button>
+      {mode === 'login' && (
+        <div className="auth-form__register-link">
+          <p>Pas encore inscrit ? <a href="/register">Inscrivez-vous</a></p>
+        </div>
+      )}
     </form>
   );
 };

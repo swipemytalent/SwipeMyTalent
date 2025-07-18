@@ -51,7 +51,7 @@ describe('login', () => {
     });
 
     it('should return 401 if password is invalid', async () => {
-        (pool.query as jest.Mock).mockResolvedValue({ rows: [{ password: 'hashed', subscribed: true }] });
+        (pool.query as jest.Mock).mockResolvedValue({ rows: [{ password: 'hashed', subscribed: true, email_verified: true }] });
         (bcrypt.compare as jest.Mock).mockResolvedValue(false);
         await loginHandler(req, res, () => void {});
         expect(res.status).toHaveBeenCalledWith(401);
@@ -59,7 +59,7 @@ describe('login', () => {
     });
 
     it('should return token on successful login', async () => {
-        const user = { id: 1, email: 'test@example.com', password: 'hashed', subscribed: true };
+        const user = { id: 1, email: 'test@example.com', password: 'hashed', subscribed: true, email_verified: true };
         (pool.query as jest.Mock).mockResolvedValue({ rows: [user] });
         (bcrypt.compare as jest.Mock).mockResolvedValue(true);
         (jwt.sign as jest.Mock).mockReturnValue('fake-token');
@@ -69,6 +69,18 @@ describe('login', () => {
         expect(res.json).toHaveBeenCalledWith({
             message: 'Connexion réussie.',
             token: 'fake-token',
+        });
+    });
+
+    it('should return 403 if email is not verified', async () => {
+        const user = { id: 1, email: 'test@example.com', password: 'hashed', subscribed: true, email_verified: false };
+        (pool.query as jest.Mock).mockResolvedValue({ rows: [user] });
+        (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+
+        await loginHandler(req, res, () => void {});
+        expect(res.status).toHaveBeenCalledWith(403);
+        expect(res.json).toHaveBeenCalledWith({
+            message: 'Veuillez vérifier votre email avant de vous connecter.',
         });
     });
 });
