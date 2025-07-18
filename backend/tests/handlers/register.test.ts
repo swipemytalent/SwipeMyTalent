@@ -67,13 +67,17 @@ describe('register', () => {
             avatar: 'img.jpg',
         };
 
-        mockQuery.mockResolvedValueOnce({ rows: [] });
+        mockQuery.mockResolvedValueOnce({ rows: [] }); // Check existing user
         (bcrypt.hash as jest.Mock).mockResolvedValueOnce('hashedpass');
-        mockQuery.mockResolvedValueOnce({});
+        mockQuery.mockResolvedValueOnce({ rows: [{ id: 1 }] }); // Insert user
+        mockQuery.mockResolvedValueOnce({}); // Insert email verification
 
         await registerHandler(req, res, () => { });
         expect(res.status).toHaveBeenCalledWith(201);
-        expect(res.json).toHaveBeenCalledWith({ message: 'Utilisateur enregistré avec succès.' });
+        expect(res.json).toHaveBeenCalledWith({ 
+            message: 'Inscription réussie ! Vérifiez votre email pour activer votre compte.',
+            requiresVerification: true 
+        });
     });
 
     it('should return 500 on DB error', async () => {
