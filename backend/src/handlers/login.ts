@@ -52,7 +52,7 @@ export const loginHandler = async (req: Request, res: Response, _next: NextFunct
 
         res.json({ message: "Connexion réussie.", token });
     } catch (err) {
-        console.error("DB error:", err);
+        
         res.status(500).json({ message: "Erreur du serveur." });
     }
 }

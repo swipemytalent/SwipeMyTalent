@@ -38,7 +38,7 @@ export const getAllUsersHandler = async (req: Request, res: Response, _next: Nex
         );
         res.json(result.rows);
     } catch (err) {
-        console.error('getAllUsers error:', err);
+        
         res.status(500).json({ message: 'Erreur serveur.' });
     }
 };
@@ -71,7 +71,7 @@ export const getUserByIdHandler = async (req: Request, res: Response, _next: Nex
 
         res.json(result.rows[0]);
     } catch (err) {
-        console.error('getUserById error:', err);
+        
         res.status(500).json({ message: 'Erreur serveur.' });
     }
 };
@@ -91,7 +91,7 @@ export const getUserRatingsHandler = async (req: Request, res: Response, _next: 
 
         res.json(result.rows);
     } catch (err) {
-        console.error('getUserRatings error:', err);
+        
         res.status(500).json({ message: 'Erreur serveur.' });
     }
 };

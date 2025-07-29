@@ -103,7 +103,7 @@ export const createExchangeHandler = async (req: Request, res: Response, _next: 
             }
         });
     } catch (err) {
-        console.error('Erreur lors de la création de l\'échange:', err);
+        
         res.status(500).json({
             message: 'Une erreur est survenue lors de la création de l\'échange.'
         });
@@ -224,7 +224,7 @@ export const confirmExchangeHandler = async (req: Request, res: Response, _next:
             status: newStatus
         });
     } catch (err) {
-        console.error('Erreur lors de la confirmation de l\'échange:', err);
+        
         res.status(500).json({
             message: 'Une erreur est survenue lors de la confirmation.'
         });

@@ -37,7 +37,7 @@ const ForumDetail: React.FC = () => {
       setShowNewTopicForm(false);
       dispatch(fetchForumById(parseInt(id)));
     } catch (error) {
-      console.error('Erreur lors de la création du topic:', error);
+      
     }
   };
 

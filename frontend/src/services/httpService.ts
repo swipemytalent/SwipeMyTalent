@@ -55,7 +55,6 @@ export class HttpService {
     }
 
     const fullUrl = `${this.BASE_URL}${endpoint}`;
-    console.log('[PROD] URL appelée:', fullUrl);
 
     const response = await fetch(fullUrl, config);
 

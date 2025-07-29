@@ -49,7 +49,7 @@ export const registerHandler = async (req: Request, res: Response, _next: NextFu
 
         res.status(201).json({ message: "Utilisateur enregistré avec succès." });
     } catch (err) {
-        console.error("DB error:", err);
+        
         res.status(500).json({ message: "Erreur du serveur." });
     }
 };

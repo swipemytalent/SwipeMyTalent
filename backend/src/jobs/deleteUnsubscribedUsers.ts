@@ -9,8 +9,8 @@ export const deleteUnsubcribedUsers = async () => {
             AND unsubscribed_at < NOW() - INTERVAL '14 days'
         `);
 
-        console.log(`✅ Deleted ${result.rowCount} old unsubscribed users`);
+        
     } catch (error) {
-        console.error('❌ Error deleting unsubscribed users:', error);
+        
     }
 };

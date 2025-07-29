@@ -77,7 +77,7 @@ export async function getUserConversations(req: Request, res: Response, _next: N
 
         res.json(conversations);
     } catch (err) {
-        console.error('Erreur lors de la récupération des conversations:', err);
+        
         res.status(500).json({ message: 'Erreur serveur lors de la récupération des conversations.' });
     }
 }
@@ -128,7 +128,7 @@ export async function getConversationMessages(req: Request, res: Response, _next
 
         res.json(messages);
     } catch (err) {
-        console.error('Erreur lors de la récupération des messages:', err);
+        
         res.status(500).json({ message: 'Erreur serveur lors de la récupération des messages.' });
     }
 }
@@ -157,7 +157,7 @@ export async function markConversationAsRead(req: Request, res: Response, _next:
 
         res.status(200).json({ message: 'Conversation marquée comme lue.' });
     } catch (err) {
-        console.error('Erreur lors du marquage de la conversation:', err);
+        
         res.status(500).json({ message: 'Erreur serveur lors du marquage de la conversation.' });
     }
 } 

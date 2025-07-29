@@ -62,16 +62,13 @@ const NotificationBell: React.FC = () => {
       const data = await HttpService.get<Notification[]>('/notifications');
       setNotifications(data);
     } catch (error) {
-      console.error('Erreur lors de la récupération des notifications:', error);
+      // Erreur silencieuse
     }
   };
 
   const initializePushNotifications = async () => {
     if (user.id && !isInitialized) {
-      const success = await notificationService.initialize(user.id.toString());
-      if (success) {
-        console.log('Notifications push initialisées avec succès');
-      }
+      await notificationService.initialize(user.id.toString());
       setIsInitialized(true);
     }
   };
@@ -95,7 +92,7 @@ const NotificationBell: React.FC = () => {
         );
       }
     } catch (error) {
-      console.error('Erreur lors du marquage de la notification:', error);
+      // Erreur silencieuse
     }
   };
 
@@ -114,7 +111,7 @@ const NotificationBell: React.FC = () => {
         );
       }
     } catch (error) {
-      console.error('Erreur lors du marquage des notifications:', error);
+      // Erreur silencieuse
     }
   };
 
@@ -133,7 +130,7 @@ const NotificationBell: React.FC = () => {
         );
       }
     } catch (error) {
-      console.error('Erreur lors de la suppression de la notification:', error);
+      // Erreur silencieuse
     }
   };
 

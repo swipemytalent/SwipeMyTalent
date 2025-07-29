@@ -166,7 +166,7 @@ const MessagingSystem: React.FC<MessagingSystemProps> = ({ isOpen, onClose, onCo
         avatar: userData.avatar
       });
     } catch (err) {
-      console.error('Erreur lors du chargement des informations utilisateur:', err);
+      
     }
   };
 

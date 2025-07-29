@@ -1,17 +1,17 @@
 export class LoggerService {
   static error(message: string, error?: any): void {
-    console.error(`[ERROR] ${message}`, error || '');
+    // Logging désactivé
   }
 
   static warn(message: string, data?: any): void {
-    console.warn(`[WARN] ${message}`, data || '');
+    // Logging désactivé
   }
 
   static info(message: string, data?: any): void {
-    console.info(`[INFO] ${message}`, data || '');
+    // Logging désactivé
   }
 
   static debug(message: string, data?: any): void {
-    console.log(`[DEBUG] ${message}`, data || '');
+    // Logging désactivé
   }
 } 

@@ -107,7 +107,7 @@ export const completeExchangeHandler = async (req: Request, res: Response, _next
             exchange_id: exchangeId
         });
     } catch (err) {
-        console.error('Erreur lors de la finalisation de l\'échange:', err);
+        
         res.status(500).json({
             message: 'Une erreur est survenue lors de la finalisation.'
         });
@@ -171,7 +171,7 @@ export const getUserExchangesHandler = async (req: Request, res: Response, _next
 
         res.json(exchanges);
     } catch (err) {
-        console.error('Erreur lors de la récupération des échanges:', err);
+        
         res.status(500).json({
             message: 'Une erreur est survenue lors de la récupération des échanges.'
         });
@@ -221,7 +221,7 @@ export const getExchangeRatingHandler = async (req: Request, res: Response, _nex
 
         res.json(result.rows[0]);
     } catch (err) {
-        console.error('Erreur lors de la récupération de l\'avis de l\'échange:', err);
+        
         res.status(500).json({ message: 'Erreur serveur.' });
     }
 }; 

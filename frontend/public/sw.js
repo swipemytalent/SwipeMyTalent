@@ -2,24 +2,19 @@
 const CACHE_NAME = 'swipemytalent-v1';
 
 self.addEventListener('install', (event) => {
-  console.log('Service Worker installé');
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker activé');
   event.waitUntil(self.clients.claim());
 });
 
 self.addEventListener('push', (event) => {
-  console.log('Notification push reçue:', event);
-
   let data = {};
   if (event.data) {
     try {
       data = event.data.json();
     } catch (e) {
-      console.error('Erreur de parsing JSON dans le push:', e);
       data = { title: 'Notification', body: event.data.text() };
     }
   }
@@ -57,8 +52,6 @@ self.addEventListener('push', (event) => {
 });
 
 self.addEventListener('notificationclick', (event) => {
-  console.log('Clic sur notification:', event);
-  
   event.notification.close();
 
   if (event.action === 'open' || !event.action) {
@@ -79,8 +72,6 @@ self.addEventListener('notificationclick', (event) => {
 });
 
 self.addEventListener('message', (event) => {
-  console.log('Message reçu du client:', event.data);
-  
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }

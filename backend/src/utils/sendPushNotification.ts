@@ -26,6 +26,6 @@ export async function sendPushNotification(
             }
         }
     } catch (err) {
-        console.error('❌ Failed to send push notification:', err);
+        
     }
 }

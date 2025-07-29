@@ -43,7 +43,7 @@ const NotificationPermission: React.FC = () => {
         setShowPermissionRequest(false);
       }
     } catch (error) {
-      console.error('Erreur lors de l\'activation des notifications:', error);
+      
     } finally {
       setIsRequesting(false);
     }

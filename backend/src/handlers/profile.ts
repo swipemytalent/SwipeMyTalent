@@ -39,7 +39,7 @@ export const profileHandler = async (req: Request, res: Response, _next: NextFun
         profile.averageRating = ratingResult.rows[0].averageRating ?? null;
         res.json(profile);
     } catch (err) {
-        console.error('Erreur lors de la récupération du profil:', err);
+        
         res.status(500).json({ message: 'Erreur serveur.' });
     }
 };
@@ -66,7 +66,7 @@ export const updateProfileHandler = async (req: Request, res: Response, _next: N
         );
         res.json(result.rows[0]);
     } catch (err) {
-        console.error('Profile update error:', err);
+        
         res.status(500).json({ message: 'Erreur serveur.' });
     }
 };

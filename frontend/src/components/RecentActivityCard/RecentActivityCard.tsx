@@ -241,7 +241,7 @@ const RecentActivityCard = () => {
                         setExchangeRating(rating);
                       }
                     } catch (error) {
-                      console.error('Erreur lors du rafraîchissement:', error);
+                      
                     }
                     setIsRatingModalOpen(true);
                   }}>

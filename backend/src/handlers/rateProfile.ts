@@ -137,7 +137,7 @@ export const rateProfileHandler = async (req: Request, res: Response) => {
             averageRating
         });
     } catch (err) {
-        console.error('Erreur lors de la notation :', err);
+        
         res.status(500).json({
             message: 'Une erreur est survenue lors de l\'enregistrement de votre avis. Veuillez réessayer.'
         });

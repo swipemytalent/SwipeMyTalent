@@ -13,7 +13,6 @@ class NotificationService {
 
   async requestNotificationPermission(): Promise<boolean> {
     if (!this.isSupported) {
-      console.log('Notifications non supportées par ce navigateur');
       return false;
     }
 
@@ -21,7 +20,6 @@ class NotificationService {
       const permission = await Notification.requestPermission();
       return permission === 'granted';
     } catch (error) {
-      console.error('Erreur lors de la demande de permission:', error);
       return false;
     }
   }
@@ -31,10 +29,8 @@ class NotificationService {
 
     try {
       this.swRegistration = await navigator.serviceWorker.register('/sw.js');
-      console.log('Service Worker enregistré:', this.swRegistration);
       return true;
     } catch (error) {
-      console.error('Erreur lors de l\'enregistrement du Service Worker:', error);
       return false;
     }
   }
@@ -46,7 +42,6 @@ class NotificationService {
       // Vérifier s'il y a déjà un abonnement existant
       const existingSubscription = await this.swRegistration.pushManager.getSubscription();
       if (existingSubscription) {
-        console.log('Désabonnement de l\'ancienne subscription...');
         await existingSubscription.unsubscribe();
       }
 
@@ -79,10 +74,8 @@ class NotificationService {
         throw new Error('Erreur lors de l\'enregistrement de la subscription');
       }
 
-      console.log('Abonnement aux notifications réussi');
       return true;
     } catch (error) {
-      console.error('Erreur lors de l\'abonnement aux notifications:', error);
       return false;
     }
   }
@@ -104,10 +97,8 @@ class NotificationService {
         }
       });
 
-      console.log('Désabonnement des notifications réussi');
       return true;
     } catch (error) {
-      console.error('Erreur lors du désabonnement:', error);
       return false;
     }
   }
@@ -129,14 +120,12 @@ class NotificationService {
 
   async initialize(userId: string): Promise<boolean> {
     if (!this.isSupported) {
-      console.log('Notifications non supportées');
       return false;
     }
 
     if (!(await this.isNotificationPermissionGranted())) {
       const granted = await this.requestNotificationPermission();
       if (!granted) {
-        console.log('Permission de notification refusée');
         return false;
       }
     }

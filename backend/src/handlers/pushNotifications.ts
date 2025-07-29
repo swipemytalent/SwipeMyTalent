@@ -17,7 +17,7 @@ export const getVapidPublicKeyHandler = async (req: Request, res: Response, _nex
 
         res.send(vapidPublicKey);
     } catch (err) {
-        console.error('Erreur lors de la récupération de la clé VAPID:', err);
+        
         res.status(500).json({
             message: 'Une erreur est survenue lors de la récupération de la clé VAPID.'
         });
@@ -66,7 +66,7 @@ export const subscribeToPushHandler = async (req: Request, res: Response, _next:
 
         res.json({ message: 'Abonnement aux notifications réussi.' });
     } catch (err) {
-        console.error('Erreur lors de l\'abonnement aux notifications:', err);
+        
         res.status(500).json({
             message: 'Une erreur est survenue lors de l\'abonnement aux notifications.'
         });
@@ -93,7 +93,7 @@ export const unsubscribeFromPushHandler = async (req: Request, res: Response, _n
 
         res.json({ message: 'Désabonnement des notifications réussi.' });
     } catch (err) {
-        console.error('Erreur lors du désabonnement des notifications:', err);
+        
         res.status(500).json({
             message: 'Une erreur est survenue lors du désabonnement des notifications.'
         });

@@ -25,11 +25,7 @@ import webpush from 'web-push';
 
 dotenv.config();
 
-// Log des variables d'environnement importantes
-console.log('[PROD] Configuration de démarrage:');
-console.log('[PROD] NODE_ENV:', process.env.NODE_ENV);
-console.log('[PROD] VAPID_PUBLIC_KEY:', process.env.VAPID_PUBLIC_KEY ? 'Défini' : 'Non défini');
-console.log('[PROD] VAPID_PRIVATE_KEY:', process.env.VAPID_PRIVATE_KEY ? 'Défini' : 'Non défini');
+// Configuration des variables d'environnement
 
 webpush.setVapidDetails(
     'mailto:no-reply@swipemytalent.com',
@@ -41,16 +37,13 @@ const app: Express = express();
 const port: number = 5000;
 const allowedOrigins = getAllowedOrigins();
 
-console.log('[PROD] Origines autorisées:', allowedOrigins);
+
 
 const corsOptions: CorsOptions = {
     origin: function (origin, callback) {
-        console.log('[PROD] CORS - Origine demandée:', origin);
         if (!origin || allowedOrigins.includes(origin)) {
-            console.log('[PROD] CORS - Origine autorisée:', origin);
             callback(null, true);
         } else {
-            console.log('[PROD] CORS - Origine refusée:', origin);
             callback(new Error("Not authorized by CORS"), false);
         }
     },
@@ -70,14 +63,8 @@ const corsOptions: CorsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '1mb' }));
 
-// Middleware pour logger toutes les requêtes
+// Middleware pour traiter les requêtes
 app.use((req, res, next) => {
-    console.log(`[PROD] ${new Date().toISOString()} - ${req.method} ${req.path}`);
-    console.log('[PROD] Headers:', JSON.stringify(req.headers, null, 2));
-    console.log('[PROD] Query:', JSON.stringify(req.query, null, 2));
-    if (req.body && Object.keys(req.body).length > 0) {
-        console.log('[PROD] Body:', JSON.stringify(req.body, null, 2));
-    }
     next();
 });
 
@@ -119,12 +106,8 @@ app.post('/topics', createTopicHandler as express.RequestHandler);
 app.get('/topics/:id', getTopicByIdHandler as express.RequestHandler);
 app.post('/posts', createPostHandler as express.RequestHandler);
 
-// Middleware pour logger les erreurs 500
+// Middleware pour gérer les erreurs 500
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    console.error('[PROD] Erreur 500:', err);
-    console.error('[PROD] URL:', req.url);
-    console.error('[PROD] Méthode:', req.method);
-    console.error('[PROD] Headers:', req.headers);
     res.status(500).json({ error: 'Erreur interne serveur' });
 });
 
@@ -142,30 +125,23 @@ app.set('io', io);
 app.set('connectedUsers', connectedUsers);
 
 io.on('connection', (socket) => {
-    console.log(`🔌 New client connected: ${socket.id}`);
-
     socket.on('register', (userId: string) => {
         connectedUsers.set(userId, socket.id)
-        console.log(`✅ Registered user ${userId} with socket ${socket.id}`);
     });
     socket.on('disconnect', () => {
         for (const [userId, socketId] of connectedUsers.entries()) {
             if (socketId === socket.id) {
                 connectedUsers.delete(userId);
-
                 break;
             }
         }
-        console.log(`❌ User disconnected: ${socket.id}`);
     });
 });
 
 server.listen(port, () => {
-    console.log(`🚀 Server listening on http://localhost:${port}`);
+    // Server started
 });
 
 cron.schedule('0 0 * * *', () => {
-    console.log('🕛 Running scheduled cleanup for unsubscribed users...');
-
     deleteUnsubcribedUsers();
 });

@@ -34,7 +34,7 @@ const TopicDetail: React.FC = () => {
       // Recharger le topic pour afficher le nouveau post
       dispatch(fetchTopicById(parseInt(id)));
     } catch (error) {
-      console.error('Erreur lors de la création du post:', error);
+      
     }
   };
 
