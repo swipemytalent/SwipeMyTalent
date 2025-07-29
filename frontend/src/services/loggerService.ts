@@ -1,17 +1,17 @@
 export class LoggerService {
-  static error(message: string, error?: any): void {
+  static error(_message: string, _error?: any): void {
     // Logging désactivé
   }
 
-  static warn(message: string, data?: any): void {
+  static warn(_message: string, _data?: any): void {
     // Logging désactivé
   }
 
-  static info(message: string, data?: any): void {
+  static info(_message: string, _data?: any): void {
     // Logging désactivé
   }
 
-  static debug(message: string, data?: any): void {
+  static debug(_message: string, _data?: any): void {
     // Logging désactivé
   }
 } 
