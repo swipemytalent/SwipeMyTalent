@@ -93,9 +93,7 @@ services:
       POSTGRES_HOST: postgres
     volumes:
       - ./backend/src/db/migration/init-db.sh:/init/init-db.sh
-    configs:
-      - source: init-sql
-        target: /init/init.sql
+      - ./backend/src/db/migration/init.sql:/init/init.sql
     entrypoint: ["sh", "/init/init-db.sh"]
     networks:
       - traefik
@@ -186,8 +184,6 @@ volumes:
   grafana-data:
 
 configs:
-  init-sql:
-    file: ./backend/src/db/migration/init.sql
   prometheus-config:
     file: ./infra/monitoring/prometheus.yml
 
