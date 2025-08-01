@@ -74,9 +74,8 @@ posts (id, topic_id, author_id, content, is_solution, created_at, updated_at)
 ### 1. Migration de Base de Données
 
 ```bash
-# Depuis la racine du projet
-cd backend
-./scripts/apply-forum-migration.sh
+# Les tables du forum sont maintenant incluses dans init.sql
+# Aucune action manuelle requise - le déploiement automatique s'en charge
 ```
 
 ### 2. Variables d'Environnement
