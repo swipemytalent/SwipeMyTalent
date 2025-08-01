@@ -184,6 +184,8 @@ volumes:
   grafana-data:
 
 configs:
+  init-sql:
+    file: ./backend/src/db/migration/init.sql
   prometheus-config:
     file: ./infra/monitoring/prometheus.yml
 
